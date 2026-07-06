@@ -37,11 +37,11 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       // Botón con animaciones suaves al pasar el cursor y al hacer clic
       <motion.button
-        ref={ref}
+        ref={ref as any}
         whileHover={{ scale: 1.02 }} // Aumenta ligeramente el tamaño al pasar el cursor
         whileTap={{ scale: 0.98 }} // Reduce ligeramente el tamaño al hacer clic
         className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
-        {...props}
+        {...(props as any)}
       >
         {children}
       </motion.button>
