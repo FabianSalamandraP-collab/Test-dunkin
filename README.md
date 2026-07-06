@@ -2,7 +2,14 @@
 
 Aplicación profesional de Next.js para la campaña oficial de Dunkin Colombia.
 
-## Tecnologías
+## 🛡️ Seguridad y Legal
+
+- **Licencia**: Propiedad exclusiva de Dunkin Colombia (ver [LICENSE](LICENSE))
+- **Seguridad**: Leer [SECURITY.md](SECURITY.md) para conocer las políticas de seguridad
+- **Código de Conducta**: [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
+- **Cómo Contribuir**: [CONTRIBUTING.md](CONTRIBUTING.md) (solo personal autorizado)
+
+## 🚀 Tecnologías
 
 - Next.js 15 (App Router)
 - TypeScript
@@ -13,7 +20,7 @@ Aplicación profesional de Next.js para la campaña oficial de Dunkin Colombia.
 - Supabase / PostgreSQL
 - Lucide React
 
-## Estructura del Proyecto
+## 📁 Estructura del Proyecto
 
 - `app/`: Rutas y layouts de Next.js
 - `components/`: Componentes UI reutilizables
@@ -29,44 +36,47 @@ Aplicación profesional de Next.js para la campaña oficial de Dunkin Colombia.
 - `supabase/`: Migraciones de base de datos
 - `public/`: Archivos estáticos
 
-## Instalación
+## ⚙️ Instalación
 
-```bash
-npm install
-```
+1. Copia el archivo de ejemplo de variables de entorno:
+   ```bash
+   cp .env.example .env
+   ```
 
-## Ejecución en Desarrollo
+2. Llena las variables de entorno en el archivo `.env`
+
+3. Instala las dependencias:
+   ```bash
+   npm install
+   ```
+
+## 🖥️ Ejecución en Desarrollo
 
 ```bash
 npm run dev
 ```
 
-## Build para Producción
+## 🏗️ Build para Producción
 
 ```bash
 npm run build
 npm start
 ```
 
-## SEO
+## 🎯 SEO
 
 - Metaetiquetas optimizadas (Open Graph, Twitter Cards)
 - Sitemap XML
 - Robots.txt
 - Idioma: Español (Colombia) - `es-CO`
 
-## Despliegue
+## 🚀 Despliegue
 
 La aplicación está lista para ser desplegada en cualquier hosting compatible con Next.js (Vercel, Netlify, hosting propio, etc.).
 
 ### Variables de Entorno
 
-Crea un archivo `.env` en la raíz del proyecto con las variables necesarias (ej: credenciales de Supabase):
-
-```env
-NEXT_PUBLIC_SUPABASE_URL=tu-url-supabase
-NEXT_PUBLIC_SUPABASE_ANON_KEY=tu-anon-key
-```
+Ver [.env.example](.env.example) para la lista completa de variables necesarias. NUNCA subas el archivo `.env` al repositorio.
 
 ### Vercel (Recomendado)
 
@@ -74,6 +84,12 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=tu-anon-key
 2. Configura las variables de entorno en Vercel
 3. ¡Despliega automáticamente!
 
-## Licencia
+## ⚠️ Importante
 
-Propiedad de Dunkin Colombia.
+- **Nunca subas credenciales** al repositorio
+- Usa siempre variables de entorno para información sensible
+- Cumplimiento con la Ley de Protección de Datos Personales de Colombia (Ley 1581 de 2012)
+
+## 📝 Licencia
+
+Propiedad exclusiva de Dunkin Colombia. Todos los derechos reservados.
