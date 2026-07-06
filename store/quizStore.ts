@@ -11,6 +11,7 @@ interface QuizStore {
   answers: QuizAnswer[];
   isCompleted: boolean;
   result: QuizResult | null;
+  formSubmitted: boolean;
 
   // Acciones
   setQuestions: (questions: QuizQuestion[]) => void;
@@ -19,6 +20,7 @@ interface QuizStore {
   goToPreviousQuestion: () => void;
   resetQuiz: () => void;
   completeQuiz: (result?: QuizResult) => void;
+  setFormSubmitted: (submitted: boolean) => void;
 
   // Datos derivados
   currentQuestion: () => QuizQuestion | null;
@@ -69,6 +71,7 @@ export const useQuizStore = create<QuizStore>()(
       answers: [],
       isCompleted: false,
       result: null,
+      formSubmitted: false,
 
       // Acciones
       setQuestions: (questions: QuizQuestion[]) => {
@@ -117,6 +120,7 @@ export const useQuizStore = create<QuizStore>()(
           answers: [],
           isCompleted: false,
           result: null,
+          formSubmitted: false,
         });
       },
 
@@ -127,6 +131,10 @@ export const useQuizStore = create<QuizStore>()(
           isCompleted: true,
           result: finalResult,
         });
+      },
+
+      setFormSubmitted: (submitted: boolean) => {
+        set({ formSubmitted: submitted });
       },
 
       // Métodos derivados
