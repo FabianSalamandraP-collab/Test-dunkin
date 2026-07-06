@@ -1,11 +1,13 @@
 "use client";
 
 // Importación de componentes y bibliotecas
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Coffee, ChevronDown, Instagram, Facebook, Twitter } from "lucide-react";
 import { Button, Navbar, Footer, useToast } from "@/components/ui";
 
 export default function Home() {
+  const router = useRouter();
   const { addToast } = useToast();
 
   const handleStartQuiz = () => {
@@ -13,6 +15,9 @@ export default function Home() {
       type: "success",
       message: "¡Preparando tu quiz de personalidad Dunkin!",
     });
+    setTimeout(() => {
+      router.push("/quiz");
+    }, 500);
   };
 
   return (
