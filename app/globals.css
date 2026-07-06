@@ -2,26 +2,256 @@
 @tailwind components;
 @tailwind utilities;
 
+/* =====================================================
+   DUNKIN DESIGN SYSTEM - CSS CUSTOM PROPERTIES (TOKENS)
+   ===================================================== */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* 1. PALETA DE COLORES */
+  --color-primary-50: #FFF7F0;
+  --color-primary-100: #FFEBD8;
+  --color-primary-200: #FFD3AD;
+  --color-primary-300: #FFB575;
+  --color-primary-400: #FF8F3A;
+  --color-primary-500: #FF671F; /* Dunkin' Orange */
+  --color-primary-600: #F04A07;
+  --color-primary-700: #C73807;
+  --color-primary-800: #9E2E0E;
+  --color-primary-900: #80290F;
+  --color-primary-950: #451106;
+
+  --color-secondary-50: #FFECEC;
+  --color-secondary-100: #FFD9D9;
+  --color-secondary-200: #FFB8B8;
+  --color-secondary-300: #FF8888;
+  --color-secondary-400: #FF5454;
+  --color-secondary-500: #FF2D2D; /* Dunkin' Red */
+  --color-secondary-600: #F21414;
+  --color-secondary-700: #CC0D0D;
+  --color-secondary-800: #A50E0E;
+  --color-secondary-900: #881212;
+  --color-secondary-950: #4B0404;
+
+  --color-dunkin-orange: #FF671F;
+  --color-dunkin-red: #FF2D2D;
+  --color-dunkin-brown: #8B4513;
+  --color-dunkin-cream: #FFF5E6;
+  --color-dunkin-white: #FFFFFF;
+  --color-dunkin-black: #222222;
+
+  --color-neutral-50: #F8F8F8;
+  --color-neutral-100: #F0F0F0;
+  --color-neutral-200: #E6E6E6;
+  --color-neutral-300: #D4D4D4;
+  --color-neutral-400: #A3A3A3;
+  --color-neutral-500: #737373;
+  --color-neutral-600: #525252;
+  --color-neutral-700: #3F3F3F;
+  --color-neutral-800: #262626;
+  --color-neutral-900: #171717;
+  --color-neutral-950: #0A0A0A;
+
+  /* 2. TIPOGRAFÍA */
+  --font-family-sans: var(--font-inter), system-ui, sans-serif;
+  --font-family-display: var(--font-display), system-ui, sans-serif;
+
+  --font-size-xs: 0.75rem; /* 12px */
+  --font-size-sm: 0.875rem; /* 14px */
+  --font-size-base: 1rem; /* 16px */
+  --font-size-lg: 1.125rem; /* 18px */
+  --font-size-xl: 1.25rem; /* 20px */
+  --font-size-2xl: 1.5rem; /* 24px */
+  --font-size-3xl: 1.875rem; /* 30px */
+  --font-size-4xl: 2.25rem; /* 36px */
+  --font-size-5xl: 3rem; /* 48px */
+  --font-size-6xl: 3.75rem; /* 60px */
+  --font-size-7xl: 4.5rem; /* 72px */
+  --font-size-8xl: 6rem; /* 96px */
+  --font-size-9xl: 8rem; /* 128px */
+
+  --line-height-tight: 1.25;
+  --line-height-snug: 1.375;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.625;
+  --line-height-loose: 2;
+
+  --letter-spacing-tighter: -0.05em;
+  --letter-spacing-tight: -0.025em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.025em;
+  --letter-spacing-wider: 0.05em;
+  --letter-spacing-widest: 0.1em;
+
+  /* 3. ESPACIADOS */
+  --spacing-0: 0px;
+  --spacing-px: 1px;
+  --spacing-05: 0.125rem;
+  --spacing-1: 0.25rem;
+  --spacing-15: 0.375rem;
+  --spacing-2: 0.5rem;
+  --spacing-25: 0.625rem;
+  --spacing-3: 0.75rem;
+  --spacing-35: 0.875rem;
+  --spacing-4: 1rem;
+  --spacing-5: 1.25rem;
+  --spacing-6: 1.5rem;
+  --spacing-7: 1.75rem;
+  --spacing-8: 2rem;
+  --spacing-9: 2.25rem;
+  --spacing-10: 2.5rem;
+  --spacing-11: 2.75rem;
+  --spacing-12: 3rem;
+  --spacing-14: 3.5rem;
+  --spacing-16: 4rem;
+  --spacing-20: 5rem;
+  --spacing-24: 6rem;
+  --spacing-28: 7rem;
+  --spacing-32: 8rem;
+  --spacing-36: 9rem;
+  --spacing-40: 10rem;
+  --spacing-44: 11rem;
+  --spacing-48: 12rem;
+  --spacing-52: 13rem;
+  --spacing-56: 14rem;
+  --spacing-60: 15rem;
+  --spacing-64: 16rem;
+  --spacing-72: 18rem;
+  --spacing-80: 20rem;
+  --spacing-96: 24rem;
+
+  /* 4. BORDER RADIUS */
+  --radius-none: 0px;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-3xl: 2rem;
+  --radius-full: 9999px;
+
+  /* 5. ELEVACIONES (SOMBRAS) */
+  --shadow-none: none;
+  --shadow-sm: 0 1px 2px 0px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.03);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.03);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+  --shadow-soft: 0 2px 8px 0px rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.02);
+  --shadow-card: 0 4px 20px 0px rgba(0, 0, 0, 0.06), 0 1px 4px -1px rgba(0, 0, 0, 0.03);
+
+  /* 6. BREAKPOINTS */
+  --breakpoint-xs: 360px;
+  --breakpoint-sm: 480px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+
+  /* 7. DURACIÓN DE ANIMACIONES */
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
+  --duration-slower: 700ms;
+
+  /* 8. FONDO Y TEXTO PRINCIPALES */
+  --background: var(--color-dunkin-white);
+  --foreground: var(--color-dunkin-black);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* =====================================================
+   RESET Y ESTILOS BASE
+   ===================================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
 }
 
 body {
   color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--background);
+  font-family: var(--font-family-sans);
+  line-height: var(--line-height-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
+/* =====================================================
+   UTILIDADES PERSONALIZADAS
+   ===================================================== */
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  /* Tamaños de texto con line-height predefinido */
+  .text-display-xs {
+    font-size: var(--font-size-4xl);
+    line-height: var(--line-height-tight);
+    font-weight: 800;
+    letter-spacing: var(--letter-spacing-tight);
+  }
+
+  .text-display-sm {
+    font-size: var(--font-size-5xl);
+    line-height: var(--line-height-tight);
+    font-weight: 800;
+    letter-spacing: var(--letter-spacing-tight);
+  }
+
+  .text-display-md {
+    font-size: var(--font-size-6xl);
+    line-height: var(--line-height-tight);
+    font-weight: 800;
+    letter-spacing: var(--letter-spacing-tighter);
+  }
+
+  .text-display-lg {
+    font-size: var(--font-size-7xl);
+    line-height: var(--line-height-tight);
+    font-weight: 800;
+    letter-spacing: var(--letter-spacing-tighter);
+  }
+
+  .text-display-xl {
+    font-size: var(--font-size-8xl);
+    line-height: var(--line-height-tight);
+    font-weight: 800;
+    letter-spacing: var(--letter-spacing-tighter);
+  }
+
+  /* Contenedores con espaciado amplio (Apple-style) */
+  .container-padding {
+    padding-left: var(--spacing-6);
+    padding-right: var(--spacing-6);
+  }
+
+  @media (min-width: 768px) {
+    .container-padding {
+      padding-left: var(--spacing-12);
+      padding-right: var(--spacing-12);
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .container-padding {
+      padding-left: var(--spacing-20);
+      padding-right: var(--spacing-20);
+    }
+  }
+
+  /* Imágenes grandes y responsive */
+  .hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: var(--radius-2xl);
   }
 }
