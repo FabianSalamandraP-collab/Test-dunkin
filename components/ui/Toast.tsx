@@ -6,14 +6,14 @@ import { CheckCircle2, XCircle, AlertCircle, X } from "lucide-react";
 
 type ToastType = "success" | "error" | "warning" | "info";
 
-interface Toast {
+interface ToastData {
   id: string;
   type: ToastType;
   message: string;
 }
 
 interface ToastContextType {
-  addToast: (toast: Omit<Toast, "id">) => void;
+  addToast: (toast: Omit<ToastData, "id">) => void;
 }
 
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
@@ -27,9 +27,9 @@ export const useToast = () => {
 };
 
 export const ToastProvider = ({ children }: { children: ReactNode }) => {
-  const [toasts, setToasts] = useState<Toast[]>([]);
+  const [toasts, setToasts] = useState<ToastData[]>([]);
 
-  const addToast = (toast: Omit<Toast, "id">) => {
+  const addToast = (toast: Omit<ToastData, "id">) => {
     const id = Math.random().toString(36).substr(2, 9);
     setToasts((prev) => [...prev, { ...toast, id }]);
   };
@@ -60,7 +60,7 @@ const ToastItem = ({
   toast,
   onRemove,
 }: {
-  toast: Toast;
+  toast: ToastData;
   onRemove: (id: string) => void;
 }) => {
   useEffect(() => {
@@ -103,4 +103,4 @@ const ToastItem = ({
   );
 };
 
-export default Toast;
+export default ToastItem;
