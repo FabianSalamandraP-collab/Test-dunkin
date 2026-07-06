@@ -23,9 +23,13 @@ export interface QuizAnswer {
 
 // Tipo para los resultados del quiz
 export interface QuizResult {
+  id: string;
   personalityType: string;
   title: string;
   description: string;
   recommendedDrink: string;
+  drinkDescription: string;
+  benefit: string;
   image?: string;
+  color?: string;
 }

@@ -1,6 +1,6 @@
 // Preguntas de ejemplo para el quiz de Dunkin Colombia
 // Estas podrían reemplazarse con datos de Supabase en el futuro
-import { QuizQuestion } from "@/types/quiz";
+import { QuizQuestion, QuizResult } from "@/types/quiz";
 
 export const QUIZ_QUESTIONS: QuizQuestion[] = [
   {
@@ -42,5 +42,48 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       { id: "q4a3", label: "Frutas frescas", emoji: "🍓", value: "healthy" },
       { id: "q4a4", label: "Postres decadentes", emoji: "🍰", value: "indulgent" },
     ],
+  },
+];
+
+export const QUIZ_RESULTS: QuizResult[] = [
+  {
+    id: "energetic",
+    personalityType: "El Energético",
+    title: "¡Eres un Dunkin Sunrise!",
+    description: "Tu energía es contagiosa y siempre encuentras la manera de hacer del día algo especial. Tu espíritu aventurero te lleva a descubrir nuevas experiencias cada día.",
+    recommendedDrink: "Iced Coffee with Caramel",
+    drinkDescription: "Café frío con un toque de caramelo dulce, perfecto para mantener tu energía durante todo el día.",
+    benefit: "2x1 en bebidas frías",
+    color: "#FF7A00",
+  },
+  {
+    id: "creative",
+    personalityType: "El Creativo",
+    title: "¡Eres un Caramel Macchiato!",
+    description: "Tu imaginación no tiene límites y siempre encuentras la forma de expresarte. Te encanta explorar nuevas ideas y compartir tu creatividad con los demás.",
+    recommendedDrink: "Caramel Macchiato",
+    drinkDescription: "Café con leche y un delicioso toque de caramelo, perfecto para inspirar tu creatividad.",
+    benefit: "Dona gratis con tu bebida",
+    color: "#D97706",
+  },
+  {
+    id: "balanced",
+    personalityType: "El Equilibrado",
+    title: "¡Eres un Classic Latte!",
+    description: "Tu calma y equilibrio son lo que definen tu personalidad. Te encanta disfrutar de los pequeños placeres de la vida y valoras la tranquilidad.",
+    recommendedDrink: "Classic Latte",
+    drinkDescription: "Café con leche cremoso y suave, perfecto para mantener tu equilibrio.",
+    benefit: "20% de descuento en tu próxima visita",
+    color: "#3B82F6",
+  },
+  {
+    id: "passionate",
+    personalityType: "El Apasionado",
+    title: "¡Eres un Red Velvet Latte!",
+    description: "Tu pasión y determinación son lo que te diferencian. Siempre buscas la excelencia en todo lo que haces y te encanta compartir tu entusiasmo.",
+    recommendedDrink: "Red Velvet Latte",
+    drinkDescription: "Café con leche y un toque de red velvet, perfecto para tu pasión.",
+    benefit: "Regalo especial en tu próxima visita",
+    color: "#DC2626",
   },
 ];

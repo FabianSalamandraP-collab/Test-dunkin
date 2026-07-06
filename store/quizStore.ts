@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { QuizAnswer, QuizQuestion, QuizResult } from "@/types/quiz";
-import { QUIZ_QUESTIONS } from "@/constants/quizQuestions";
+import { QUIZ_QUESTIONS, QUIZ_RESULTS } from "@/constants/quizQuestions";
 
 // Tipo para el estado del quiz
 interface QuizStore {
@@ -18,7 +18,7 @@ interface QuizStore {
   goToNextQuestion: () => void;
   goToPreviousQuestion: () => void;
   resetQuiz: () => void;
-  completeQuiz: (result: QuizResult) => void;
+  completeQuiz: (result?: QuizResult) => void;
 
   // Datos derivados
   currentQuestion: () => QuizQuestion | null;
@@ -26,15 +26,37 @@ interface QuizStore {
   progressPercentage: () => number;
 }
 
-// Función para generar un resultado de ejemplo
-// En producción, esto estaría basado en las respuestas del usuario
-const generateResult = (): QuizResult => {
-  return {
-    personalityType: "Enérgico y Creativo",
-    title: "¡Eres un Dunkin Sunrise!",
-    description: "Tu energía es contagiosa y siempre encuentras la manera de hacer del día algo especial. Un café con leche y un toque de naranja es tu bebida ideal para mantener el ritmo.",
-    recommendedDrink: "Iced Coffee with Caramel",
-  };
+// Función para generar un resultado basado en las respuestas
+const generateResult = (answers: QuizAnswer[], questions: QuizQuestion[]): QuizResult => {
+  // Obtenemos todas las respuestas y sus valores
+  const allValues = questions
+    .map(q => {
+      const answer = answers.find(a => a.questionId === q.id);
+      if (!answer) return null;
+      const option = q.options.find(o => o.id === answer.selectedOptionId);
+      return option?.value as string;
+    })
+    .filter(Boolean) as string[];
+
+  // Contamos las ocurrencias de cada valor
+  const valueCount: Record<string, number> = {};
+  allValues.forEach(value => {
+    valueCount[value] = (valueCount[value] || 0) + 1;
+  });
+
+  // Obtenemos el valor con más ocurrencias
+  let maxCount = 0;
+  let topValue = "energetic";
+  for (const [value, count] of Object.entries(valueCount)) {
+    if (count > maxCount) {
+      maxCount = count;
+      topValue = value;
+    }
+  }
+
+  // Buscamos el resultado correspondiente
+  const result = QUIZ_RESULTS.find(r => r.id === topValue) || QUIZ_RESULTS[0];
+  return result;
 };
 
 // Store principal del quiz con persistencia
@@ -99,7 +121,8 @@ export const useQuizStore = create<QuizStore>()(
       },
 
       completeQuiz: (result?: QuizResult) => {
-        const finalResult = result || generateResult();
+        const { answers, questions } = get();
+        const finalResult = result || generateResult(answers, questions);
         set({
           isCompleted: true,
           result: finalResult,
