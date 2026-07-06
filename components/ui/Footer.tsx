@@ -1,12 +1,15 @@
 "use client";
 
+// Importaciones necesarias
 import { Coffee, Instagram, Facebook, Twitter } from "lucide-react";
 
 const Footer = () => {
   return (
+    // Contenedor principal del footer
     <footer className="bg-neutral-950 text-neutral-300">
       <div className="max-w-7xl mx-auto px-6 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+          {/* Sección del logo y descripción */}
           <div className="md:col-span-2">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center">
@@ -19,6 +22,7 @@ const Footer = () => {
             </p>
           </div>
 
+          {/* Sección de enlaces */}
           <div>
             <h4 className="text-white font-semibold text-lg mb-5">Enlaces</h4>
             <ul className="space-y-3">
@@ -29,6 +33,7 @@ const Footer = () => {
             </ul>
           </div>
 
+          {/* Sección de redes sociales */}
           <div>
             <h4 className="text-white font-semibold text-lg mb-5">Síguenos</h4>
             <div className="flex gap-4">
@@ -45,6 +50,7 @@ const Footer = () => {
           </div>
         </div>
 
+        {/* Sección de derechos reservados */}
         <div className="border-t border-neutral-800 mt-12 pt-8 text-center text-neutral-500 text-sm">
           <p>© 2024 Dunkin Colombia. Todos los derechos reservados.</p>
         </div>

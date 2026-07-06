@@ -1,22 +1,27 @@
 "use client";
 
+// Importaciones necesarias
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Coffee, Menu, X } from "lucide-react";
 import Button from "./Button";
 
+// Interfaz que define las propiedades de la barra de navegación
 interface NavbarProps {
   logo?: React.ReactNode;
   onLogoClick?: () => void;
 }
 
 const Navbar = ({ logo, onLogoClick }: NavbarProps) => {
+  // Estado para controlar el menú móvil
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
+    // Contenedor fijo de la barra de navegación
     <nav className="fixed top-0 left-0 right-0 z-40 bg-white/80 backdrop-blur-md border-b border-neutral-100">
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
+          {/* Logo de la barra de navegación */}
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -33,6 +38,7 @@ const Navbar = ({ logo, onLogoClick }: NavbarProps) => {
             )}
           </motion.button>
 
+          {/* Botones de la barra de navegación (desktop) */}
           <div className="hidden md:flex items-center gap-6">
             <Button variant="secondary" size="sm">
               Iniciar sesión
@@ -40,6 +46,7 @@ const Navbar = ({ logo, onLogoClick }: NavbarProps) => {
             <Button size="sm">Participar</Button>
           </div>
 
+          {/* Botón para abrir/cerrar el menú móvil */}
           <button
             className="md:hidden"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -48,6 +55,7 @@ const Navbar = ({ logo, onLogoClick }: NavbarProps) => {
           </button>
         </div>
 
+        {/* Menú móvil animado */}
         <AnimatePresence>
           {isMenuOpen && (
             <motion.div

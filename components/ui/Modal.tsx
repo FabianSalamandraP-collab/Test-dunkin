@@ -1,10 +1,12 @@
 "use client";
 
+// Importaciones necesarias
 import { ReactNode, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import Button from "./Button";
 
+// Interfaz que define las propiedades del modal
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -22,6 +24,7 @@ const Modal = ({
   hideCloseButton = false,
   className,
 }: ModalProps) => {
+  // Efecto para manejar el cierre con tecla Escape y bloquear el scroll
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -44,6 +47,7 @@ const Modal = ({
     <AnimatePresence>
       {isOpen && (
         <>
+          {/* Overlay oscuro del modal */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -51,6 +55,7 @@ const Modal = ({
             onClick={onClose}
             className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
           />
+          {/* Contenedor principal del modal */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -58,6 +63,7 @@ const Modal = ({
             className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-lg mx-4"
           >
             <div className={`bg-white rounded-3xl shadow-2xl border border-neutral-100 ${className}`}>
+              {/* Cabecera del modal con título y botón de cerrar */}
               {(title || !hideCloseButton) && (
                 <div className="flex items-center justify-between p-8 border-b border-neutral-100">
                   {title && (
@@ -75,6 +81,7 @@ const Modal = ({
                   )}
                 </div>
               )}
+              {/* Contenido del modal */}
               <div className="p-8">{children}</div>
             </div>
           </motion.div>

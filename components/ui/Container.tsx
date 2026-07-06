@@ -1,7 +1,9 @@
 "use client";
 
+// Importaciones necesarias
 import { ReactNode } from "react";
 
+// Interfaz que define las propiedades del contenedor
 interface ContainerProps {
   children: ReactNode;
   className?: string;
@@ -9,6 +11,7 @@ interface ContainerProps {
 }
 
 const Container = ({ children, className, size = "xl" }: ContainerProps) => {
+  // Mapeo de tamaños a clases CSS de ancho máximo
   const maxWidthClasses = {
     sm: "max-w-sm",
     md: "max-w-md",
@@ -19,6 +22,7 @@ const Container = ({ children, className, size = "xl" }: ContainerProps) => {
   };
 
   return (
+    // Contenedor principal
     <div className={`w-full mx-auto px-6 py-12 md:py-20 ${maxWidthClasses[size]} ${className}`}>
       {children}
     </div>
