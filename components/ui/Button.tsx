@@ -14,7 +14,10 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 // Componente Button usando forwardRef para permitir referencias a elementos HTML
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ children, className, variant = "primary", size = "md", ...props }, ref) => {
+  (
+    { children, className, variant = "primary", size = "md", ...props },
+    ref
+  ) => {
     // Clases base que todos los botones comparten
     const baseClasses =
       "inline-flex items-center justify-center rounded-2xl font-bold transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
@@ -37,10 +40,12 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       // Botón con animaciones suaves al pasar el cursor y al hacer clic
       <motion.button
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ref={ref as any}
         whileHover={{ scale: 1.02 }} // Aumenta ligeramente el tamaño al pasar el cursor
         whileTap={{ scale: 0.98 }} // Reduce ligeramente el tamaño al hacer clic
         className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         {...(props as any)}
       >
         {children}

@@ -1,15 +1,20 @@
 "use client";
 
 // Importación de la librería de animaciones
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 
 // Interfaz que define las propiedades del cargador
 interface LoaderProps {
   size?: "sm" | "md" | "lg";
   color?: "primary" | "white";
+  className?: string;
 }
 
-const Loader = ({ size = "md", color = "primary" }: LoaderProps) => {
+const Loader = ({
+  size = "md",
+  color = "primary",
+  className = "",
+}: LoaderProps) => {
   // Mapeo de tamaños a clases CSS
   const sizes = {
     sm: "w-4 h-4",
@@ -24,20 +29,20 @@ const Loader = ({ size = "md", color = "primary" }: LoaderProps) => {
   };
 
   // Variantes de animación para los puntos
-  const dotVariants = {
+  const dotVariants: Variants = {
     animate: {
       y: [0, -10, 0],
       transition: {
         duration: 1.4,
         repeat: Infinity,
-        ease: "easeInOut",
+        ease: "easeInOut" as const,
       },
     },
   };
 
   return (
     // Contenedor principal del cargador
-    <div className="flex items-center gap-2">
+    <div className={`flex items-center gap-2 ${className}`}>
       {[0, 1, 2].map((i) => (
         // Cada punto con animación escalonada
         <motion.div

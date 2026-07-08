@@ -1,7 +1,13 @@
 "use client";
 
 // Importaciones necesarias
-import { useEffect, useState, createContext, useContext, ReactNode } from "react";
+import {
+  useEffect,
+  useState,
+  createContext,
+  useContext,
+  ReactNode,
+} from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle2, XCircle, AlertCircle, X } from "lucide-react";
 
@@ -52,15 +58,11 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
     <ToastContext.Provider value={{ addToast }}>
       {children}
       {/* Contenedor fijo para las notificaciones */}
-      <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3 pointer-events-none">
+      <div className="pointer-events-none fixed bottom-6 right-6 z-50 flex flex-col gap-3">
         <AnimatePresence>
           {/* Renderiza cada notificación */}
           {toasts.map((toast) => (
-            <ToastItem
-              key={toast.id}
-              toast={toast}
-              onRemove={removeToast}
-            />
+            <ToastItem key={toast.id} toast={toast} onRemove={removeToast} />
           ))}
         </AnimatePresence>
       </div>
@@ -86,10 +88,10 @@ const ToastItem = ({
 
   // Mapeo de tipos de notificación a íconos
   const icons = {
-    success: <CheckCircle2 className="w-6 h-6 text-green-500" />,
-    error: <XCircle className="w-6 h-6 text-red-500" />,
-    warning: <AlertCircle className="w-6 h-6 text-yellow-500" />,
-    info: <AlertCircle className="w-6 h-6 text-blue-500" />,
+    success: <CheckCircle2 className="text-green-500 h-6 w-6" />,
+    error: <XCircle className="text-red-500 h-6 w-6" />,
+    warning: <AlertCircle className="text-yellow-500 h-6 w-6" />,
+    info: <AlertCircle className="text-blue-500 h-6 w-6" />,
   };
 
   // Mapeo de tipos de notificación a colores de fondo
@@ -106,16 +108,16 @@ const ToastItem = ({
       initial={{ x: 400, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: 400, opacity: 0 }}
-      className={`pointer-events-auto bg-white border rounded-2xl shadow-card p-4 flex items-start gap-4 min-w-[320px] ${bgColors[toast.type]}`}
+      className={`bg-white pointer-events-auto flex min-w-[320px] items-start gap-4 rounded-2xl border p-4 shadow-card ${bgColors[toast.type]}`}
     >
       {icons[toast.type]}
-      <p className="flex-1 text-neutral-800 font-medium">{toast.message}</p>
+      <p className="flex-1 font-medium text-neutral-800">{toast.message}</p>
       {/* Botón para cerrar manualmente la notificación */}
       <button
         onClick={() => onRemove(toast.id)}
-        className="text-neutral-400 hover:text-neutral-600 transition-colors"
+        className="text-neutral-400 transition-colors hover:text-neutral-600"
       >
-        <X className="w-5 h-5" />
+        <X className="h-5 w-5" />
       </button>
     </motion.div>
   );

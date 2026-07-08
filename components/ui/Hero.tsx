@@ -17,8 +17,8 @@ const Hero = ({ title, subtitle, image, cta, className }: HeroProps) => {
   return (
     // Contenedor principal del Hero
     <section className={`py-20 md:py-32 ${className}`}>
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <div className="mx-auto max-w-7xl px-6">
+        <div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-2">
           {/* Contenido del lado izquierdo (texto y botón) */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
@@ -29,7 +29,7 @@ const Hero = ({ title, subtitle, image, cta, className }: HeroProps) => {
             <div className="space-y-4">
               {/* Título del Hero (texto o ReactNode) */}
               {typeof title === "string" ? (
-                <h1 className="text-4xl md:text-6xl font-bold text-neutral-900 leading-tight">
+                <h1 className="text-4xl font-bold leading-tight text-neutral-900 md:text-6xl">
                   {title}
                 </h1>
               ) : (
@@ -37,7 +37,7 @@ const Hero = ({ title, subtitle, image, cta, className }: HeroProps) => {
               )}
               {/* Subtítulo del Hero */}
               {subtitle && (
-                <p className="text-xl md:text-2xl text-neutral-600 max-w-md leading-relaxed">
+                <p className="max-w-md text-xl leading-relaxed text-neutral-600 md:text-2xl">
                   {subtitle}
                 </p>
               )}
@@ -55,10 +55,8 @@ const Hero = ({ title, subtitle, image, cta, className }: HeroProps) => {
             >
               <div className="relative">
                 {/* Glow effect detrás de la imagen */}
-                <div className="absolute -inset-4 bg-gradient-to-br from-primary-200 to-secondary-200 rounded-[3rem] blur-3xl opacity-30" />
-                <div className="relative">
-                  {image}
-                </div>
+                <div className="absolute -inset-4 rounded-[3rem] bg-gradient-to-br from-primary-200 to-secondary-200 opacity-30 blur-3xl" />
+                <div className="relative">{image}</div>
               </div>
             </motion.div>
           )}

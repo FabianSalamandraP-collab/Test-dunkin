@@ -15,8 +15,12 @@ const Card = ({ children, className, hoverable = false }: CardProps) => {
   return (
     // Contenedor de la tarjeta con animación de hover (si está habilitada)
     <motion.div
-      whileHover={hoverable ? { y: -4, boxShadow: "0 20px 25px -5px rgba(0,0,0,0.08)" } : {}}
-      className={`bg-white rounded-3xl p-8 md:p-10 shadow-card border border-neutral-100 ${className}`}
+      whileHover={
+        hoverable
+          ? { y: -4, boxShadow: "0 20px 25px -5px rgba(0,0,0,0.08)" }
+          : {}
+      }
+      className={`bg-white rounded-3xl border border-neutral-100 p-8 shadow-card md:p-10 ${className}`}
     >
       {children}
     </motion.div>

@@ -9,12 +9,14 @@ interface QuizStore {
   questions: QuizQuestion[];
   currentQuestionIndex: number;
   answers: QuizAnswer[];
+  hasStarted: boolean;
   isCompleted: boolean;
   result: QuizResult | null;
   formSubmitted: boolean;
 
   // Acciones
   setQuestions: (questions: QuizQuestion[]) => void;
+  startQuiz: () => void;
   selectAnswer: (questionId: string, selectedOptionId: string) => void;
   goToNextQuestion: () => void;
   goToPreviousQuestion: () => void;
@@ -29,20 +31,23 @@ interface QuizStore {
 }
 
 // Función para generar un resultado basado en las respuestas
-const generateResult = (answers: QuizAnswer[], questions: QuizQuestion[]): QuizResult => {
+const generateResult = (
+  answers: QuizAnswer[],
+  questions: QuizQuestion[]
+): QuizResult => {
   // Obtenemos todas las respuestas y sus valores
   const allValues = questions
-    .map(q => {
-      const answer = answers.find(a => a.questionId === q.id);
+    .map((q) => {
+      const answer = answers.find((a) => a.questionId === q.id);
       if (!answer) return null;
-      const option = q.options.find(o => o.id === answer.selectedOptionId);
+      const option = q.options.find((o) => o.id === answer.selectedOptionId);
       return option?.value as string;
     })
     .filter(Boolean) as string[];
 
   // Contamos las ocurrencias de cada valor
   const valueCount: Record<string, number> = {};
-  allValues.forEach(value => {
+  allValues.forEach((value) => {
     valueCount[value] = (valueCount[value] || 0) + 1;
   });
 
@@ -57,7 +62,7 @@ const generateResult = (answers: QuizAnswer[], questions: QuizQuestion[]): QuizR
   }
 
   // Buscamos el resultado correspondiente
-  const result = QUIZ_RESULTS.find(r => r.id === topValue) || QUIZ_RESULTS[0];
+  const result = QUIZ_RESULTS.find((r) => r.id === topValue) || QUIZ_RESULTS[0];
   return result;
 };
 
@@ -69,6 +74,7 @@ export const useQuizStore = create<QuizStore>()(
       questions: QUIZ_QUESTIONS,
       currentQuestionIndex: 0,
       answers: [],
+      hasStarted: false,
       isCompleted: false,
       result: null,
       formSubmitted: false,
@@ -76,6 +82,17 @@ export const useQuizStore = create<QuizStore>()(
       // Acciones
       setQuestions: (questions: QuizQuestion[]) => {
         set({ questions });
+      },
+
+      startQuiz: () => {
+        set({
+          currentQuestionIndex: 0,
+          answers: [],
+          hasStarted: true,
+          isCompleted: false,
+          result: null,
+          formSubmitted: false,
+        });
       },
 
       selectAnswer: (questionId: string, selectedOptionId: string) => {
@@ -118,6 +135,7 @@ export const useQuizStore = create<QuizStore>()(
         set({
           currentQuestionIndex: 0,
           answers: [],
+          hasStarted: false,
           isCompleted: false,
           result: null,
           formSubmitted: false,
@@ -159,6 +177,34 @@ export const useQuizStore = create<QuizStore>()(
     {
       name: "dunkin-quiz-storage",
       storage: createJSONStorage(() => localStorage),
+      version: 4,
+      // Persistimos solo el avance parcial del quiz.
+      // No persistimos el contenido de preguntas, el resultado final ni el estado
+      // del formulario para evitar contenido viejo o saltos de flujo al volver.
+      partialize: (state) => ({
+        currentQuestionIndex: state.currentQuestionIndex,
+        answers: state.answers,
+      }),
+      migrate: (persistedState) => {
+        const state = persistedState as Partial<QuizStore> | undefined;
+        const hasStoredProgress =
+          (typeof state?.currentQuestionIndex === "number" &&
+            state.currentQuestionIndex > 0) ||
+          (Array.isArray(state?.answers) && state.answers.length > 0);
+
+        return {
+          questions: QUIZ_QUESTIONS,
+          currentQuestionIndex:
+            typeof state?.currentQuestionIndex === "number"
+              ? state.currentQuestionIndex
+              : 0,
+          answers: Array.isArray(state?.answers) ? state.answers : [],
+          hasStarted: hasStoredProgress,
+          isCompleted: false,
+          result: null,
+          formSubmitted: false,
+        };
+      },
     }
   )
 );

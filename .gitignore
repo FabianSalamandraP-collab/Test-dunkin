@@ -64,6 +64,10 @@ Thumbs.db
 logs
 *.log
 
+# Artefactos de depuracion local
+.dbg/
+debug-*.md
+
 # Datos sensibles y backups
 *.sql
 *.dump

@@ -40,15 +40,15 @@ const QuestionCard = ({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.3 }}
-      className="bg-white rounded-3xl p-8 md:p-12 shadow-card border border-neutral-100 max-w-2xl w-full"
+      className="bg-white w-full max-w-2xl rounded-3xl border border-neutral-100 p-8 shadow-card md:p-12"
     >
       {/* Título de la pregunta */}
-      <h2 className="text-2xl md:text-3xl font-bold text-neutral-900 mb-8 leading-tight">
+      <h2 className="mb-8 text-2xl font-bold leading-tight text-neutral-900 md:text-3xl">
         {question}
       </h2>
 
       {/* Lista de opciones */}
-      <div className="space-y-4 mb-10">
+      <div className="mb-10 space-y-4">
         {options.map((option, index) => (
           // Botón de opción con animación escalonada
           <motion.button
@@ -57,17 +57,21 @@ const QuestionCard = ({
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: index * 0.1 }}
             onClick={() => onSelectOption(option.id)}
-            className={`w-full text-left px-6 py-5 rounded-2xl border-2 transition-all flex items-center gap-4 ${
+            className={`flex w-full items-center gap-4 rounded-2xl border-2 px-6 py-5 text-left transition-all ${
               selectedOptionId === option.id
                 ? "border-primary-500 bg-primary-50 shadow-lg"
-                : "border-neutral-200 bg-white hover:border-neutral-300 hover:bg-neutral-50"
+                : "bg-white border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50"
             }`}
           >
             {/* Emoji de la opción (si existe) */}
             {option.emoji && <span className="text-3xl">{option.emoji}</span>}
-            <span className={`text-lg font-semibold flex-1 ${
-              selectedOptionId === option.id ? "text-primary-700" : "text-neutral-700"
-            }`}>
+            <span
+              className={`flex-1 text-lg font-semibold ${
+                selectedOptionId === option.id
+                  ? "text-primary-700"
+                  : "text-neutral-700"
+              }`}
+            >
               {option.label}
             </span>
           </motion.button>

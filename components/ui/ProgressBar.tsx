@@ -17,20 +17,20 @@ const ProgressBar = ({ progress, max, className }: ProgressBarProps) => {
   return (
     <div className={`w-full ${className}`}>
       {/* Texto que muestra el progreso actual y el porcentaje */}
-      <div className="flex justify-between text-sm font-semibold mb-3">
+      <div className="mb-3 flex justify-between text-sm font-semibold">
         <span className="text-neutral-600">
           Paso {progress} de {max}
         </span>
         <span className="text-primary-600">{Math.round(percentage)}%</span>
       </div>
       {/* Contenedor de la barra */}
-      <div className="h-3 bg-neutral-100 rounded-full overflow-hidden">
+      <div className="h-3 overflow-hidden rounded-full bg-neutral-100">
         {/* Barra de progreso animada */}
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${percentage}%` }}
           transition={{ duration: 0.5, ease: "easeOut" }}
-          className="h-full bg-gradient-to-br from-primary-400 to-primary-600 rounded-full"
+          className="h-full rounded-full bg-gradient-to-br from-primary-400 to-primary-600"
         />
       </div>
     </div>

@@ -25,11 +25,11 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         {/* Campo de entrada con estilos responsive */}
         <input
           ref={ref}
-          className={`w-full px-4 py-4 rounded-xl border-2 bg-white text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:border-primary-400 focus:ring-4 focus:ring-primary-100 transition-all ${error ? "border-red-300 focus:border-red-500 focus:ring-red-100" : "border-neutral-200"} ${className}`}
+          className={`bg-white w-full rounded-xl border-2 px-4 py-4 text-neutral-900 transition-all placeholder:text-neutral-400 focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100 ${error ? "border-red-300 focus:border-red-500 focus:ring-red-100" : "border-neutral-200"} ${className}`}
           {...props}
         />
         {/* Mostrar mensaje de error si existe */}
-        {error && <p className="text-sm text-red-500 font-medium">{error}</p>}
+        {error && <p className="text-red-500 text-sm font-medium">{error}</p>}
       </div>
     );
   }

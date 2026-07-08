@@ -5,13 +5,20 @@ export interface QuizOption {
   id: string;
   label: string;
   emoji?: string;
+  icon?: string;
   value: string | number;
 }
 
 // Tipo para una pregunta del quiz
 export interface QuizQuestion {
   id: string;
+  eyebrow?: string;
   question: string;
+  supportingText?: string;
+  image?: string;
+  imageAlt?: string;
+  accentColor?: string;
+  decorativeColor?: string;
   options: QuizOption[];
 }
 
@@ -26,12 +33,18 @@ export interface QuizResult {
   id: string;
   personalityType: string;
   title: string;
+  badge?: string;
   description: string;
   recommendedDrink: string;
   drinkDescription: string;
   benefit: string;
   image?: string;
   color?: string;
+  accentColor?: string;
+  benefitTitle?: string;
+  benefitDescription?: string;
+  benefitCta?: string;
+  benefitIcon?: string;
 }
 
 // Tipo para los datos del formulario

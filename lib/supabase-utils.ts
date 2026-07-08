@@ -5,7 +5,10 @@ import { supabase } from "./supabase";
 export async function testSupabaseConnection() {
   try {
     // Intentamos hacer una consulta simple para verificar la conexión
-    const { data, error } = await supabase.from("quiz_participants").select("count").limit(1);
+    const { data, error } = await supabase
+      .from("quiz_participants")
+      .select("count")
+      .limit(1);
 
     if (error) {
       console.error("Error al verificar la conexión con Supabase:", error);
@@ -30,7 +33,8 @@ export function checkSupabaseConfig() {
   if (!url || !key) {
     return {
       success: false,
-      error: "Las variables de entorno NEXT_PUBLIC_SUPABASE_URL y NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY son necesarias",
+      error:
+        "Las variables de entorno NEXT_PUBLIC_SUPABASE_URL y NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY son necesarias",
     };
   }
 

@@ -1,6 +1,13 @@
 import type { Metadata, Viewport } from "next";
+import localFont from "next/font/local";
 import "./globals.css";
 import { ToastProvider } from "@/components/ui";
+
+const dunkinDisplay = localFont({
+  src: "../public/fonts/dunkin/Dunkin_Sans_Bold.otf",
+  variable: "--font-display",
+  display: "swap",
+});
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -14,8 +21,17 @@ export const metadata: Metadata = {
     default: "Dime qué tomas y te diré quién eres | Dunkin Colombia",
     template: "%s | Dunkin Colombia",
   },
-  description: "Descubre qué dice tu bebida favorita de Dunkin sobre tu personalidad. Campaña oficial de Dunkin Colombia.",
-  keywords: ["Dunkin Colombia", "campaña Dunkin", "personalidad Dunkin", "bebida Dunkin", "dime qué tomas", "Bogotá", "café Dunkin"],
+  description:
+    "Descubre qué dice tu bebida favorita de Dunkin sobre tu personalidad. Campaña oficial de Dunkin Colombia.",
+  keywords: [
+    "Dunkin Colombia",
+    "campaña Dunkin",
+    "personalidad Dunkin",
+    "bebida Dunkin",
+    "dime qué tomas",
+    "Bogotá",
+    "café Dunkin",
+  ],
   authors: [{ name: "Dunkin Colombia" }],
   creator: "Dunkin Colombia",
   publisher: "Dunkin Colombia",
@@ -25,7 +41,8 @@ export const metadata: Metadata = {
     url: "https://dunkin-colombia-campaign.com",
     siteName: "Dime qué tomas y te diré quién eres | Dunkin Colombia",
     title: "Dime qué tomas y te diré quién eres | Dunkin Colombia",
-    description: "Descubre qué dice tu bebida favorita de Dunkin sobre tu personalidad. Campaña oficial de Dunkin Colombia.",
+    description:
+      "Descubre qué dice tu bebida favorita de Dunkin sobre tu personalidad. Campaña oficial de Dunkin Colombia.",
     images: [
       {
         url: "/og-image.jpg",
@@ -40,7 +57,8 @@ export const metadata: Metadata = {
     site: "@DunkinColombia",
     creator: "@DunkinColombia",
     title: "Dime qué tomas y te diré quién eres | Dunkin Colombia",
-    description: "Descubre qué dice tu bebida favorita de Dunkin sobre tu personalidad. Campaña oficial de Dunkin Colombia.",
+    description:
+      "Descubre qué dice tu bebida favorita de Dunkin sobre tu personalidad. Campaña oficial de Dunkin Colombia.",
     images: ["/og-image.jpg"],
   },
   robots: {
@@ -65,11 +83,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es-CO">
-      <body>
-        <ToastProvider>
-          {children}
-        </ToastProvider>
+    <html lang="es-CO" suppressHydrationWarning>
+      <body className={dunkinDisplay.variable} suppressHydrationWarning>
+        <ToastProvider>{children}</ToastProvider>
       </body>
     </html>
   );

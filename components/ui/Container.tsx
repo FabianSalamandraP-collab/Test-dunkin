@@ -23,7 +23,9 @@ const Container = ({ children, className, size = "xl" }: ContainerProps) => {
 
   return (
     // Contenedor principal
-    <div className={`w-full mx-auto px-6 py-12 md:py-20 ${maxWidthClasses[size]} ${className}`}>
+    <div
+      className={`mx-auto w-full px-6 py-12 md:py-20 ${maxWidthClasses[size]} ${className}`}
+    >
       {children}
     </div>
   );

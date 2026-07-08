@@ -1,0 +1,29 @@
+{
+  "title": "DIME QUE TOMAS Y TE DIRE QUIEN ERES",
+  "subtitle": "Descubre tu personalidad a través de tus bebidas",
+  "buttonLabel": "Comenzar test",
+  "logo": "/assets/quiz-intro/logo/dunkin-logo.svg",
+  "drinks": [
+    {
+      "id": "iced-latte",
+      "name": "ICED LATTE",
+      "image": "/assets/quiz-intro/drinks/iced-latte.png"
+    },
+    {
+      "id": "refresher-mango-pina",
+      "name": "REFRESHER MANGO PIÑA",
+      "image": "/assets/quiz-intro/drinks/Refresher-Mango-Piña.png"
+    },
+    {
+      "id": "frutibatido",
+      "name": "FRUTIBATIDO",
+      "image": "/assets/quiz-intro/drinks/frutibatido.png"
+    },
+    {
+      "id": "frozen-original",
+      "name": "FROZEN ORIGINAL",
+      "image": "/assets/quiz-intro/drinks/frozen-original.png"
+    }
+  ],
+  "reference": "/assets/quiz-intro/reference/mockup.png"
+}
