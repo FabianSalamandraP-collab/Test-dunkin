@@ -7,8 +7,9 @@ import { fileURLToPath } from "node:url";
 const currentFile = fileURLToPath(import.meta.url);
 const currentDir = path.dirname(currentFile);
 const projectRoot = path.resolve(currentDir, "..");
-const nextCachePath = path.join(projectRoot, ".next");
+const nextCachePath = path.join(projectRoot, ".next-dev");
 const port = 3000;
+const shouldClearCache = process.env.CLEAR_NEXT_CACHE === "1";
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -113,9 +114,9 @@ await ensurePortReady(port);
 
 const portAvailable = await isPortAvailable(port);
 
-if (existsSync(nextCachePath)) {
+if (shouldClearCache && existsSync(nextCachePath)) {
   rmSync(nextCachePath, { recursive: true, force: true });
-  console.log("Cache .next limpiada antes de iniciar dev.");
+  console.log("Cache .next-dev limpiada manualmente antes de iniciar dev.");
 }
 
 if (!portAvailable) {

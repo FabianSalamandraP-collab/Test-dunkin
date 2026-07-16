@@ -1,12 +1,15 @@
 import { MetadataRoute } from "next";
+import { getSiteUrl } from "@/lib/site";
 
 export default function robots(): MetadataRoute.Robots {
+  const siteUrl = getSiteUrl();
+
   return {
     rules: {
       userAgent: "*",
       allow: "/",
       disallow: ["/api/"],
     },
-    sitemap: "https://dunkin-colombia-campaign.com/sitemap.xml",
+    sitemap: `${siteUrl}/sitemap.xml`,
   };
 }

@@ -4,7 +4,14 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
-import { Send, CheckCircle2, AlertCircle, Info } from "lucide-react";
+import {
+  Send,
+  CheckCircle2,
+  AlertCircle,
+  Info,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react";
 import { Button, Input, Checkbox, Loader } from "@/components/ui";
 import { useQuizStore } from "@/store/quizStore";
 import { FormData, QuizParticipant } from "@/types/quiz";
@@ -19,6 +26,7 @@ export function QuizForm({ onSuccess }: QuizFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [showDataInfo, setShowDataInfo] = useState(false);
 
   const {
     register,
@@ -160,14 +168,54 @@ export function QuizForm({ onSuccess }: QuizFormProps) {
         </div>
 
         {/* Mensaje de información sobre tratamiento de datos */}
-        <div className="bg-neutral-50 rounded-2xl p-6 border border-neutral-100">
-          <p className="text-sm text-neutral-600 leading-relaxed">
-            Tu información es importante para nosotros. La utilizaremos únicamente
-            para gestionar esta experiencia, ayudarte a descubrir nuevas bebidas de
-            Dunkin y, si nos autorizas, compartirte futuras novedades y beneficios.
-            Tus datos serán tratados de forma segura y nunca se compartirán con
-            terceros sin tu consentimiento.
-          </p>
+        <div className="rounded-2xl border border-neutral-100 bg-neutral-50">
+          <button
+            type="button"
+            onClick={() => setShowDataInfo((current) => !current)}
+            aria-expanded={showDataInfo}
+            aria-controls="data-processing-info"
+            className="flex w-full items-center justify-between gap-3 px-4 py-4 text-left sm:px-6 sm:py-5"
+          >
+            <div className="space-y-1">
+              <p className="text-sm font-semibold text-neutral-800">
+                Tratamiento de datos
+              </p>
+              <p className="text-xs text-neutral-500">
+                {showDataInfo
+                  ? "Ver menos del detalle"
+                  : "Ver más del detalle"}
+              </p>
+            </div>
+            <span className="text-neutral-500">
+              {showDataInfo ? (
+                <ChevronUp className="h-5 w-5" />
+              ) : (
+                <ChevronDown className="h-5 w-5" />
+              )}
+            </span>
+          </button>
+          {showDataInfo ? (
+            <div
+              id="data-processing-info"
+              className="border-t border-neutral-100 px-4 pb-4 pt-0 sm:px-6 sm:pb-5"
+            >
+              <p className="text-sm leading-relaxed text-neutral-600">
+                Tu información es importante para nosotros. La utilizaremos
+                únicamente para gestionar esta experiencia, ayudarte a descubrir
+                nuevas bebidas de Dunkin y, si nos autorizas, compartirte
+                futuras novedades y beneficios. Tus datos serán tratados de
+                forma segura y nunca se compartirán con terceros sin tu
+                consentimiento.
+              </p>
+            </div>
+          ) : (
+            <div className="border-t border-neutral-100 px-4 pb-4 pt-3 sm:px-6 sm:pb-5">
+              <p className="text-sm leading-relaxed text-neutral-600">
+                Usaremos tus datos para gestionar esta experiencia y, si lo
+                autorizas, compartirte novedades y beneficios de Dunkin.
+              </p>
+            </div>
+          )}
         </div>
 
         <div className="space-y-4">

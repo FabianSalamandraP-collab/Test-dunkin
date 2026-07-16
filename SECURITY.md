@@ -11,6 +11,7 @@ Este proyecto maneja datos sensibles. Es obligatorio:
 ## Reportar Vulnerabilidades
 
 Si encuentras una vulnerabilidad de seguridad, por favor contacta de forma privada:
+
 - Email: seguridad@dunkin-colombia.com
 
 No publiques públicamente las vulnerabilidades hasta que hayan sido resueltas.
@@ -20,8 +21,9 @@ No publiques públicamente las vulnerabilidades hasta que hayan sido resueltas.
 Todas las credenciales deben estar en variables de entorno (archivo `.env`), que NUNCA se sube al repositorio.
 
 Ejemplo de variables de entorno necesarias (ver `.env.example`):
+
 - `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
 
 ## Cumplimiento Legal
 
