@@ -52,8 +52,6 @@ export function QuizForm({ onSuccess }: QuizFormProps) {
 
     try {
       const supabase = getSupabaseClient();
-
-      // Preparar los datos para Supabase
       const participant: QuizParticipant = {
         name: data.name,
         email: data.email,
@@ -64,13 +62,18 @@ export function QuizForm({ onSuccess }: QuizFormProps) {
         answers,
       };
 
-      // Insertar en Supabase
-      const { error } = await supabase.from("quiz_participants").insert([
-        participant,
-      ]);
+      if (supabase) {
+        const { error } = await supabase.from("quiz_participants").insert([
+          participant,
+        ]);
 
-      if (error) {
-        throw new Error(error.message);
+        if (error) {
+          throw new Error(error.message);
+        }
+      } else {
+        console.warn(
+          "Supabase no está configurado. El formulario continúa sin persistencia."
+        );
       }
 
       // Éxito!

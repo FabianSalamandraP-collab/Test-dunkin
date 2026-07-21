@@ -6,6 +6,13 @@ export async function testSupabaseConnection() {
   try {
     const supabase = getSupabaseClient();
 
+    if (!supabase) {
+      return {
+        success: false,
+        error: "Supabase no está configurado en este entorno",
+      };
+    }
+
     // Intentamos hacer una consulta simple para verificar la conexión
     const { data, error } = await supabase
       .from("quiz_participants")

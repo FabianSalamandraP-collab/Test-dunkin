@@ -20,25 +20,27 @@ export async function GET(request: Request) {
   try {
     const cookieStore = await cookies();
     const supabase = createClient(cookieStore);
-    const { data, error } = await supabase
-      .from("campaign_benefits")
-      .select(
-        "external_id,title,description,image_url,source_url,category_names,target_results,benefit_type,price,original_price,discount_label,is_active,synced_at"
-      )
-      .eq("is_active", true)
-      .limit(40);
+    if (supabase) {
+      const { data, error } = await supabase
+        .from("campaign_benefits")
+        .select(
+          "external_id,title,description,image_url,source_url,category_names,target_results,benefit_type,price,original_price,discount_label,is_active,synced_at"
+        )
+        .eq("is_active", true)
+        .limit(40);
 
-    if (!error && data?.length) {
-      const benefit = resolveBenefitForResult(
-        data as CampaignBenefitRecord[],
-        quizResult.id
-      );
+      if (!error && data?.length) {
+        const benefit = resolveBenefitForResult(
+          data as CampaignBenefitRecord[],
+          quizResult.id
+        );
 
-      if (benefit) {
-        return NextResponse.json({
-          benefit,
-          source: "supabase",
-        });
+        if (benefit) {
+          return NextResponse.json({
+            benefit,
+            source: "supabase",
+          });
+        }
       }
     }
   } catch (error) {
