@@ -22,7 +22,6 @@ import {
   SunMedium,
   Trophy,
   Users,
-  X,
 } from "lucide-react";
 import { Button } from "@/components/ui";
 import { useQuizStore } from "@/store/quizStore";
@@ -97,7 +96,7 @@ function QuestionVisual({
           compact
             ? "flex h-[104px] w-[70px] items-center justify-center rounded-[1rem]"
             : displayMode === "mobile-inline"
-              ? "flex h-full w-full items-center justify-center rounded-[1.2rem] p-2"
+              ? "flex h-full w-full items-center justify-center rounded-none border-0 bg-transparent p-0 shadow-none"
             : "rounded-[2rem] md:rounded-[2.2rem] xl:rounded-[2.4rem]"
         }`}
       >
@@ -108,7 +107,7 @@ function QuestionVisual({
             compact
               ? "max-h-full w-full rounded-[0.9rem] object-contain"
               : displayMode === "mobile-inline"
-                ? "h-full w-full rounded-[1rem] object-contain"
+                ? "h-full w-full object-contain"
               : "max-h-[356px] rounded-[1.7rem] md:max-h-[398px] md:rounded-[1.95rem] xl:max-h-[474px] xl:rounded-[2.1rem] 2xl:max-h-[540px]"
           }`}
           style={
@@ -216,7 +215,6 @@ export function QuestionScreen() {
   const {
     questions,
     currentQuestionIndex,
-    answers,
     currentQuestion,
     getAnswerForCurrentQuestion,
     selectAnswer,
@@ -227,7 +225,6 @@ export function QuestionScreen() {
 
   const question = currentQuestion();
   const currentAnswer = getAnswerForCurrentQuestion();
-  const [showMobileImagePreview, setShowMobileImagePreview] = useState(false);
   const [showLogoFallback, setShowLogoFallback] = useState(false);
   const [viewportWidth, setViewportWidth] = useState(0);
   const [viewportHeight, setViewportHeight] = useState(0);
@@ -235,10 +232,6 @@ export function QuestionScreen() {
   if (!question) {
     return null;
   }
-
-  useEffect(() => {
-    setShowMobileImagePreview(false);
-  }, [question.id]);
 
   useEffect(() => {
     const updateViewport = () => {
@@ -424,16 +417,31 @@ export function QuestionScreen() {
                       }`}
                     >
                       <div
-                        className={`relative flex w-full items-center justify-center overflow-hidden rounded-[1.45rem] border border-[#E8D8CB] bg-[linear-gradient(180deg,rgba(255,250,244,0.98)_0%,rgba(255,245,236,0.94)_100%)] shadow-[0_18px_34px_rgba(89,53,17,0.08)] ${
+                        className={`relative ${
                           isUltraShortMobile
-                            ? "h-[108px] px-2.5 py-2"
+                            ? "-mx-[0.5625rem] h-[150px]"
                             : isVeryShortMobile
-                              ? "h-[118px] px-3 py-2.5"
-                              : "h-[128px] px-3.5 py-3"
+                              ? "-mx-2.5 h-[172px]"
+                              : "-mx-2.5 h-[196px]"
                         }`}
                       >
-                        <div className="absolute inset-x-4 top-3 h-5 rounded-full bg-white/55 blur-md" />
-                        <div className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-[1.2rem] bg-white/38">
+                        <div
+                          className="absolute inset-0 rounded-[1.45rem]"
+                          style={{
+                            background:
+                              question.accentColor && question.decorativeColor
+                                ? `radial-gradient(circle_at_50%_36%, ${question.accentColor}22 0%, ${question.decorativeColor}74 54%, rgba(255,255,255,0) 82%)`
+                                : "radial-gradient(circle_at_50%_36%, rgba(255,122,0,0.14) 0%, rgba(246,226,206,0.74) 54%, rgba(255,255,255,0) 82%)",
+                          }}
+                        />
+                        <div className="absolute inset-x-5 top-3 h-5 rounded-full bg-white/48 blur-md" />
+                        <div
+                          className="absolute bottom-3 left-1/2 h-5 w-[72%] -translate-x-1/2 rounded-[999px] blur-md"
+                          style={{
+                            backgroundColor: `${question.accentColor || "#FF7A00"}20`,
+                          }}
+                        />
+                        <div className="relative flex h-full w-full items-center justify-center px-1">
                           <QuestionVisual
                             question={question}
                             questionNumber={questionNumber}
@@ -635,44 +643,6 @@ export function QuestionScreen() {
           </AnimatePresence>
         </div>
       </div>
-      <AnimatePresence>
-        {showMobileImagePreview ? (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[120] flex items-center justify-center bg-[#2D1B12]/72 px-5 sm:hidden"
-          >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.94, y: 14 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.96, y: 10 }}
-              className="relative w-full max-w-[330px] rounded-[1.8rem] border border-[#E8D8CB] bg-[linear-gradient(180deg,#FFF9F3_0%,#FFF2E6_100%)] p-4 shadow-[0_28px_60px_rgba(33,19,12,0.22)]"
-            >
-              <button
-                type="button"
-                onClick={() => setShowMobileImagePreview(false)}
-                className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full border border-[#E9D8CA] bg-white/92 text-[#5A4031] shadow-[0_10px_18px_rgba(89,53,17,0.08)]"
-                aria-label="Cerrar imagen ampliada"
-              >
-                <X className="h-4 w-4" />
-              </button>
-              <div className="space-y-3 pt-2">
-                <div className="inline-flex rounded-full border border-[#F2D8C4] bg-[#FFF3E8] px-3 py-1 text-[0.64rem] font-bold uppercase tracking-[0.16em] text-[#B86B2C]">
-                  Imagen de la pregunta
-                </div>
-                <div className="relative flex min-h-[360px] items-center justify-center overflow-hidden rounded-[1.6rem] bg-[linear-gradient(180deg,rgba(255,249,243,0.98)_0%,rgba(255,244,236,0.94)_100%)] px-4 py-5">
-                  <QuestionVisual
-                    question={question}
-                    questionNumber={questionNumber}
-                    compact={false}
-                  />
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
     </div>
   );
 }

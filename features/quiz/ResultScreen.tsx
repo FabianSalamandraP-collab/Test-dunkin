@@ -98,6 +98,9 @@ export function ResultScreen() {
   const mobileResultImageTransform = `translate(${result.mobileImageOffsetX || 0}px, ${
     result.mobileImageOffsetY || 0
   }px) scale(${result.mobileImageScale || 1})`;
+  const desktopResultImageTransform = `translate(${result.desktopImageOffsetX || 0}px, ${
+    result.desktopImageOffsetY || 0
+  }px) scale(${result.desktopImageScale || 1.12})`;
 
   useEffect(() => {
     let isMounted = true;
@@ -118,8 +121,8 @@ export function ResultScreen() {
           benefit?: ResolvedCampaignBenefit;
         };
 
-        if (isMounted && payload.benefit) {
-          setDynamicBenefit(payload.benefit);
+        if (isMounted) {
+          setDynamicBenefit(payload.benefit || null);
           setBenefitIconHidden(false);
           setIsBenefitLoading(false);
         }
@@ -149,6 +152,12 @@ export function ResultScreen() {
 
     return () => window.removeEventListener("scroll", updateScrollState);
   }, []);
+
+  useEffect(() => {
+    setResultImageHidden(false);
+    setBenefitIconHidden(false);
+    setDynamicBenefit(null);
+  }, [result.id]);
 
   const handleShare = () => {
     const shareText =
@@ -294,68 +303,110 @@ export function ResultScreen() {
                     ease: "easeInOut",
                   }}
                 />
-                <div
+                <motion.div
                   className="relative inline-flex rounded-full border bg-[#FFF3E8]/92 px-3 py-1 text-[0.64rem] font-bold uppercase tracking-[0.16em] shadow-[0_8px_18px_rgba(89,53,17,0.05)] sm:text-[0.68rem]"
                   style={{
                     color: result.color || "#B86B2C",
                     borderColor: `${result.accentColor || "#F2D8C4"}66`,
                   }}
+                  animate={{
+                    y: [0, -1, 0],
+                    boxShadow: [
+                      "0 8px 18px rgba(89,53,17,0.05)",
+                      `0 10px 22px ${result.color || "#FF7A00"}18`,
+                      "0 8px 18px rgba(89,53,17,0.05)",
+                    ],
+                  }}
+                  transition={{
+                    duration: 5.8,
+                    repeat: Number.POSITIVE_INFINITY,
+                    ease: "easeInOut",
+                  }}
                 >
+                  <motion.span
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-0 rounded-full"
+                    style={{
+                      background: `linear-gradient(120deg, rgba(255,255,255,0) 0%, ${result.color || "#FF7A00"}10 36%, rgba(255,255,255,0.22) 50%, rgba(255,255,255,0) 68%)`,
+                    }}
+                    animate={{ x: ["-130%", "140%"] }}
+                    transition={{
+                      duration: 4.8,
+                      repeat: Number.POSITIVE_INFINITY,
+                      repeatDelay: 1.8,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                  />
                   Tu match Dunkin
-                </div>
+                </motion.div>
                 <p className="mt-2 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#7A6A5B] sm:text-sm">
                   {result.badge || "Tu personalidad"}
                 </p>
-                <h1
+                <motion.h1
                   className="max-w-[13rem] text-[1.62rem] font-black uppercase leading-[0.86] tracking-[-0.05em] sm:max-w-none sm:text-[3rem] md:text-[2.8rem] lg:text-[3.35rem] xl:text-[3.7rem]"
                   style={{ color: result.color || "#FF7A00" }}
+                  animate={{
+                    textShadow: [
+                      "0 0 0 rgba(255,255,255,0), 0 0 0 rgba(0,0,0,0)",
+                      `0 0 14px ${result.accentColor || "#FFD9B8"}52, 0 6px 18px ${result.color || "#FF7A00"}18`,
+                      "0 0 0 rgba(255,255,255,0), 0 0 0 rgba(0,0,0,0)",
+                    ],
+                    y: [0, -1, 0],
+                    scale: [1, 1.01, 1],
+                  }}
+                  transition={{
+                    duration: 6.2,
+                    repeat: Number.POSITIVE_INFINITY,
+                    ease: "easeInOut",
+                  }}
                 >
                   {result.title}
-                </h1>
+                </motion.h1>
                 <p className="max-w-[17.25rem] text-[0.8rem] leading-[1.38] text-[#5E5146] md:max-w-[560px] md:text-[1.02rem] md:leading-7 xl:max-w-[620px] xl:text-[1.08rem] xl:leading-8">
                   {result.description}
                 </p>
                 <div className="mt-3 space-y-3 md:hidden">
-                  <div
-                    className="relative mx-auto flex w-full max-w-[280px] items-center justify-center overflow-hidden rounded-[1.9rem] border bg-[linear-gradient(180deg,rgba(255,251,246,0.98)_0%,rgba(247,237,226,0.98)_100%)] px-5 pb-4 pt-5 shadow-[0_18px_34px_rgba(89,53,17,0.08),inset_0_1px_0_rgba(255,255,255,0.56)]"
-                    style={{
-                      borderColor: `${result.accentColor || "#E8D7C8"}7a`,
-                    }}
-                  >
+                  <div className="-mx-3.5">
                     <div
-                      className="absolute left-1/2 top-5 h-[138px] w-[138px] -translate-x-1/2 rounded-full opacity-90 blur-[2px]"
+                      className="relative h-[270px] overflow-hidden"
                       style={{
-                        background: `radial-gradient(circle, ${result.color || "#FF7A00"} 0%, ${result.accentColor || "#FFD9B8"} 58%, rgba(255,255,255,0) 68%)`,
+                        background: `radial-gradient(circle_at_50%_34%, ${result.color || "#FF7A00"}22 0%, ${result.accentColor || "#FFD9B8"}78 52%, rgba(255,255,255,0) 82%)`,
                       }}
-                    />
-                    <div className="absolute inset-x-7 top-4 h-5 rounded-full bg-white/60 blur-md" />
-                    <div className="absolute bottom-4 left-1/2 h-5 w-[68%] -translate-x-1/2 rounded-[999px] blur-md" style={{ backgroundColor: `${result.color || "#C98F5C"}26` }} />
-                    {!resultImageHidden && result.image ? (
-                      <div className="relative z-10 flex h-[190px] w-full items-center justify-center px-2">
-                        <img
-                          src={result.image}
-                          alt={result.recommendedDrink}
-                          className="h-full w-full object-contain drop-shadow-[0_20px_28px_rgba(87,45,0,0.16)]"
-                          style={{
-                            transform: mobileResultImageTransform,
-                            transformOrigin: "center center",
-                          }}
-                          onError={() => setResultImageHidden(true)}
-                        />
-                      </div>
-                    ) : (
-                      <div className="relative z-10 flex h-[178px] w-[128px] items-end justify-center rounded-[1.55rem] bg-[linear-gradient(180deg,#f6dfc7_0%,#d49755_100%)] shadow-[0_16px_24px_rgba(140,81,24,0.14)]">
-                        <div className="bg-white/50 absolute inset-x-3 top-3 h-4 rounded-full blur-md" />
-                        <div className="border-white/70 absolute -top-3 left-1/2 h-8 w-[72%] -translate-x-1/2 rounded-full border-[3px] bg-[#f6d8b7]" />
-                        <span className="absolute inset-y-0 right-4 flex items-center text-[1.02rem] font-black tracking-[-0.08em] text-[#FF7A00] [writing-mode:vertical-rl]">
-                          DUNKIN'
-                        </span>
-                        <Coffee
-                          className="text-white/70 absolute left-1/2 top-[41%] h-8 w-8 -translate-x-1/2"
-                          strokeWidth={1.8}
-                        />
-                      </div>
-                    )}
+                    >
+                      <div className="absolute inset-x-7 top-3 h-5 rounded-full bg-white/48 blur-md" />
+                      <div
+                        className="absolute bottom-4 left-1/2 h-5 w-[72%] -translate-x-1/2 rounded-[999px] blur-md"
+                        style={{ backgroundColor: `${result.color || "#C98F5C"}22` }}
+                      />
+                      {!resultImageHidden && result.image ? (
+                        <div className="relative z-10 flex h-full w-full items-center justify-center px-2">
+                          <img
+                            src={result.image}
+                            alt={result.recommendedDrink}
+                            className="h-full w-full object-contain drop-shadow-[0_24px_34px_rgba(87,45,0,0.18)]"
+                            style={{
+                              transform: mobileResultImageTransform,
+                              transformOrigin: "center center",
+                            }}
+                            onError={() => setResultImageHidden(true)}
+                          />
+                        </div>
+                      ) : (
+                        <div className="relative z-10 flex h-full w-full items-end justify-center px-8 pb-3">
+                          <div className="relative flex h-[208px] w-[152px] items-end justify-center rounded-[1.75rem] bg-[linear-gradient(180deg,#f6dfc7_0%,#d49755_100%)] shadow-[0_18px_28px_rgba(140,81,24,0.16)]">
+                            <div className="bg-white/50 absolute inset-x-3 top-3 h-4 rounded-full blur-md" />
+                            <div className="border-white/70 absolute -top-3 left-1/2 h-8 w-[72%] -translate-x-1/2 rounded-full border-[3px] bg-[#f6d8b7]" />
+                            <span className="absolute inset-y-0 right-4 flex items-center text-[1.02rem] font-black tracking-[-0.08em] text-[#FF7A00] [writing-mode:vertical-rl]">
+                              DUNKIN'
+                            </span>
+                            <Coffee
+                              className="text-white/70 absolute left-1/2 top-[41%] h-8 w-8 -translate-x-1/2"
+                              strokeWidth={1.8}
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                   <div
                     className="relative overflow-hidden space-y-2 rounded-[1.15rem] border p-3 shadow-[0_12px_24px_rgba(89,53,17,0.05)]"
@@ -489,42 +540,101 @@ export function ResultScreen() {
               </div>
             </div>
 
-            <div className="pointer-events-none hidden md:pointer-events-auto md:relative md:flex md:min-h-[390px] md:w-auto md:items-center md:justify-center md:pt-0 lg:min-h-[420px] xl:min-h-[460px]">
+            <div className="hidden md:relative md:flex md:min-h-[430px] md:w-auto md:items-center md:justify-center lg:min-h-[472px] xl:min-h-[520px]">
               <div
-                className="absolute right-[4px] top-[12px] h-[100px] w-[100px] rounded-full opacity-78 blur-[1px] md:bottom-[12%] md:right-[16%] md:top-auto md:h-[220px] md:w-[220px] md:opacity-100 md:blur-0 xl:h-[280px] xl:w-[280px]"
+                className="absolute inset-x-[7%] top-[7%] bottom-[7%] rounded-[3.2rem]"
                 style={{
-                  background: `radial-gradient(circle, ${result.color || "#FF7A00"} 0%, ${result.accentColor || "#FFD9B8"} 58%, rgba(255,255,255,0) 62%)`,
+                  background: `linear-gradient(180deg, rgba(255,251,246,0.94) 0%, ${
+                    result.accentColor || "#FFE3C7"
+                  }24 100%)`,
+                  boxShadow:
+                    "0 36px 72px rgba(89,53,17,0.08), inset 0 1px 0 rgba(255,255,255,0.8)",
+                }}
+              />
+              <div
+                className="pointer-events-none absolute left-[10%] top-[13%] h-[170px] w-[170px] rounded-full blur-[54px] lg:h-[210px] lg:w-[210px] xl:h-[250px] xl:w-[250px]"
+                style={{
+                  background: `radial-gradient(circle, ${
+                    result.accentColor || "#FFD9B8"
+                  }80 0%, rgba(255,255,255,0) 72%)`,
+                }}
+              />
+              <div
+                className="pointer-events-none absolute bottom-[11%] right-[10%] h-[210px] w-[210px] rounded-full blur-[70px] lg:h-[250px] lg:w-[250px] xl:h-[300px] xl:w-[300px]"
+                style={{
+                  background: `radial-gradient(circle, ${
+                    result.color || "#FF7A00"
+                  }2d 0%, rgba(255,255,255,0) 72%)`,
                 }}
               />
 
               {!resultImageHidden && result.image ? (
-                <div className="relative z-10 flex h-[154px] w-[112px] items-center justify-center rounded-[1.55rem] border border-[#D9B288]/34 bg-[linear-gradient(180deg,rgba(255,248,240,0.98)_0%,rgba(242,217,183,0.98)_100%)] shadow-[0_20px_34px_rgba(140,81,24,0.15),inset_0_1px_0_rgba(255,255,255,0.5)] md:h-[332px] md:w-[228px] md:rounded-[2.3rem] md:border md:border-[#E7D2BF]/70 md:bg-[linear-gradient(180deg,rgba(255,252,247,0.92)_0%,rgba(247,237,227,0.98)_100%)] md:p-4 md:shadow-[0_28px_54px_rgba(89,53,17,0.12),inset_0_1px_0_rgba(255,255,255,0.56)] lg:h-[372px] lg:w-[248px] xl:h-[420px] xl:w-[278px]">
-                  <div className="absolute inset-x-2.5 top-2.5 h-4 rounded-full bg-white/24 blur-md md:hidden" />
-                  <span className="absolute right-2.5 top-2.5 text-[0.96rem] font-black tracking-[-0.08em] text-[#FF7A00] [writing-mode:vertical-rl] md:hidden">
-                    DUNKIN'
-                  </span>
-                  <div className="absolute inset-x-5 top-4 hidden h-5 rounded-full bg-white/55 blur-md md:block" />
+                <div className="relative z-10 w-[312px] lg:w-[344px] xl:w-[384px]">
                   <div
-                    className="absolute bottom-4 left-1/2 hidden h-6 w-[68%] -translate-x-1/2 rounded-[999px] blur-md md:block"
-                    style={{ backgroundColor: `${result.color || "#FF7A00"}28` }}
-                  />
-                  <img
-                    src={result.image}
-                    alt={result.recommendedDrink}
-                    className="relative z-10 max-h-[132px] w-auto object-contain drop-shadow-[0_18px_26px_rgba(87,45,0,0.16)] md:max-h-[292px] md:drop-shadow-[0_24px_40px_rgba(87,45,0,0.14)] lg:max-h-[332px] xl:max-h-[374px]"
-                    onError={() => setResultImageHidden(true)}
-                  />
+                    className="relative aspect-[4/5] overflow-hidden rounded-[2.7rem] border p-4 shadow-[0_34px_62px_rgba(89,53,17,0.14),inset_0_1px_0_rgba(255,255,255,0.62)] lg:rounded-[3rem] lg:p-5"
+                    style={{
+                      borderColor: `${result.accentColor || "#E7D2BF"}88`,
+                      background: `linear-gradient(180deg, rgba(255,255,255,0.7) 0%, ${
+                        result.accentColor || "#FFD9B8"
+                      }34 100%)`,
+                    }}
+                  >
+                    <div
+                      className="pointer-events-none absolute inset-[12px] rounded-[2.2rem] border lg:inset-[14px] lg:rounded-[2.5rem]"
+                      style={{
+                        borderColor: `${result.color || "#FF7A00"}22`,
+                      }}
+                    />
+                    <div className="pointer-events-none absolute inset-x-[14%] top-4 h-7 rounded-full bg-white/72 blur-xl" />
+                    <div
+                      className="pointer-events-none absolute bottom-4 left-1/2 h-10 w-[62%] -translate-x-1/2 rounded-[999px] blur-2xl"
+                      style={{
+                        backgroundColor: `${result.color || "#FF7A00"}24`,
+                      }}
+                    />
+                    <div className="relative h-full w-full overflow-hidden rounded-[2.15rem] shadow-[0_20px_44px_rgba(89,53,17,0.14)] lg:rounded-[2.4rem]">
+                      <div
+                        className="absolute inset-0 z-0"
+                        style={{
+                          background: `linear-gradient(180deg, ${
+                            result.accentColor || "#FFF4EA"
+                          }18 0%, rgba(26,18,12,0.08) 100%)`,
+                        }}
+                      />
+                      <img
+                        src={result.image}
+                        alt={result.recommendedDrink}
+                        className="relative z-10 h-full w-full rounded-[2.15rem] object-cover lg:rounded-[2.4rem]"
+                        style={{
+                          transform: desktopResultImageTransform,
+                          transformOrigin: "center center",
+                        }}
+                        onError={() => setResultImageHidden(true)}
+                      />
+                      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 h-[28%] bg-[linear-gradient(180deg,rgba(17,10,4,0)_0%,rgba(17,10,4,0.12)_100%)]" />
+                    </div>
+                  </div>
                 </div>
               ) : (
-                <div className="relative z-10 flex h-[144px] w-[104px] items-end justify-center rounded-[1.45rem] bg-[linear-gradient(180deg,#f6dfc7_0%,#d49755_100%)] shadow-[0_16px_28px_rgba(140,81,24,0.16)] md:h-[332px] md:w-[228px] md:rounded-[2.3rem] md:border md:border-[#E7D2BF]/70 md:bg-[linear-gradient(180deg,rgba(255,252,247,0.92)_0%,rgba(247,237,227,0.98)_100%)] md:p-4 md:shadow-[0_28px_54px_rgba(89,53,17,0.12)] lg:h-[372px] lg:w-[248px] xl:h-[420px] xl:w-[278px]">
-                  <div className="bg-white/50 absolute inset-x-2.5 top-2.5 h-4 rounded-full blur-md md:inset-x-4 md:top-4 md:h-6" />
-                  <div className="border-white/70 absolute -top-3 left-1/2 h-7 w-[72%] -translate-x-1/2 rounded-full border-[3px] bg-[#f6d8b7] md:-top-5 md:h-10 md:border-[5px]" />
-                  <span className="absolute inset-y-0 right-3 flex items-center text-[1.05rem] font-black tracking-[-0.08em] text-[#FF7A00] [writing-mode:vertical-rl] md:right-8 md:text-[2.3rem] xl:text-[2.8rem]">
-                    DUNKIN'
-                  </span>
+                <div
+                  className="relative z-10 flex aspect-[4/5] w-[312px] items-center justify-center overflow-hidden rounded-[2.7rem] border shadow-[0_34px_62px_rgba(89,53,17,0.14)] lg:w-[344px] lg:rounded-[3rem] xl:w-[384px]"
+                  style={{
+                    borderColor: `${result.accentColor || "#E7D2BF"}88`,
+                    background: `linear-gradient(180deg, rgba(255,252,247,0.96) 0%, ${
+                      result.accentColor || "#FFD9B8"
+                    }42 100%)`,
+                  }}
+                >
+                  <div className="pointer-events-none absolute inset-x-[16%] top-5 h-7 rounded-full bg-white/74 blur-xl" />
+                  <div
+                    className="pointer-events-none absolute bottom-5 left-1/2 h-10 w-[62%] -translate-x-1/2 rounded-[999px] blur-2xl"
+                    style={{
+                      backgroundColor: `${result.color || "#FF7A00"}24`,
+                    }}
+                  />
                   <Coffee
-                    className="text-white/70 absolute left-1/2 top-[41%] h-7 w-7 -translate-x-1/2 md:h-14 md:w-14"
-                    strokeWidth={1.8}
+                    className="relative z-10 h-16 w-16 text-[#B8895D]/70"
+                    strokeWidth={1.7}
                   />
                 </div>
               )}
@@ -579,7 +689,7 @@ export function ResultScreen() {
                 <div className="min-w-0 space-y-2 md:flex md:flex-col md:justify-center md:space-y-3">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="inline-flex rounded-full bg-[#FFE5CC] px-3 py-1 text-[0.68rem] font-bold uppercase tracking-[0.16em] text-[#C16A22]">
-                      Recomendación para tu match
+                      Recomendación para tu mood
                     </span>
                     {benefitData.discountLabel ? (
                       <span className="inline-flex rounded-full bg-[#FF7A00] px-3 py-1 text-[0.68rem] font-bold uppercase tracking-[0.14em] text-white">

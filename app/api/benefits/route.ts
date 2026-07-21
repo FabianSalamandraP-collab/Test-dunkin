@@ -35,7 +35,10 @@ export async function GET(request: Request) {
       );
 
       if (benefit) {
-        return NextResponse.json({ benefit, source: "supabase" });
+        return NextResponse.json({
+          benefit,
+          source: "supabase",
+        });
       }
     }
   } catch (error) {

@@ -875,7 +875,7 @@ export function IntroScreen() {
                     <img
                       src="/assets/quiz-intro/logo/dunkin-logo.webp"
                       alt="Dunkin"
-                      className="h-full max-w-full shrink-0 object-contain"
+                      className="h-full max-w-full shrink-0 object-contain lg:h-[82%]"
                       onError={(event) => {
                         event.currentTarget.style.display = "none";
                         setShowLogoFallback(true);
@@ -1008,7 +1008,7 @@ export function IntroScreen() {
 
                 <div className="hidden max-w-[410px] space-y-2.5 text-[#4F2B1B] lg:block">
                   <div
-                    className={`w-full max-w-[480px] overflow-hidden rounded-[1.85rem] border border-[rgba(240,223,208,0.72)] bg-[rgba(251,246,240,0.62)] p-2.5 shadow-[0_18px_40px_rgba(89,53,17,0.1)] ${
+                    className={`w-full max-w-[480px] overflow-hidden rounded-[1.85rem] border border-[rgba(240,223,208,0.72)] bg-[rgba(251,246,240,0.62)] p-2.5 shadow-[0_18px_40px_rgba(89,53,17,0.09)] ${
                       showHeadlineFallback ? "hidden" : ""
                     } aspect-square flex items-center justify-center`}
                   >
@@ -1042,15 +1042,7 @@ export function IntroScreen() {
                     transition={{ duration: 0.45, delay: 0.12 }}
                     className="hidden items-center gap-2.5 text-center lg:-mt-1 lg:flex lg:flex-col"
                   >
-                    <motion.div
-                      className="relative"
-                      animate={{ y: [0, -1.5, 0] }}
-                      transition={{
-                        duration: 3.2,
-                        repeat: Number.POSITIVE_INFINITY,
-                        ease: "easeInOut",
-                      }}
-                    >
+                    <div className="relative">
                       <motion.span
                         aria-hidden="true"
                         className="pointer-events-none absolute inset-[-10px] rounded-full bg-[radial-gradient(circle,rgba(255,103,31,0.28)_0%,rgba(255,103,31,0.14)_42%,rgba(255,103,31,0)_76%)] blur-xl"
@@ -1081,21 +1073,14 @@ export function IntroScreen() {
                         <span className="text-[1.16rem]">
                           Descubre tu bebida ideal
                         </span>
-                        <motion.span
+                        <span
                           className="flex h-10 w-10 items-center justify-center rounded-full bg-white/22 shadow-[inset_0_1px_0_rgba(255,255,255,0.28),0_8px_16px_rgba(170,61,10,0.14)] transition-transform duration-300 group-hover:scale-105"
-                          animate={{ x: [0, 2.5, 0] }}
-                          transition={{
-                            duration: 1.7,
-                            repeat: Number.POSITIVE_INFINITY,
-                            repeatDelay: 1.2,
-                            ease: "easeInOut",
-                          }}
                         >
                           <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1.5" />
-                        </motion.span>
+                        </span>
                       </span>
                     </Button>
-                    </motion.div>
+                    </div>
                     <div className="inline-flex items-center rounded-full border border-[#F2DFC9] bg-white/88 px-3.5 py-1.5 text-[0.72rem] font-semibold text-[#7A5134] shadow-[0_10px_22px_rgba(102,66,30,0.08)]">
                       <span>4 preguntas • 1 minuto</span>
                     </div>
@@ -1210,11 +1195,11 @@ export function IntroScreen() {
 
                     return (
                       <div
+                        key={drink.id}
                         className="pointer-events-none absolute inset-x-0 bottom-[5.9rem] flex justify-center sm:bottom-10 lg:bottom-12"
                         style={{ zIndex: state.zIndex }}
                       >
                         <motion.div
-                          key={drink.id}
                           initial={false}
                           animate={{
                             opacity: state.opacity,
@@ -1392,7 +1377,7 @@ export function IntroScreen() {
                 <button
                   type="button"
                   onClick={() => handleTogglePersonalityDetails()}
-                  className="mx-auto inline-flex items-center rounded-full border bg-white/86 px-4 py-2 text-[0.84rem] font-semibold shadow-[0_10px_24px_rgba(102,66,30,0.1)]"
+                  className="mx-auto inline-flex items-center rounded-full border bg-white/90 px-4 py-2 text-[0.84rem] font-semibold shadow-[0_10px_24px_rgba(102,66,30,0.1)] md:bg-[#FFF8F2]/98 md:shadow-[0_14px_30px_rgba(102,66,30,0.14)] md:ring-1 md:ring-[#F3E4D7] md:backdrop-blur-[8px]"
                   style={{
                     color: activePersonality.accent,
                     borderColor: `${activePersonality.accent}28`,
@@ -1440,7 +1425,7 @@ export function IntroScreen() {
                       <button
                         type="button"
                         onClick={() => handleTogglePersonalityDetails(index)}
-                        className="mt-2 inline-flex items-center rounded-full border bg-white/88 px-3.5 py-2 text-[0.82rem] font-semibold shadow-[0_8px_18px_rgba(102,66,30,0.08)]"
+                        className="mt-2 inline-flex items-center rounded-full border bg-white/90 px-3.5 py-2 text-[0.82rem] font-semibold shadow-[0_8px_18px_rgba(102,66,30,0.08)] md:bg-[#FFF8F2]/98 md:shadow-[0_14px_30px_rgba(102,66,30,0.14)] md:ring-1 md:ring-[#F3E4D7] md:backdrop-blur-[8px]"
                         style={{
                           color: card.accent,
                           borderColor: `${card.accent}26`,

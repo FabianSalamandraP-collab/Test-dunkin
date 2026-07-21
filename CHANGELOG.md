@@ -5,6 +5,27 @@ Todos los cambios importantes en este proyecto serán documentados en este archi
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-es/1.0.0/),
 y este proyecto se adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
+## [Unreleased]
+
+### Added
+
+- Nueva guia `DEPLOY.md` con handoff tecnico completo para despliegue,
+  variables de entorno, Supabase, sincronizacion de beneficios y checklist de
+  validacion.
+- Nuevo archivo `CHECKLIST_CIERRE_FINAL.md` con la lista de control final para
+  validar producto, build, Supabase, variables, limpieza local y versionado
+  antes del handoff.
+
+### Changed
+
+- Actualizada la documentacion principal para apuntar a una entrega de
+  despliegue real en `README.md`, `DOCUMENTACION.md` y `ENTREGA_TEST.md`.
+
+### Fixed
+
+- Eliminada la migracion duplicada `0001_create_quiz_participants_table.sql`
+  para evitar conflictos al aplicar policies duplicadas en Supabase.
+
 ## [1.1.0] - 2026-07-20
 
 ### Added

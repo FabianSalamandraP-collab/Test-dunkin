@@ -36,60 +36,71 @@ Aplicación profesional de Next.js para la campaña oficial de Dunkin Colombia.
 - `supabase/`: Migraciones de base de datos
 - `public/`: Archivos estáticos
 
-## ⚙️ Instalación
+## Instalacion
 
 1. Copia el archivo de ejemplo de variables de entorno:
    ```bash
-   cp .env.example .env
+   cp .env.example .env.local
    ```
 
-2. Llena las variables de entorno en el archivo `.env`
+2. Llena las variables de entorno en el archivo `.env.local`
 
 3. Instala las dependencias:
    ```bash
    npm install
    ```
 
-## 🖥️ Ejecución en Desarrollo
+## Ejecucion en Desarrollo
 
 ```bash
 npm run dev
 ```
 
-## 🏗️ Build para Producción
+## Build para Produccion
 
 ```bash
 npm run build
 npm start
 ```
 
-## 🎯 SEO
+## SEO
 
 - Metaetiquetas optimizadas (Open Graph, Twitter Cards)
 - Sitemap XML
 - Robots.txt
 - Idioma: Español (Colombia) - `es-CO`
 
-## 🚀 Despliegue
+## Despliegue
 
-La aplicación está lista para ser desplegada en cualquier hosting compatible con Next.js (Vercel, Netlify, hosting propio, etc.).
+La aplicacion esta preparada para desplegarse en cualquier hosting compatible
+con Next.js. El flujo recomendado y documentado para handoff tecnico esta en:
+
+- [DEPLOY.md](DEPLOY.md) para la guia completa de despliegue
+- [ENTREGA_TEST.md](ENTREGA_TEST.md) para el checklist corto de entrega
 
 ### Variables de Entorno
 
-Ver [.env.example](.env.example) para la lista completa de variables necesarias. NUNCA subas el archivo `.env` al repositorio.
+Ver [.env.example](.env.example) para la lista completa de variables
+necesarias. Nunca subas `.env.local` al repositorio.
 
 ### Vercel (Recomendado)
 
 1. Conecta tu repositorio GitHub a Vercel
 2. Configura las variables de entorno en Vercel
-3. ¡Despliega automáticamente!
+3. Ejecuta las migraciones de Supabase
+4. Ejecuta la sincronizacion inicial de beneficios
+5. Despliega y valida preview antes de publicar el dominio final
 
-## ⚠️ Importante
+## Importante
 
-- **Nunca subas credenciales** al repositorio
-- Usa siempre variables de entorno para información sensible
-- Cumplimiento con la Ley de Protección de Datos Personales de Colombia (Ley 1581 de 2012)
+- Nunca subas credenciales al repositorio
+- Usa siempre variables de entorno para informacion sensible
+- El proyecto depende de Supabase real para formulario y beneficios
+- La migracion valida de `quiz_participants` es
+  `20250101000000_create_quiz_participants_table.sql`
+- Cumplimiento con la Ley de Proteccion de Datos Personales de Colombia
+  (Ley 1581 de 2012)
 
-## 📝 Licencia
+## Licencia
 
 Propiedad exclusiva de Dunkin Colombia. Todos los derechos reservados.

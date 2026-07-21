@@ -97,6 +97,64 @@ const NON_DRINK_ONLY_KEYWORDS = [
   "chantilly",
   "arequipe",
   "mora",
+  "coca cola",
+  "coca-cola",
+  "cocacola",
+  "sprite",
+  "quatro",
+  "agua manantial",
+  "agua sin gas",
+  "agua con gas",
+];
+
+const EXCLUDED_CATEGORY_KEYWORDS = [
+  "otras bebidas",
+  "bebidas adicionales",
+  "gaseosas",
+  "hidratacion",
+];
+
+const ALLOWED_PORTFOLIO_KEYWORDS = [
+  "cafe",
+  "café",
+  "coffee",
+  "espresso",
+  "latte",
+  "iced latte",
+  "capuccino",
+  "cappuccino",
+  "americano",
+  "tinto",
+  "chai",
+  "tea",
+  "te",
+  "té",
+  "iced tea",
+  "refresher",
+  "dragonfruit",
+  "mango",
+  "piña",
+  "pina",
+  "limonada",
+  "frutibatido",
+  "batido",
+  "frozen",
+  "shake",
+];
+
+const ALLOWED_CATEGORY_KEYWORDS = [
+  "bebidas frias",
+  "bebidas frías",
+  "bebidas calientes",
+  "cafe",
+  "café",
+  "coffee",
+  "refresher",
+  "frutibatido",
+  "te",
+  "té",
+  "combos",
+  "promociones",
 ];
 
 function normalizeText(value: string) {
@@ -204,6 +262,12 @@ function hasDrinkSignals(haystack: string) {
   );
 }
 
+function hasAllowedPortfolioSignals(haystack: string) {
+  return ALLOWED_PORTFOLIO_KEYWORDS.some((keyword) =>
+    haystack.includes(normalizeText(keyword))
+  );
+}
+
 function looksLikeNonDrinkOnly(haystack: string) {
   const hasNonDrinkKeyword = NON_DRINK_ONLY_KEYWORDS.some((keyword) =>
     haystack.includes(normalizeText(keyword))
@@ -222,19 +286,26 @@ function isRelevantBenefit(
   const normalizedCategories = categoryNames.map((category) =>
     normalizeText(category)
   );
-  const isDrinkCategory = normalizedCategories.some(
-    (normalized) =>
-      normalized.includes("bebidas fri") ||
-      normalized.includes("bebidas cal") ||
-      normalized.includes("promociones") ||
-      normalized.includes("combos")
+  const isExcludedCategory = normalizedCategories.some((normalized) =>
+    EXCLUDED_CATEGORY_KEYWORDS.some((keyword) =>
+      normalized.includes(normalizeText(keyword))
+    )
   );
+  const isAllowedCategory = normalizedCategories.some((normalized) =>
+    ALLOWED_CATEGORY_KEYWORDS.some((keyword) =>
+      normalized.includes(normalizeText(keyword))
+    )
+  );
+
+  if (isExcludedCategory) {
+    return false;
+  }
 
   if (looksLikeNonDrinkOnly(haystack)) {
     return false;
   }
 
-  return hasDrinkSignals(haystack) || isDrinkCategory;
+  return hasAllowedPortfolioSignals(haystack) || isAllowedCategory;
 }
 
 function resolveTargetResults(
@@ -416,26 +487,39 @@ function getResultMatchScore(record: CampaignBenefitRecord, resultId: string) {
   let score = 0;
 
   if (exactPhraseMatch) {
-    score += record.benefit_type === "combo" ? 120 : 140;
+    score += record.benefit_type === "combo" ? 70 : 82;
   }
 
-  score += keywordMatches * 12;
+  score += keywordMatches * 16;
 
   if (mappedToResult) {
-    score += 18;
+    score += 34;
   }
 
   if (record.benefit_type === "combo" && keywordMatches > 0) {
-    score += 8;
+    score += 12;
   }
 
   return score;
+}
+
+function isExactDrinkMatch(record: CampaignBenefitRecord, resultId: string) {
+  const result = getResultById(resultId);
+  const haystack = buildSearchHaystack(
+    record.title,
+    record.description || "",
+    record.category_names
+  );
+
+  return haystack.includes(normalizeText(result.recommendedDrink));
 }
 
 function pickPriorityRecord(
   records: CampaignBenefitRecord[],
   resultId: string
 ) {
+  const result = getResultById(resultId);
+  const normalizedRecommendedDrink = normalizeText(result.recommendedDrink);
   const scoredRecords = records
     .map((record) => ({
       record,
@@ -449,16 +533,28 @@ function pickPriorityRecord(
   }
 
   const exactPriorityPool = scoredRecords
-    .filter((item) => item.score >= 120)
+    .filter((item) => isExactDrinkMatch(item.record, resultId))
     .slice(0, 4)
     .map((item) => item.record);
-  const relatedPool = scoredRecords.slice(0, 6).map((item) => item.record);
+  const relatedPortfolioPool = scoredRecords
+    .filter(
+      (item) =>
+        item.record.target_results.includes(resultId) &&
+        !normalizeText(item.record.title).includes(normalizedRecommendedDrink)
+    )
+    .slice(0, 6)
+    .map((item) => item.record);
+  const generalPool = scoredRecords.slice(0, 8).map((item) => item.record);
 
-  if (exactPriorityPool.length > 0 && Math.random() < 0.72) {
+  if (relatedPortfolioPool.length > 0 && Math.random() < 0.46) {
+    return pickRandomRecord(relatedPortfolioPool);
+  }
+
+  if (exactPriorityPool.length > 0 && Math.random() < 0.58) {
     return pickRandomRecord(exactPriorityPool);
   }
 
-  return pickRandomRecord(relatedPool);
+  return pickRandomRecord(generalPool);
 }
 
 export function resolveBenefitForResult(

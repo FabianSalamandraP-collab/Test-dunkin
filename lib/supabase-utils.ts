@@ -1,9 +1,11 @@
 // Utilidades para verificar la conexión con Supabase
-import { supabase } from "./supabase";
+import { getSupabaseClient } from "./supabase";
 
 // Función para verificar la conexión con Supabase
 export async function testSupabaseConnection() {
   try {
+    const supabase = getSupabaseClient();
+
     // Intentamos hacer una consulta simple para verificar la conexión
     const { data, error } = await supabase
       .from("quiz_participants")

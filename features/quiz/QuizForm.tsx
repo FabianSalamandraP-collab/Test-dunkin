@@ -15,7 +15,7 @@ import {
 import { Button, Input, Checkbox, Loader } from "@/components/ui";
 import { useQuizStore } from "@/store/quizStore";
 import { FormData, QuizParticipant } from "@/types/quiz";
-import { supabase } from "@/lib/supabase";
+import { getSupabaseClient } from "@/lib/supabase";
 
 interface QuizFormProps {
   onSuccess: () => void;
@@ -51,6 +51,8 @@ export function QuizForm({ onSuccess }: QuizFormProps) {
     setSubmitSuccess(false);
 
     try {
+      const supabase = getSupabaseClient();
+
       // Preparar los datos para Supabase
       const participant: QuizParticipant = {
         name: data.name,
@@ -169,72 +171,75 @@ export function QuizForm({ onSuccess }: QuizFormProps) {
           />
         </div>
 
-        {/* Mensaje de información sobre tratamiento de datos */}
-        <div className="rounded-[1.15rem] border border-[#EADDCF] bg-white/75 shadow-[0_12px_24px_rgba(89,53,17,0.04)]">
-          <button
-            type="button"
-            onClick={() => setShowDataInfo((current) => !current)}
-            aria-expanded={showDataInfo}
-            aria-controls="data-processing-info"
-            className="flex w-full items-center justify-between gap-3 px-4 py-4 text-left sm:px-6 sm:py-5"
-          >
-            <div className="space-y-1">
-              <p className="text-sm font-bold text-[#4A281B]">
-                Tratamiento de datos
-              </p>
-              <p className="text-xs text-[#7A6A5B]">
-                {showDataInfo
-                  ? "Ver menos del detalle"
-                  : "Ver más del detalle"}
-              </p>
-            </div>
-            <span className="text-[#7A6A5B]">
-              {showDataInfo ? (
-                <ChevronUp className="h-5 w-5" />
-              ) : (
-                <ChevronDown className="h-5 w-5" />
-              )}
-            </span>
-          </button>
-          {showDataInfo ? (
-            <div
-              id="data-processing-info"
-              className="border-t border-[#EADDCF] px-4 pb-4 pt-0 sm:px-6 sm:pb-5"
-            >
-              <p className="text-sm leading-relaxed text-[#6B5B4F]">
-                Tu información es importante para nosotros. La utilizaremos
-                únicamente para gestionar esta experiencia, ayudarte a descubrir
-                nuevas bebidas de Dunkin y, si nos autorizas, compartirte
-                futuras novedades y beneficios. Tus datos serán tratados de
-                forma segura y nunca se compartirán con terceros sin tu
-                consentimiento.
-              </p>
-            </div>
-          ) : (
-            <div className="border-t border-[#EADDCF] px-4 pb-4 pt-3 sm:px-6 sm:pb-5">
-              <p className="text-sm leading-relaxed text-[#6B5B4F]">
-                Usaremos tus datos para gestionar esta experiencia y, si lo
-                autorizas, compartirte novedades y beneficios de Dunkin.
-              </p>
-            </div>
-          )}
-        </div>
-
-        <div className="space-y-4">
-          <div>
+        <div className="space-y-4 rounded-[1.15rem] border border-[#EADDCF] bg-white/75 p-4 shadow-[0_12px_24px_rgba(89,53,17,0.04)] sm:p-6">
+          <div className="space-y-3">
             <Checkbox
-              label="Acepto el tratamiento de datos"
+              label={
+                <span className="text-sm font-medium leading-6 text-[#4A281B]">
+                  Autorizo de manera previa, expresa e informada a DONUCOL
+                  S.A., responsable de la marca Dunkin Colombia, para
+                  recolectar, almacenar, usar y tratar mis datos personales con
+                  la finalidad de gestionar mi participación en este test y
+                  generar mi resultado.
+                </span>
+              }
               error={errors.acceptDataProcessing?.message}
               {...register("acceptDataProcessing", {
                 required:
                   "Debes aceptar el tratamiento de datos para continuar",
               })}
             />
+            <div className="ml-9 flex flex-wrap items-center gap-x-4 gap-y-2">
+              <a
+                href="https://www.dunkincolombia.com/documentos-legales/privacy"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm font-semibold text-[#FF671F] underline underline-offset-4 transition-opacity hover:opacity-80"
+              >
+                Política de Tratamiento de Datos Personales
+              </a>
+              <button
+                type="button"
+                onClick={() => setShowDataInfo((current) => !current)}
+                aria-expanded={showDataInfo}
+                aria-controls="data-processing-info"
+                className="inline-flex items-center gap-1 text-sm font-semibold text-[#7A5B46] transition-colors hover:text-[#4A281B]"
+              >
+                {showDataInfo ? "Ver menos detalle" : "Ver más en detalle"}
+                {showDataInfo ? (
+                  <ChevronUp className="h-4 w-4" />
+                ) : (
+                  <ChevronDown className="h-4 w-4" />
+                )}
+              </button>
+            </div>
+            {showDataInfo ? (
+              <div
+                id="data-processing-info"
+                className="ml-9 rounded-[1rem] border border-[#EADDCF] bg-[#FFF8F2] p-3.5 sm:p-4"
+              >
+                <p className="text-sm leading-relaxed text-[#6B5B4F]">
+                  Declaro que he leído y acepto la Política de Tratamiento de
+                  Datos Personales. Esta autorización incluye las demás
+                  finalidades descritas en dicha política. El consentimiento
+                  para participar en el test es independiente del consentimiento
+                  opcional para recibir promociones, novedades, productos,
+                  servicios y campañas de Dunkin Colombia a través de los medios
+                  de contacto suministrados.
+                </p>
+              </div>
+            ) : null}
           </div>
 
-          <div>
+          <div className="border-t border-[#EADDCF] pt-4">
             <Checkbox
-              label="Deseo recibir promociones de Dunkin"
+              label={
+                <span className="text-sm font-medium leading-6 text-[#4A281B]">
+                  Autorizo recibir información sobre promociones, novedades,
+                  productos, servicios y campañas de Dunkin Colombia a través
+                  de los medios de contacto suministrados.
+                </span>
+              }
               {...register("acceptPromotions")}
             />
           </div>

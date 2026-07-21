@@ -71,6 +71,7 @@ debug-*.md
 
 # Datos sensibles y backups
 *.sql
+!supabase/migrations/*.sql
 *.dump
 *.bak
 /db

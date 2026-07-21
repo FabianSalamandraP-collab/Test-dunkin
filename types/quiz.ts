@@ -46,6 +46,9 @@ export interface QuizResult {
   mobileImageScale?: number;
   mobileImageOffsetX?: number;
   mobileImageOffsetY?: number;
+  desktopImageScale?: number;
+  desktopImageOffsetX?: number;
+  desktopImageOffsetY?: number;
   color?: string;
   accentColor?: string;
   benefitTitle?: string;

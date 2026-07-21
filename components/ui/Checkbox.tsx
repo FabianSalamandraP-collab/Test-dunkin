@@ -1,7 +1,7 @@
 "use client";
 
 // Importaciones necesarias para el componente
-import { InputHTMLAttributes, forwardRef, useState } from "react";
+import { InputHTMLAttributes, ReactNode, forwardRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check } from "lucide-react";
 
@@ -10,7 +10,7 @@ interface CheckboxProps extends Omit<
   InputHTMLAttributes<HTMLInputElement>,
   "type"
 > {
-  label?: string;
+  label?: ReactNode;
   error?: string;
 }
 
@@ -41,9 +41,9 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
       <div className="space-y-2">
         {/* Etiqueta que envuelve el checkbox y el texto */}
         <label
-          className={`flex cursor-pointer select-none items-center gap-3 ${className}`}
+          className={`flex cursor-pointer select-none items-start gap-3 ${className}`}
         >
-          <div className="relative">
+          <div className="relative pt-0.5">
             {/* Input real (oculto visualmente pero funcional) */}
             <input
               ref={ref}
@@ -78,7 +78,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
           </div>
           {/* Texto de la etiqueta si se proporciona */}
           {label && (
-            <span className="font-medium text-neutral-700">{label}</span>
+            <span className="block font-medium text-neutral-700">{label}</span>
           )}
         </label>
         {error ? <p className="text-red-600 text-sm">{error}</p> : null}

@@ -2,7 +2,13 @@
 
 ## Objetivo
 
-Esta guia deja claro que revisar antes de subir el test al dominio final y evita problemas de despliegue, SEO o base de datos.
+Esta guia resume que revisar antes de subir el test al dominio final y evita
+problemas de despliegue, SEO o base de datos.
+
+> Documento complementario:
+> - Ver [DEPLOY.md](DEPLOY.md) para la guia completa de handoff y despliegue.
+> - Ver [CHECKLIST_CIERRE_FINAL.md](CHECKLIST_CIERRE_FINAL.md) para la lista de
+>   control final antes de entregar.
 
 ## Que ya queda listo en el proyecto
 
@@ -11,6 +17,8 @@ Esta guia deja claro que revisar antes de subir el test al dominio final y evita
 - Redireccion permanente de `/` hacia `/quiz`
 - `og-image` dinamica para compartir la campaña sin depender de un archivo manual
 - Build de produccion y lint validados localmente
+- Migracion duplicada de `quiz_participants` eliminada para evitar conflictos
+  en Supabase
 
 ## Variables de entorno obligatorias
 
@@ -30,7 +38,7 @@ SUPABASE_SERVICE_ROLE_KEY=
 Como la base de datos la manejaran ustedes, antes de publicar deben:
 
 1. Crear el proyecto de Supabase productivo.
-2. Ejecutar una sola migracion de `quiz_participants`.
+2. Ejecutar `20250101000000_create_quiz_participants_table.sql`.
 3. Ejecutar la migracion de `campaign_benefits`.
 4. Confirmar que `quiz_participants` permita `INSERT` para `anon`.
 5. Validar que la clave publica cargada en Vercel o en el hosting sea la correcta.
@@ -72,6 +80,7 @@ curl -X POST "https://tu-preview.com/api/benefits/sync" \
    - Preguntas muestran visuales finales
    - Resultado muestra bebida y beneficio dinamico con link oficial
    - Formulario guarda en Supabase
+   - Consentimientos y politica de datos funcionan correctamente
    - Footer abre redes correctas
    - Compartir muestra preview con imagen
 
@@ -84,6 +93,7 @@ curl -X POST "https://tu-preview.com/api/benefits/sync" \
 - Dominio final definido
 - Variables de entorno cargadas
 - Migracion de base de datos aplicada
+- `quiz_participants` creado desde `20250101000000_create_quiz_participants_table.sql`
 - Sincronizacion inicial de beneficios ejecutada
 - Assets finales subidos
 - Build exitoso
