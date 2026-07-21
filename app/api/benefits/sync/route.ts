@@ -24,10 +24,12 @@ export async function POST(request: Request) {
   if (!expectedSecret || !serviceRoleKey || !supabaseUrl) {
     return NextResponse.json(
       {
-        error:
-          "Faltan BENEFITS_SYNC_SECRET, SUPABASE_SERVICE_ROLE_KEY o NEXT_PUBLIC_SUPABASE_URL",
+        disabled: true,
+        source: "live",
+        message:
+          "La sincronizacion esta desactivada porque Supabase no esta configurado en este entorno.",
       },
-      { status: 500 }
+      { status: 200 }
     );
   }
 

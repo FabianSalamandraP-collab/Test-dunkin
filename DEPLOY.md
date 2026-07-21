@@ -34,17 +34,26 @@ BENEFITS_SYNC_SECRET=
 SUPABASE_SERVICE_ROLE_KEY=
 ```
 
+### Despliegue sin Supabase
+
+El proyecto ya puede desplegarse sin conectar Supabase. En ese caso:
+
+- La app carga y el quiz funciona normalmente.
+- La recomendacion usa fuente `live` o `fallback`.
+- El formulario continua, pero no persiste registros en `quiz_participants`.
+- La ruta `POST /api/benefits/sync` queda desactivada y responde sin error duro.
+
 ### Para que sirve cada variable
 
-- `NEXT_PUBLIC_SUPABASE_URL`: URL del proyecto Supabase.
-- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`: clave publica usada por el cliente.
+- `NEXT_PUBLIC_SUPABASE_URL`: URL del proyecto Supabase. Opcional si no se usara base de datos en ese entorno.
+- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`: clave publica usada por el cliente. Opcional si no se usara base de datos en ese entorno.
 - `NEXT_PUBLIC_SITE_URL`: dominio final exacto para SEO, `robots.txt`,
   `sitemap.xml`, canonical y Open Graph.
 - `GOOGLE_SITE_VERIFICATION`: codigo opcional para Search Console.
 - `BENEFITS_SYNC_SECRET`: secreto privado para ejecutar la sincronizacion
-  inicial o futuras sincronizaciones de beneficios.
+  inicial o futuras sincronizaciones de beneficios. Opcional si no se hara sync con Supabase.
 - `SUPABASE_SERVICE_ROLE_KEY`: clave privada para actualizar
-  `campaign_benefits` desde el servidor.
+  `campaign_benefits` desde el servidor. Opcional si no se hara sync con Supabase.
 
 ## Base de Datos
 
@@ -99,6 +108,8 @@ debe repetir en el entorno del equipo que despliega.
 
 ### 4. Ejecutar la sincronizacion inicial de beneficios
 
+Este paso solo aplica si el entorno tiene Supabase configurado.
+
 Despues de desplegar el preview o el entorno productivo, ejecutar:
 
 ```bash
@@ -123,9 +134,9 @@ curl -X POST "https://tu-dominio-o-preview.com/api/benefits/sync" \
 
 ### Base de datos
 
-- El formulario inserta en `quiz_participants`
-- La recomendacion lee beneficios desde `campaign_benefits`
-- La sincronizacion actualiza beneficios activos
+- El formulario inserta en `quiz_participants` solo si Supabase esta configurado
+- La recomendacion lee beneficios desde `campaign_benefits` o degrada a `live/fallback`
+- La sincronizacion actualiza beneficios activos solo si Supabase esta configurado
 
 ### SEO
 
@@ -137,13 +148,13 @@ curl -X POST "https://tu-dominio-o-preview.com/api/benefits/sync" \
 
 - Variables de entorno cargadas
 - Migraciones aplicadas
-- Sync inicial de beneficios ejecutada
+- Sync inicial de beneficios ejecutada, si aplica
 - Dominio final configurado en `NEXT_PUBLIC_SITE_URL`
 - `npm run lint` exitoso
 - `npm run build` exitoso
 - Preview validado funcionalmente
-- Formulario validado contra Supabase real
-- Resultado validado con beneficios reales
+- Formulario validado contra Supabase real, si aplica
+- Resultado validado con beneficios reales, si aplica
 - SEO validado
 
 ## Riesgos Reales a Vigilar
