@@ -1,8 +1,15 @@
 import type { Metadata, Viewport } from "next";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import { ToastProvider } from "@/components/ui";
 import { getSiteUrl } from "@/lib/site";
+
+const plusJakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap",
+});
 
 const dunkinDisplay = localFont({
   src: "../public/fonts/dunkin/Dunkin_Sans_Bold.otf",
@@ -43,7 +50,7 @@ export const metadata: Metadata = {
     shortcut: ["/favicon.ico"],
     apple: [
       {
-        url: "/assets/quiz-intro/logo/dunkin-logo.png",
+        url: "/assets/quiz-intro/logo/dunkin-logo.webp",
         type: "image/png",
       },
     ],
@@ -103,7 +110,10 @@ export default function RootLayout({
         <link rel="shortcut icon" href="/favicon.ico?v=2" />
         <link rel="icon" href="/favicon.ico?v=2" sizes="any" />
       </head>
-      <body className={dunkinDisplay.variable} suppressHydrationWarning>
+      <body
+        className={`${plusJakarta.variable} ${dunkinDisplay.variable}`}
+        suppressHydrationWarning
+      >
         <ToastProvider>{children}</ToastProvider>
       </body>
     </html>

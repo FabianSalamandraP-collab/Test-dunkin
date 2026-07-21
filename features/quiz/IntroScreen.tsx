@@ -27,6 +27,9 @@ interface IntroDrink {
   imageScaleMobile?: number;
   imageScaleDesktop?: number;
   imageScaleDesktopXl?: number;
+  imageActiveScaleMobile?: number;
+  imageActiveScaleDesktop?: number;
+  imageActiveScaleDesktopXl?: number;
 }
 
 const INTRO_DRINKS: IntroDrink[] = [
@@ -36,10 +39,13 @@ const INTRO_DRINKS: IntroDrink[] = [
     accent: "#5A361F",
     textColor: "#4C2B18",
     cup: "cold-brew",
-    imageSrc: "/assets/quiz-intro/drinks/Cold Brew.png",
+    imageSrc: "/assets/quiz-intro/drinks/Cold Brew.webp",
     imageOffsetMobile: 8,
     imageOffsetDesktop: 12,
     imageOffsetDesktopXl: 16,
+    imageActiveScaleMobile: 1.08,
+    imageActiveScaleDesktop: 1.12,
+    imageActiveScaleDesktopXl: 1.14,
   },
   {
     id: "frutibatido",
@@ -47,7 +53,10 @@ const INTRO_DRINKS: IntroDrink[] = [
     accent: "#FF4FBF",
     textColor: "#C83E99",
     cup: "frozen",
-    imageSrc: "/assets/quiz-intro/drinks/Frutibatido.png",
+    imageSrc: "/assets/quiz-intro/drinks/Frutibatido.webp",
+    imageActiveScaleMobile: 1.08,
+    imageActiveScaleDesktop: 1.12,
+    imageActiveScaleDesktopXl: 1.14,
   },
   {
     id: "iced-latte",
@@ -55,10 +64,13 @@ const INTRO_DRINKS: IntroDrink[] = [
     accent: "#D5A064",
     textColor: "#8A5B36",
     cup: "iced-latte",
-    imageSrc: "/assets/quiz-intro/drinks/Iced_Latte.png",
+    imageSrc: "/assets/quiz-intro/drinks/Iced_Latte.webp",
     imageOffsetMobile: 6,
     imageOffsetDesktop: 10,
     imageOffsetDesktopXl: 14,
+    imageActiveScaleMobile: 1.08,
+    imageActiveScaleDesktop: 1.12,
+    imageActiveScaleDesktopXl: 1.14,
   },
   {
     id: "refresher-mango-pina",
@@ -66,7 +78,10 @@ const INTRO_DRINKS: IntroDrink[] = [
     accent: "#FF9A1F",
     textColor: "#7A4D2C",
     cup: "americano",
-    imageSrc: "/assets/quiz-intro/drinks/Mango_piña_Refresher.png",
+    imageSrc: "/assets/quiz-intro/drinks/Mango_piña_Refresher.webp",
+    imageActiveScaleMobile: 1.08,
+    imageActiveScaleDesktop: 1.12,
+    imageActiveScaleDesktopXl: 1.14,
   },
   {
     id: "matcha-latte",
@@ -74,10 +89,11 @@ const INTRO_DRINKS: IntroDrink[] = [
     accent: "#9BAF6B",
     textColor: "#6E7E46",
     cup: "americano",
-    imageSrc: "/assets/quiz-intro/drinks/Soda_Dunkin_Manzana_Verde.png",
+    imageSrc: "/assets/quiz-intro/drinks/Soda_Dunkin_Manzana_Verde.webp",
     imageScaleMobile: 0.88,
     imageScaleDesktop: 0.84,
     imageScaleDesktopXl: 0.84,
+    imageActiveScaleMobile: 1.08,
   },
 ];
 
@@ -104,7 +120,7 @@ const INTRO_PERSONALITIES: IntroPersonalityCard[] = [
     border: "#E7C08D",
     drink: "Iced Latte",
     matchDrinks: ["Iced Latte", "Ice Té", "Soda Dunkin Manzana Verde"],
-    imageSrc: "/assets/quiz-intro/personalities/creative.png",
+    imageSrc: "/assets/quiz-intro/personalities/creative.webp",
   },
   {
     id: "balanced",
@@ -116,7 +132,7 @@ const INTRO_PERSONALITIES: IntroPersonalityCard[] = [
     border: "#E8BDD0",
     drink: "Ice Té",
     matchDrinks: ["Ice Té", "Iced Latte", "Soda Dunkin Manzana Verde"],
-    imageSrc: "/assets/quiz-intro/personalities/balanced.png",
+    imageSrc: "/assets/quiz-intro/personalities/balanced.webp",
   },
   {
     id: "energetic",
@@ -128,7 +144,7 @@ const INTRO_PERSONALITIES: IntroPersonalityCard[] = [
     border: "#F0CB82",
     drink: "Refresher Mango Piña",
     matchDrinks: ["Refresher Mango Piña", "Frutibatido de Mora", "Iced Latte"],
-    imageSrc: "/assets/quiz-intro/personalities/energetic.png",
+    imageSrc: "/assets/quiz-intro/personalities/energetic.webp",
   },
   {
     id: "passionate",
@@ -140,7 +156,7 @@ const INTRO_PERSONALITIES: IntroPersonalityCard[] = [
     border: "#E8B8CC",
     drink: "Frutibatido de Mora",
     matchDrinks: ["Frutibatido de Mora", "Refresher Mango Piña", "Ice Té"],
-    imageSrc: "/assets/quiz-intro/personalities/passionate.png",
+    imageSrc: "/assets/quiz-intro/personalities/passionate.webp",
   },
 ];
 
@@ -153,8 +169,8 @@ const INTRO_FOOTER_ITEMS = [
 const HOW_IT_WORKS_STEPS = [
   "Responde 4 preguntas rápidas sobre tu forma de ser y cómo disfrutas tus planes.",
   "Descubre la bebida Dunkin que mejor representa tu personalidad.",
-  "Conoce tu personalidad Dunkin, qué la caracteriza y por qué hace match con esa bebida.",
-  "Recibe recomendaciones oficiales relacionadas con tu bebida, como productos, combos o promociones disponibles en Dunkin Colombia.",
+  "Conoce tu personalidad Dunkin y la bebida que la refleja.",
+  "Recibe recomendaciones de productos Dunkin que van con tu bebida match.",
 ];
 
 const HOW_IT_WORKS_INFO = [
@@ -209,24 +225,25 @@ function getCarouselState(
   const normalized = (index - activeIndex + total) % total;
   const isMobile = viewportWidth < 640;
   const isTablet = viewportWidth >= 640 && viewportWidth < 1024;
+  const isDesktop = viewportWidth >= 1024;
 
   const activeState = isMobile
     ? { x: 0, y: -12, scale: 1.27 }
     : isTablet
       ? { x: 0, y: 0, scale: 1.18 }
-      : { x: 0, y: -2, scale: 1.2 };
+      : { x: 0, y: -20, scale: 1.38 };
 
-  const nearOffset = isMobile ? 108 : isTablet ? 146 : 176;
+  const nearOffset = isMobile ? 108 : isTablet ? 146 : 198;
   const nearState = isMobile
     ? { y: 14, scale: 0.72 }
     : isTablet
       ? { y: 18, scale: 0.72 }
-      : { y: 22, scale: 0.68 };
+      : { y: 26, scale: 0.66 };
 
-  const farOffset = isMobile ? 0 : isTablet ? 224 : 264;
+  const farOffset = isMobile ? 0 : isTablet ? 224 : 292;
   const farState = isTablet
     ? { y: 54, scale: 0.5, opacity: 0.74 }
-    : { y: 60, scale: 0.46, opacity: 0.62 };
+    : { y: 66, scale: 0.43, opacity: 0.6 };
 
   if (normalized === 0) {
     return {
@@ -258,6 +275,17 @@ function getCarouselState(
       scale: nearState.scale,
       opacity: 1,
       zIndex: 30,
+    };
+  }
+
+  if (isDesktop) {
+    return {
+      slot: "hidden" as const,
+      x: 0,
+      y: 40,
+      scale: 0.6,
+      opacity: 0,
+      zIndex: 0,
     };
   }
 
@@ -397,13 +425,22 @@ function DrinkStage({
       : viewportWidth >= 1024
         ? drink.imageScaleDesktop || 1
         : drink.imageScaleMobile || 1;
+  const activeScale =
+    viewportWidth < 640
+      ? drink.imageActiveScaleMobile || 1
+      : viewportWidth >= 1280
+        ? drink.imageActiveScaleDesktopXl || drink.imageActiveScaleDesktop || 1
+        : viewportWidth >= 1024
+          ? drink.imageActiveScaleDesktop || 1
+          : 1;
+  const finalImageScale = isActive ? imageScale * activeScale : imageScale;
 
   if (drink.imageSrc && !imageHidden) {
     return (
       <div
         className="flex w-full justify-center"
         style={{
-          transform: `translateX(${imageOffset}px) scale(${imageScale})`,
+          transform: `translateX(${imageOffset}px) scale(${finalImageScale})`,
         }}
       >
         <img
@@ -432,8 +469,8 @@ function SideRibbon({
   const [useFallback, setUseFallback] = useState(false);
   const imageSrc =
     side === "left"
-      ? "/assets/quiz-intro/borders/side-ribbon-left.png"
-      : "/assets/quiz-intro/borders/side-ribbon-right.png";
+      ? "/assets/quiz-intro/borders/side-ribbon-left.webp"
+      : "/assets/quiz-intro/borders/side-ribbon-right.webp";
 
   return (
     <div
@@ -761,11 +798,11 @@ export function IntroScreen() {
       <div className="relative mx-auto overflow-hidden rounded-[2rem] bg-[linear-gradient(180deg,#fbf6f0_0%,#f6efe6_100%)] shadow-[0_30px_80px_rgba(89,53,17,0.12)] lg:max-w-[1460px]">
         <SideRibbon side="left" />
         <SideRibbon side="right" />
-        <div className="pointer-events-none absolute left-[26px] top-0 h-[64px] w-[86px] rounded-br-[2rem] bg-[#FA192A] shadow-[inset_-6px_-6px_14px_rgba(255,255,255,0.12)] sm:left-[34px] sm:h-[72px] sm:w-[96px] md:left-[42px] md:h-[80px] md:w-[104px] lg:hidden" />
+        <div className="pointer-events-none absolute left-[26px] top-0 h-[64px] w-[86px] rounded-br-[2rem] bg-[#E90471] shadow-[inset_-6px_-6px_14px_rgba(255,255,255,0.12)] sm:left-[34px] sm:h-[72px] sm:w-[96px] md:left-[42px] md:h-[80px] md:w-[104px] lg:hidden" />
         <div className="pointer-events-none absolute right-[26px] top-0 h-[64px] w-[86px] rounded-bl-[2rem] bg-[#FA192A] shadow-[inset_6px_-6px_14px_rgba(255,255,255,0.12)] sm:right-[34px] sm:h-[72px] sm:w-[96px] md:right-[42px] md:h-[80px] md:w-[104px] lg:hidden" />
         <div className="pointer-events-none absolute bottom-0 left-[26px] h-[64px] w-[86px] rounded-tr-[2rem] bg-[#FA192A] shadow-[inset_-6px_6px_14px_rgba(255,255,255,0.12)] sm:left-[34px] sm:h-[72px] sm:w-[96px] md:left-[42px] md:h-[80px] md:w-[104px] lg:hidden" />
         <div className="pointer-events-none absolute bottom-0 right-[26px] h-[64px] w-[86px] rounded-tl-[2rem] bg-[#FA192A] shadow-[inset_6px_6px_14px_rgba(255,255,255,0.12)] sm:right-[34px] sm:h-[72px] sm:w-[96px] md:right-[42px] md:h-[80px] md:w-[104px] lg:hidden" />
-        <div className="pointer-events-none absolute left-[72px] top-0 hidden h-[120px] w-[168px] rounded-br-[2.9rem] bg-[#FA192A] shadow-[inset_-8px_-8px_18px_rgba(255,255,255,0.12)] lg:block xl:left-[78px]" />
+        <div className="pointer-events-none absolute left-[72px] top-0 hidden h-[120px] w-[168px] rounded-br-[2.9rem] bg-[#E90471] shadow-[inset_-8px_-8px_18px_rgba(255,255,255,0.12)] lg:block xl:left-[78px]" />
         <div className="pointer-events-none absolute right-[72px] top-0 hidden h-[120px] w-[168px] rounded-bl-[2.9rem] bg-[#FA192A] shadow-[inset_8px_-8px_18px_rgba(255,255,255,0.12)] lg:block xl:right-[78px]" />
         <div className="pointer-events-none absolute bottom-0 left-[72px] hidden h-[120px] w-[168px] rounded-tr-[2.9rem] bg-[#FA192A] shadow-[inset_-8px_8px_18px_rgba(255,255,255,0.12)] lg:block xl:left-[78px]" />
         <div className="pointer-events-none absolute bottom-0 right-[72px] hidden h-[120px] w-[168px] rounded-tl-[2.9rem] bg-[#FA192A] shadow-[inset_8px_8px_18px_rgba(255,255,255,0.12)] lg:block xl:right-[78px]" />
@@ -775,33 +812,45 @@ export function IntroScreen() {
             className="pointer-events-none absolute inset-0 rounded-[2rem] bg-no-repeat opacity-90"
             style={{
               backgroundImage:
-                "url('/assets/quiz-intro/backgrounds/hero-main-bg.png')",
-              backgroundPosition: isMobile ? "50% 50%" : "56% 46%",
+                isMobile
+                  ? "url('/assets/quiz-intro/backgrounds/hero-main-bg.png')"
+                  : "url('/assets/quiz-intro/backgrounds/hero-desktop-pop-texture.webp')",
+              backgroundPosition: isMobile ? "50% 50%" : "50% 34%",
               backgroundSize: isMobile ? "cover" : "cover",
             }}
           />
+          {isMobile ? (
+            <div
+              className="pointer-events-none absolute inset-0 rounded-[2rem] bg-cover bg-center opacity-[0.36] mix-blend-multiply"
+              style={{
+                backgroundImage:
+                  "url('/assets/quiz-intro/backgrounds/hero-desktop-pop-texture.webp')",
+                backgroundPosition: "50% 42%",
+              }}
+            />
+          ) : null}
           <div
             className={`pointer-events-none absolute inset-0 rounded-[2rem] ${
               isMobile
                 ? "bg-[linear-gradient(180deg,rgba(251,246,240,0.28)_0%,rgba(251,246,240,0.14)_18%,rgba(251,246,240,0.22)_42%,rgba(251,246,240,0.58)_72%,rgba(251,246,240,0.88)_90%,rgba(251,246,240,0.95)_100%)]"
-                : "bg-[linear-gradient(90deg,rgba(251,246,240,0.96)_0%,rgba(251,246,240,0.93)_34%,rgba(251,246,240,0.3)_56%,rgba(251,246,240,0.04)_74%)]"
+                : "bg-[linear-gradient(90deg,rgba(251,246,240,0.88)_0%,rgba(251,246,240,0.72)_30%,rgba(251,246,240,0.2)_52%,rgba(251,246,240,0.04)_74%)]"
             }`}
           />
           <div
             className={`pointer-events-none absolute inset-0 rounded-[2rem] ${
               isMobile
                 ? "bg-[radial-gradient(circle_at_50%_22%,rgba(255,247,239,0.24)_0%,rgba(255,247,239,0.14)_24%,rgba(255,247,239,0.04)_46%,rgba(255,247,239,0)_68%),radial-gradient(circle_at_50%_78%,rgba(255,247,239,0.18)_0%,rgba(255,247,239,0.08)_20%,rgba(255,247,239,0)_50%)] opacity-100"
-                : "bg-[radial-gradient(circle_at_12%_24%,rgba(251,246,240,0.92)_0%,rgba(251,246,240,0.68)_34%,rgba(251,246,240,0)_60%)] opacity-90"
+                : "bg-[radial-gradient(circle_at_12%_24%,rgba(251,246,240,0.72)_0%,rgba(251,246,240,0.44)_32%,rgba(251,246,240,0)_60%)] opacity-90"
             }`}
           />
           <div
             className={`pointer-events-none absolute inset-0 rounded-[2rem] ${
               isMobile
                 ? "bg-[radial-gradient(circle_at_50%_28%,rgba(255,138,0,0.16)_0%,rgba(247,84,166,0.14)_18%,rgba(255,138,0,0.08)_34%,rgba(255,255,255,0)_52%),radial-gradient(circle_at_50%_64%,rgba(255,173,102,0.12)_0%,rgba(247,84,166,0.08)_24%,rgba(255,255,255,0)_52%)] opacity-80"
-                : "bg-[radial-gradient(circle_at_64%_20%,rgba(255,138,0,0.18)_0%,rgba(247,84,166,0.14)_22%,rgba(255,138,0,0.08)_38%,rgba(255,255,255,0)_58%)] opacity-55"
+                : "bg-[radial-gradient(circle_at_64%_20%,rgba(255,138,0,0.16)_0%,rgba(247,84,166,0.12)_22%,rgba(255,138,0,0.08)_38%,rgba(255,255,255,0)_58%)] opacity-56"
             }`}
           />
-          <div className="pointer-events-none absolute inset-0 rounded-[2rem] bg-[radial-gradient(circle,rgba(255,255,255,0)_0%,rgba(255,255,255,0)_62%,rgba(255,255,255,0.14)_100%)]" />
+          <div className="pointer-events-none absolute inset-0 rounded-[2rem] bg-[radial-gradient(circle,rgba(255,255,255,0)_0%,rgba(255,255,255,0)_62%,rgba(255,255,255,0.18)_100%)]" />
           <div className="pointer-events-none absolute inset-[2%] rounded-[1.8rem] bg-[radial-gradient(circle_at_62%_24%,rgba(255,255,255,0)_0_40px,rgba(255,255,255,0.28)_41px_42px,rgba(255,255,255,0)_43px),radial-gradient(circle_at_62%_24%,rgba(255,255,255,0)_0_56px,rgba(255,255,255,0.22)_57px_58px,rgba(255,255,255,0)_59px)] opacity-60 mix-blend-screen" />
           <div
             className={`pointer-events-none absolute rounded-[999px] blur-3xl ${
@@ -819,14 +868,14 @@ export function IntroScreen() {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.45, delay: 0.08 }}
-                className="relative mx-auto grid w-[13.5rem] grid-cols-[1fr_auto_1fr] items-center text-[2rem] font-black tracking-[-0.04em] text-[#FF7A00] sm:mx-0 sm:flex sm:w-auto sm:items-center sm:gap-4 lg:-ml-8 lg:w-[410px] lg:max-w-none lg:justify-center"
+                className="relative mx-auto grid w-[14.5rem] grid-cols-[6.35rem_auto_6.95rem] items-center text-[2rem] font-black tracking-[-0.04em] text-[#FF7A00] sm:mx-0 sm:flex sm:w-auto sm:items-center sm:gap-4 lg:-ml-8 lg:w-[410px] lg:max-w-none lg:justify-center"
               >
-                <div className="flex h-[4.35rem] items-center justify-center pr-3 sm:h-auto sm:pr-0">
+                <div className="flex h-[5.45rem] items-center justify-center pr-2 sm:h-[4.5rem] sm:pr-0 lg:h-[4.5rem]">
                   {!showLogoFallback ? (
                     <img
-                      src="/assets/quiz-intro/logo/dunkin-logo.png"
+                      src="/assets/quiz-intro/logo/dunkin-logo.webp"
                       alt="Dunkin"
-                      className="h-7 w-auto shrink-0 sm:h-8"
+                      className="h-full max-w-full shrink-0 object-contain"
                       onError={(event) => {
                         event.currentTarget.style.display = "none";
                         setShowLogoFallback(true);
@@ -839,13 +888,13 @@ export function IntroScreen() {
                 </div>
                 <span
                   aria-hidden="true"
-                  className="h-8 w-px shrink-0 justify-self-center rounded-full bg-[#E8CDB9] sm:h-7 lg:h-8"
+                  className="h-10 w-[2px] shrink-0 justify-self-center rounded-full bg-[#D7B29A] shadow-[0_6px_14px_rgba(102,66,30,0.12)] sm:h-7 sm:w-px sm:bg-[#E8CDB9] sm:shadow-none lg:h-8"
                 />
-                <div className="flex h-[4.35rem] items-center justify-center pl-3 sm:h-auto sm:pl-0">
+                <div className="flex h-[5.45rem] items-center justify-center pl-2 sm:h-[4.5rem] sm:pl-0 lg:h-[4.5rem]">
                   <img
-                    src="/assets/quiz-intro/logo/YES_ALL_DAY.png"
+                    src="/assets/quiz-intro/logo/YES_ALL_DAY.webp"
                     alt="Yes All Day"
-                    className="relative top-[1px] h-[4.7rem] w-auto shrink-0 object-contain sm:h-[4.5rem] lg:h-[5.5rem]"
+                    className="relative top-[1px] h-full max-w-full shrink-0 object-contain"
                     onError={(event) => {
                       event.currentTarget.style.display = "none";
                     }}
@@ -858,7 +907,7 @@ export function IntroScreen() {
                 onClick={() => setShowHowItWorks((current) => !current)}
                 aria-expanded={showHowItWorks}
                 aria-controls="how-it-works-panel"
-                className="inline-flex items-center gap-2 rounded-full border border-[#E6C8B3] bg-[#FFF3E8]/90 px-4 py-2 text-[0.9rem] font-semibold text-[#4A281B] shadow-[0_10px_26px_rgba(102,66,30,0.12)] transition-colors hover:bg-[#FFF7F0] lg:justify-self-end"
+                className="inline-flex items-center gap-2 rounded-full border border-[#E6C8B3] bg-[#FFF3E8]/90 px-4 py-2 text-[0.9rem] font-semibold text-[#4A281B] shadow-[0_10px_26px_rgba(102,66,30,0.12)] transition-colors hover:bg-[#FFF7F0] lg:-mt-8 lg:justify-self-end"
               >
                 <CircleHelp className="h-4 w-4 text-[#C9833A]" />
                 <span className="hidden sm:inline">¿Cómo funciona el test?</span>
@@ -933,12 +982,12 @@ export function IntroScreen() {
                     <div
                       className={`mx-auto w-full max-w-[248px] overflow-hidden rounded-[1.65rem] border border-[#F0DFD0] bg-white/55 p-2.5 shadow-[0_18px_40px_rgba(89,53,17,0.12)] ${
                         showHeadlineFallback ? "hidden" : ""
-                      }`}
+                      } aspect-square flex items-center justify-center`}
                     >
                       <img
                         src="/assets/quiz-intro/headlines/dime-que-tomas.png"
                         alt="Dime qué tomas y te diré quién eres"
-                        className="w-full select-none object-contain"
+                        className="h-full w-full select-none object-contain"
                         onError={(event) => {
                           event.currentTarget.style.display = "none";
                           setShowHeadlineFallback(true);
@@ -961,12 +1010,12 @@ export function IntroScreen() {
                   <div
                     className={`w-full max-w-[480px] overflow-hidden rounded-[1.85rem] border border-[rgba(240,223,208,0.72)] bg-[rgba(251,246,240,0.62)] p-2.5 shadow-[0_18px_40px_rgba(89,53,17,0.1)] ${
                       showHeadlineFallback ? "hidden" : ""
-                    }`}
+                    } aspect-square flex items-center justify-center`}
                   >
                     <img
                       src="/assets/quiz-intro/headlines/dime-que-tomas.png"
                       alt="Dime qué tomas y te diré quién eres"
-                      className="w-full select-none object-contain"
+                      className="h-full w-full select-none object-contain"
                       onError={(event) => {
                         event.currentTarget.style.display = "none";
                         setShowHeadlineFallback(true);
@@ -987,17 +1036,80 @@ export function IntroScreen() {
                   <span className="sr-only">
                     Dime qué tomas y te diré quién eres
                   </span>
-                  <p className="max-w-[430px] rounded-[1.1rem] border border-[#F0DFD0] bg-white/74 px-4 py-3 text-[0.95rem] font-semibold leading-7 text-[#4E3325] shadow-[0_10px_26px_rgba(102,66,30,0.06)] backdrop-blur-[2px]">
-                    En 4 preguntas descubrimos tu match Dunkin y al final te
-                    damos una recomendación de bebidas para acompañar tu mood.
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.45, delay: 0.12 }}
+                    className="hidden items-center gap-2.5 text-center lg:-mt-1 lg:flex lg:flex-col"
+                  >
+                    <motion.div
+                      className="relative"
+                      animate={{ y: [0, -1.5, 0] }}
+                      transition={{
+                        duration: 3.2,
+                        repeat: Number.POSITIVE_INFINITY,
+                        ease: "easeInOut",
+                      }}
+                    >
+                      <motion.span
+                        aria-hidden="true"
+                        className="pointer-events-none absolute inset-[-10px] rounded-full bg-[radial-gradient(circle,rgba(255,103,31,0.28)_0%,rgba(255,103,31,0.14)_42%,rgba(255,103,31,0)_76%)] blur-xl"
+                        animate={{ opacity: [0.58, 0.82, 0.58], scale: [1, 1.04, 1] }}
+                        transition={{
+                          duration: 3.2,
+                          repeat: Number.POSITIVE_INFINITY,
+                          ease: "easeInOut",
+                        }}
+                      />
+                    <Button
+                      size="lg"
+                      onClick={handleStartQuiz}
+                      className="group relative mx-auto w-full max-w-[20.5rem] overflow-hidden border border-[#D95816] bg-[linear-gradient(180deg,#FFB064_0%,#FF671F_50%,#DE4F0D_100%)] px-9 py-4 text-white shadow-[0_18px_34px_rgba(255,103,31,0.3)] ring-1 ring-[#FFF1E4]/90 [border-radius:999px_999px_920px_999px] before:absolute before:inset-x-[14%] before:top-[7%] before:h-[38%] before:rounded-full before:bg-white/22 before:blur-xl before:content-[''] hover:-translate-y-0.5 hover:border-[#C94B0B] hover:shadow-[0_24px_42px_rgba(255,103,31,0.36)]"
+                    >
+                      <motion.span
+                        aria-hidden="true"
+                        className="pointer-events-none absolute inset-y-[12%] left-[-24%] w-[34%] rounded-full bg-[linear-gradient(115deg,rgba(255,255,255,0)_0%,rgba(255,255,255,0.16)_28%,rgba(255,255,255,0.34)_48%,rgba(255,255,255,0)_72%)] blur-md"
+                        animate={{ x: ["0%", "360%"] }}
+                        transition={{
+                          duration: 2.9,
+                          repeat: Number.POSITIVE_INFINITY,
+                          repeatDelay: 1.8,
+                          ease: "easeInOut",
+                        }}
+                      />
+                      <span className="relative z-10 flex items-center justify-center gap-2.5 font-display uppercase tracking-[-0.04em]">
+                        <span className="text-[1.16rem]">
+                          Descubre tu bebida ideal
+                        </span>
+                        <motion.span
+                          className="flex h-10 w-10 items-center justify-center rounded-full bg-white/22 shadow-[inset_0_1px_0_rgba(255,255,255,0.28),0_8px_16px_rgba(170,61,10,0.14)] transition-transform duration-300 group-hover:scale-105"
+                          animate={{ x: [0, 2.5, 0] }}
+                          transition={{
+                            duration: 1.7,
+                            repeat: Number.POSITIVE_INFINITY,
+                            repeatDelay: 1.2,
+                            ease: "easeInOut",
+                          }}
+                        >
+                          <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1.5" />
+                        </motion.span>
+                      </span>
+                    </Button>
+                    </motion.div>
+                    <div className="inline-flex items-center rounded-full border border-[#F2DFC9] bg-white/88 px-3.5 py-1.5 text-[0.72rem] font-semibold text-[#7A5134] shadow-[0_10px_22px_rgba(102,66,30,0.08)]">
+                      <span>4 preguntas • 1 minuto</span>
+                    </div>
+                  </motion.div>
+                  <p className="max-w-[430px] rounded-[1.1rem] border border-[#EFDCCB] bg-white/86 px-4 py-3 text-[0.95rem] font-semibold leading-7 text-[#4E3325] shadow-[0_10px_26px_rgba(102,66,30,0.08)] backdrop-blur-[3px]">
+                    Responde 4 preguntas y descubre la bebida Dunkin que mejor
+                    va con tu mood.
                   </p>
-                  <div className="rounded-[1.2rem] border border-[#F0DFD0] bg-white/72 p-3 shadow-[0_10px_26px_rgba(102,66,30,0.06)]">
+                  <div className="mx-auto rounded-[1.2rem] border border-[#EFDCCB] bg-white/84 p-3 shadow-[0_10px_26px_rgba(102,66,30,0.08)] backdrop-blur-[3px]">
                     <p className="text-[0.9rem] font-black leading-6 text-[#432418]">
-                      {questions.length} preguntas rápidas con resultado al
-                      instante
+                      {questions.length} preguntas rápidas y resultado al instante
                     </p>
                     <p className="mt-1 text-[0.82rem] font-medium leading-5 text-[#6C5041]">
-                      Responde y descubre tu recomendación.
+                      Hazlo en un minuto y mira qué bebida va contigo.
                     </p>
                   </div>
                 </div>
@@ -1006,7 +1118,7 @@ export function IntroScreen() {
                   <Button
                     size="lg"
                     onClick={handleStartQuiz}
-                    className="group relative w-full max-w-[18.2rem] overflow-hidden border border-[#F0C79B] bg-[linear-gradient(180deg,#FFAA43_0%,#FF8A1E_54%,#F56E00_100%)] px-7 py-3.5 text-white shadow-[0_16px_30px_rgba(255,122,0,0.18)] ring-1 ring-[#FFF2E3]/85 [border-radius:999px_999px_920px_999px] before:absolute before:inset-x-[18%] before:top-[10%] before:h-[34%] before:rounded-full before:bg-white/14 before:blur-xl before:content-[''] hover:border-[#E8B782] hover:shadow-[0_20px_36px_rgba(245,110,0,0.22)] sm:min-w-[272px] sm:w-auto sm:px-11 sm:py-5"
+                    className="group relative w-full max-w-[18.2rem] overflow-hidden border border-[#D95816] bg-[linear-gradient(180deg,#FFB064_0%,#FF671F_50%,#DE4F0D_100%)] px-7 py-3.5 text-white shadow-[0_18px_34px_rgba(255,103,31,0.3)] ring-1 ring-[#FFF1E4]/90 [border-radius:999px_999px_920px_999px] before:absolute before:inset-x-[14%] before:top-[7%] before:h-[38%] before:rounded-full before:bg-white/22 before:blur-xl before:content-[''] hover:-translate-y-0.5 hover:border-[#C94B0B] hover:shadow-[0_24px_42px_rgba(255,103,31,0.36)] sm:min-w-[272px] sm:w-auto sm:px-11 sm:py-5 lg:hidden"
                   >
                     <span className="relative z-10 flex items-center justify-center gap-2 font-display uppercase tracking-[-0.04em]">
                       <span className="text-[1rem] sm:text-[1.12rem] lg:hidden">
@@ -1015,18 +1127,16 @@ export function IntroScreen() {
                       <span className="hidden text-[1.12rem] sm:text-[1.16rem] lg:inline">
                         Descubre tu bebida ideal
                       </span>
-                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.24)]">
-                        <ArrowRight className="h-4.5 w-4.5 transition-transform duration-300 group-hover:translate-x-1" />
+                      <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/22 shadow-[inset_0_1px_0_rgba(255,255,255,0.28),0_8px_16px_rgba(170,61,10,0.14)] transition-transform duration-300 group-hover:scale-105">
+                        <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1.5" />
                       </span>
                     </span>
                   </Button>
-                  <div className="inline-flex items-center rounded-full border border-[#F2DFC9] bg-white/82 px-3.5 py-1.5 text-[0.7rem] font-semibold text-[#7A5134] shadow-[0_10px_22px_rgba(102,66,30,0.06)] lg:ml-1">
+                  <div className="inline-flex items-center rounded-full border border-[#F2DFC9] bg-white/86 px-3.5 py-1.5 text-[0.7rem] font-semibold text-[#7A5134] shadow-[0_10px_22px_rgba(102,66,30,0.08)] lg:hidden">
                     <span className="lg:hidden">4 preguntas • 1 minuto</span>
-                    <span className="hidden lg:inline">
-                      4 preguntas para descubrir tu match Dunkin
-                    </span>
+                    <span className="hidden lg:inline">4 preguntas • 1 minuto</span>
                   </div>
-                  <div className="inline-flex items-center rounded-full border border-[#F0DFD0] bg-white/88 px-3 py-1.5 text-[0.72rem] font-semibold text-[#6B4733] shadow-[0_10px_22px_rgba(102,66,30,0.06)] lg:hidden">
+                  <div className="inline-flex items-center rounded-full border border-[#F0DFD0] bg-white/92 px-3 py-1.5 text-[0.72rem] font-semibold text-[#6B4733] shadow-[0_10px_22px_rgba(102,66,30,0.08)] lg:hidden">
                     <span>Responde rápido y descubre tu recomendación.</span>
                   </div>
                 </div>
@@ -1037,7 +1147,7 @@ export function IntroScreen() {
               initial={{ opacity: 0, x: 24 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.55, delay: 0.05 }}
-              className="order-2 relative mx-auto w-full max-w-[368px] lg:order-2 lg:mx-0 lg:ml-[6.25rem] lg:max-w-none lg:-mt-[8.25rem] xl:ml-[7.25rem] xl:-mt-[9.25rem] 2xl:ml-[7.75rem]"
+              className="order-2 relative mx-auto w-full max-w-[368px] lg:order-2 lg:mx-0 lg:ml-[6.25rem] lg:max-w-none lg:-mt-[13.2rem] xl:ml-[7.25rem] xl:-mt-[14.55rem] 2xl:ml-[7.75rem]"
             >
               <div className="relative mx-auto flex min-h-[330px] w-full max-w-[1180px] flex-col items-center justify-start overflow-visible rounded-[1.75rem] px-[1.25rem] pb-2 pt-2 sm:min-h-[620px] sm:rounded-[2rem] sm:px-4 sm:pb-2 sm:pt-2 lg:min-h-[740px]">
                 <div className="pointer-events-none absolute left-[18%] top-[14%] h-3.5 w-3.5 rounded-full bg-[#F2A400] sm:top-[22%]" />
@@ -1071,7 +1181,7 @@ export function IntroScreen() {
                   type="button"
                   onPointerDown={isMobile ? undefined : handlePrevPointerDown}
                   onClick={isMobile ? goPrev : handlePrevClick}
-                  className="absolute left-3 top-[14%] z-[80] flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/70 bg-[linear-gradient(180deg,#FFF9F3_0%,#FFF1E7_100%)] text-[#4A281B] shadow-[0_18px_40px_rgba(116,75,33,0.2)] ring-1 ring-[#E6C8B3]/70 backdrop-blur-sm transition-transform active:scale-[0.97] sm:left-5 sm:top-[42%] sm:h-12 sm:w-12 lg:left-10 lg:h-12 lg:w-12 lg:hover:scale-105"
+                  className="absolute left-3 top-[14%] z-[80] flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/70 bg-[linear-gradient(180deg,#FFF9F3_0%,#FFF1E7_100%)] text-[#4A281B] shadow-[0_18px_40px_rgba(116,75,33,0.2)] ring-1 ring-[#E6C8B3]/70 backdrop-blur-sm transition-transform active:scale-[0.97] sm:left-5 sm:top-[42%] sm:h-12 sm:w-12 lg:left-4 xl:left-0 lg:h-12 lg:w-12 lg:hover:scale-105"
                   aria-label="Ver bebida anterior"
                 >
                   <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -1081,13 +1191,13 @@ export function IntroScreen() {
                   type="button"
                   onPointerDown={isMobile ? undefined : handleNextPointerDown}
                   onClick={isMobile ? goNext : handleNextClick}
-                  className="absolute right-3 top-[14%] z-[80] flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/70 bg-[linear-gradient(180deg,#FFF9F3_0%,#FFF1E7_100%)] text-[#4A281B] shadow-[0_18px_40px_rgba(116,75,33,0.2)] ring-1 ring-[#E6C8B3]/70 backdrop-blur-sm transition-transform active:scale-[0.97] sm:right-5 sm:top-[42%] sm:h-12 sm:w-12 lg:right-10 lg:h-12 lg:w-12 lg:hover:scale-105"
+                  className="absolute right-3 top-[14%] z-[80] flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/70 bg-[linear-gradient(180deg,#FFF9F3_0%,#FFF1E7_100%)] text-[#4A281B] shadow-[0_18px_40px_rgba(116,75,33,0.2)] ring-1 ring-[#E6C8B3]/70 backdrop-blur-sm transition-transform active:scale-[0.97] sm:right-5 sm:top-[42%] sm:h-12 sm:w-12 lg:right-4 xl:right-0 lg:h-12 lg:w-12 lg:hover:scale-105"
                   aria-label="Ver siguiente bebida"
                 >
                   <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />
                 </button>
 
-                <div className="relative -mt-3 flex h-[292px] w-full items-end justify-center overflow-visible sm:-mt-4 sm:h-[560px] lg:-mt-4 lg:h-[650px]">
+                <div className="relative -mt-3 flex h-[292px] w-full items-end justify-center overflow-visible sm:-mt-4 sm:h-[560px] lg:-mt-6 lg:h-[730px]">
                   {INTRO_DRINKS.map((drink, index) => {
                     const state = getCarouselState(
                       index,
@@ -1128,7 +1238,7 @@ export function IntroScreen() {
                                 }
                               : { duration: 0.22, ease: "easeOut" },
                           }}
-                          className="flex w-[136px] flex-col items-center sm:w-[260px] lg:w-[300px] xl:w-[320px]"
+                          className="flex w-[136px] flex-col items-center sm:w-[260px] lg:w-[336px] xl:w-[360px]"
                         >
                           <motion.div
                             key={`${drink.id}-${isActive ? activeIndex : "idle"}`}
@@ -1157,7 +1267,7 @@ export function IntroScreen() {
                             </div>
                           </motion.div>
                           <span
-                            className={`font-display mt-1 items-center justify-center overflow-hidden border border-[#eadccd] px-2 text-center leading-[1.02] shadow-[0_8px_20px_rgba(102,66,30,0.08)] sm:mt-2 sm:inline-flex sm:min-h-[44px] sm:w-[148px] sm:px-3.5 sm:py-1.5 sm:text-[11px] ${
+                            className={`font-display mt-1 items-center justify-center overflow-hidden border border-[#eadccd] px-2 text-center leading-[0.95] shadow-[0_8px_20px_rgba(102,66,30,0.08)] backdrop-blur-[3px] sm:mt-2 sm:inline-flex sm:min-h-[44px] sm:w-[148px] sm:px-3.5 sm:py-1.5 sm:text-[11px] lg:min-h-[40px] lg:w-[136px] lg:px-3 lg:py-1.5 lg:text-[10.8px] xl:min-h-[42px] xl:w-[142px] xl:text-[11px] ${
                               isMobile
                                 ? state.slot === "hidden"
                                   ? "hidden"
@@ -1167,32 +1277,13 @@ export function IntroScreen() {
                                 : "inline-flex sm:max-w-none"
                             } ${
                               isActive ? "opacity-100" : "opacity-98"
-                            } ${
-                              isMobile
-                                ? "rotate-0"
-                                : state.slot === "left-far"
-                                ? "-rotate-[5deg]"
-                                : state.slot === "left-near"
-                                  ? "-rotate-[2deg]"
-                                  : state.slot === "right-near"
-                                    ? "rotate-[2deg]"
-                                    : state.slot === "right-far"
-                                      ? "rotate-[5deg]"
-                                      : "-rotate-[1deg]"
-                            }`}
+                            } rotate-0`}
                             style={{
-                              color: isMobile
-                                ? drink.textColor
-                                : state.slot === "active"
-                                  ? "#4A281B"
-                                  : drink.textColor,
-                              background: isMobile
-                                ? `linear-gradient(180deg, #FFF8EF 0%, ${drink.textColor}14 100%)`
-                                : undefined,
+                              color:
+                                isActive && !isMobile ? "#4A281B" : drink.textColor,
+                              background: `linear-gradient(180deg, #FFF8EF 0%, ${drink.textColor}14 100%)`,
                               borderColor:
-                                isMobile
-                                  ? `${drink.textColor}30`
-                                  : undefined,
+                                `${drink.textColor}${isActive && !isMobile ? "38" : "30"}`,
                               borderRadius: "14px 10px 15px 11px",
                             }}
                           >
@@ -1210,11 +1301,11 @@ export function IntroScreen() {
                   <span className="inline-flex rounded-full border border-[#F6CCAF] bg-[linear-gradient(180deg,#FFE7D7_0%,#FFD7BF_100%)] px-3.5 py-1 text-[0.62rem] font-black uppercase tracking-[0.16em] text-[#E8711B] shadow-[0_10px_20px_rgba(102,66,30,0.08)] sm:text-[0.68rem]">
                     Tu match puede ser
                   </span>
-                  <h2 className="font-display mx-auto flex min-h-[4.5rem] max-w-[16.5rem] items-center justify-center px-2 text-[1.64rem] font-black leading-[0.92] tracking-[-0.04em] text-[#3A1F15] [text-shadow:0_1px_0_rgba(255,255,255,0.24)] sm:min-h-[5rem] sm:max-w-[20rem] sm:px-0 sm:text-[2.1rem] lg:min-h-[5.2rem] lg:max-w-[24rem] lg:text-[2.35rem]">
+                  <h2 className="font-display mx-auto flex min-h-[4.5rem] max-w-[16.5rem] items-center justify-center px-2 text-[1.64rem] font-black leading-[0.92] tracking-[-0.04em] text-[#3A1F15] [text-shadow:0_1px_0_rgba(255,255,255,0.24)] sm:min-h-[5rem] sm:max-w-[20rem] sm:px-0 sm:text-[2.1rem] lg:h-[5.6rem] lg:w-[24rem] lg:max-w-[24rem] lg:text-[2.28rem] xl:w-[26rem] xl:max-w-[26rem] xl:text-[2.4rem]">
                     {activeDrink.name}
                   </h2>
                   <p className="mx-auto min-h-[6.9rem] max-w-[14.75rem] rounded-[1.3rem] border border-[#EFD9CC] bg-[linear-gradient(180deg,rgba(255,250,246,0.92)_0%,rgba(255,244,238,0.84)_100%)] px-4 py-3 text-[0.82rem] font-medium leading-6 text-[#5A3D30] shadow-[0_12px_26px_rgba(102,66,30,0.06)] backdrop-blur-[4px] sm:max-w-[22rem] sm:min-h-[4.9rem] sm:rounded-[1rem] sm:border-0 sm:bg-white/64 sm:px-3 sm:py-2 sm:text-[0.95rem] sm:leading-5 sm:shadow-[0_8px_18px_rgba(102,66,30,0.05)] sm:backdrop-blur-[2px]">
-                    Una bebida con personalidad propia para acompañar tu mood.
+                    Una bebida con personalidad que va con tu mood.
                   </p>
                 </div>
 
@@ -1245,11 +1336,11 @@ export function IntroScreen() {
             <div className="flex flex-col items-center gap-2 text-center sm:flex-row sm:items-end sm:justify-between sm:text-left">
               <div className="flex flex-col items-center rounded-[1.15rem] bg-white/58 px-4 py-3 shadow-[0_10px_22px_rgba(102,66,30,0.05)] backdrop-blur-[2px] sm:items-start">
                 <h3 className="font-display text-[1.75rem] font-black leading-none tracking-[-0.04em] text-[#3E2217]">
-                  Cada bebida, una personalidad
+                  Una bebida, una personalidad
                 </h3>
                 <p className="mt-2 text-[0.9rem] font-medium text-[#5E4638] sm:text-[0.95rem]">
-                  Descubre los perfiles que inspiran cada bebida y cómo se
-                  conectan con distintos tipos de plan.
+                  Descubre la vibra de cada bebida y cómo conecta con distintos
+                  planes.
                 </p>
               </div>
               <button
@@ -1391,9 +1482,9 @@ export function IntroScreen() {
                         target="_blank"
                         rel="noreferrer"
                         aria-label={`Ir a ${social.label} de Dunkin Colombia`}
-                        className={`flex h-8 w-8 items-center justify-center rounded-full bg-white/85 shadow-[0_8px_20px_rgba(102,66,30,0.08)] transition-transform hover:scale-105 lg:h-9 lg:w-9 lg:bg-[#FFF8F1] lg:ring-1 lg:ring-[#E6C8B3] lg:shadow-[0_10px_22px_rgba(102,66,30,0.12)] ${social.accentClass}`}
+                        className={`flex h-9 w-9 items-center justify-center rounded-full border border-[#E6C8B3]/85 bg-[#FFF8F1]/96 shadow-[0_10px_24px_rgba(102,66,30,0.12)] ring-1 ring-white/60 transition-transform hover:scale-105 lg:h-9 lg:w-9 lg:bg-[#FFF8F1] lg:ring-1 lg:ring-[#E6C8B3] lg:shadow-[0_10px_22px_rgba(102,66,30,0.12)] ${social.accentClass}`}
                       >
-                        <Icon className="h-4 w-4 lg:h-[18px] lg:w-[18px]" />
+                        <Icon className="h-[18px] w-[18px] lg:h-[18px] lg:w-[18px]" />
                       </a>
                     );
                   })}

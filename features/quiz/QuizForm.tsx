@@ -94,14 +94,14 @@ export function QuizForm({ onSuccess }: QuizFormProps) {
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bg-white rounded-3xl p-8 shadow-xl border border-neutral-100 text-center"
+        className="rounded-[1.35rem] border border-[#EADDCF] bg-[linear-gradient(180deg,#FFF8F2_0%,#FFF2E8_100%)] p-6 text-center shadow-[0_18px_34px_rgba(89,53,17,0.06)] sm:p-8"
       >
-        <CheckCircle2 className="w-20 h-20 text-green-500 mx-auto mb-4" />
-        <h3 className="text-2xl font-bold text-neutral-900 mb-2">
+        <CheckCircle2 className="mx-auto mb-4 h-16 w-16 text-[#2BAA6A]" />
+        <h3 className="mb-2 text-xl font-black tracking-[-0.03em] text-[#4A281B] sm:text-2xl">
           ¡Gracias por participar!
         </h3>
-        <p className="text-lg text-neutral-600">
-          Tu información ha sido guardada correctamente.
+        <p className="text-[0.95rem] leading-6 text-[#6B5B4F] sm:text-lg">
+          Tu registro quedó guardado correctamente.
         </p>
       </motion.div>
     );
@@ -111,12 +111,14 @@ export function QuizForm({ onSuccess }: QuizFormProps) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white rounded-3xl p-8 shadow-xl border border-neutral-100"
+      className="rounded-[1.35rem] border border-[#EADDCF] bg-[linear-gradient(180deg,#FFF8F2_0%,#FFF2E8_100%)] p-5 shadow-[0_18px_34px_rgba(89,53,17,0.06)] sm:p-8"
     >
-      <div className="flex items-center gap-3 mb-6">
-        <Info className="w-8 h-8 text-primary-500" />
-        <h3 className="text-xl font-bold text-neutral-900">
-          ¡Ahora completa tu registro!
+      <div className="mb-6 flex items-center gap-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#FFE7D2] text-[#FF7A00]">
+          <Info className="h-5 w-5" />
+        </div>
+        <h3 className="text-[1.05rem] font-black tracking-[-0.03em] text-[#4A281B] sm:text-xl">
+          Completa tu registro para guardar y compartir tu resultado.
         </h3>
       </div>
 
@@ -168,7 +170,7 @@ export function QuizForm({ onSuccess }: QuizFormProps) {
         </div>
 
         {/* Mensaje de información sobre tratamiento de datos */}
-        <div className="rounded-2xl border border-neutral-100 bg-neutral-50">
+        <div className="rounded-[1.15rem] border border-[#EADDCF] bg-white/75 shadow-[0_12px_24px_rgba(89,53,17,0.04)]">
           <button
             type="button"
             onClick={() => setShowDataInfo((current) => !current)}
@@ -177,16 +179,16 @@ export function QuizForm({ onSuccess }: QuizFormProps) {
             className="flex w-full items-center justify-between gap-3 px-4 py-4 text-left sm:px-6 sm:py-5"
           >
             <div className="space-y-1">
-              <p className="text-sm font-semibold text-neutral-800">
+              <p className="text-sm font-bold text-[#4A281B]">
                 Tratamiento de datos
               </p>
-              <p className="text-xs text-neutral-500">
+              <p className="text-xs text-[#7A6A5B]">
                 {showDataInfo
                   ? "Ver menos del detalle"
                   : "Ver más del detalle"}
               </p>
             </div>
-            <span className="text-neutral-500">
+            <span className="text-[#7A6A5B]">
               {showDataInfo ? (
                 <ChevronUp className="h-5 w-5" />
               ) : (
@@ -197,9 +199,9 @@ export function QuizForm({ onSuccess }: QuizFormProps) {
           {showDataInfo ? (
             <div
               id="data-processing-info"
-              className="border-t border-neutral-100 px-4 pb-4 pt-0 sm:px-6 sm:pb-5"
+              className="border-t border-[#EADDCF] px-4 pb-4 pt-0 sm:px-6 sm:pb-5"
             >
-              <p className="text-sm leading-relaxed text-neutral-600">
+              <p className="text-sm leading-relaxed text-[#6B5B4F]">
                 Tu información es importante para nosotros. La utilizaremos
                 únicamente para gestionar esta experiencia, ayudarte a descubrir
                 nuevas bebidas de Dunkin y, si nos autorizas, compartirte
@@ -209,8 +211,8 @@ export function QuizForm({ onSuccess }: QuizFormProps) {
               </p>
             </div>
           ) : (
-            <div className="border-t border-neutral-100 px-4 pb-4 pt-3 sm:px-6 sm:pb-5">
-              <p className="text-sm leading-relaxed text-neutral-600">
+            <div className="border-t border-[#EADDCF] px-4 pb-4 pt-3 sm:px-6 sm:pb-5">
+              <p className="text-sm leading-relaxed text-[#6B5B4F]">
                 Usaremos tus datos para gestionar esta experiencia y, si lo
                 autorizas, compartirte novedades y beneficios de Dunkin.
               </p>
@@ -239,9 +241,9 @@ export function QuizForm({ onSuccess }: QuizFormProps) {
         </div>
 
         {submitError && (
-          <div className="bg-red-50 border border-red-200 rounded-2xl p-4 flex items-start gap-3">
-            <AlertCircle className="w-6 h-6 text-red-500 flex-shrink-0 mt-0.5" />
-            <p className="text-red-700">{submitError}</p>
+          <div className="flex items-start gap-3 rounded-[1.15rem] border border-[#F3C1C1] bg-[#FFF3F3] p-4">
+            <AlertCircle className="mt-0.5 h-6 w-6 shrink-0 text-[#D44B4B]" />
+            <p className="text-[#8F2F2F]">{submitError}</p>
           </div>
         )}
 
@@ -249,16 +251,17 @@ export function QuizForm({ onSuccess }: QuizFormProps) {
           type="submit"
           size="lg"
           disabled={isSubmitting}
-          className="w-full py-5 text-lg shadow-xl"
+          className="group relative w-full overflow-hidden rounded-full border border-[#D95816] bg-[linear-gradient(180deg,#FFB064_0%,#FF671F_50%,#DE4F0D_100%)] py-5 text-lg text-white shadow-[0_18px_30px_rgba(255,122,0,0.22)] ring-1 ring-[#FFF1E4]/80"
         >
+          <span className="pointer-events-none absolute inset-y-[12%] left-[-24%] w-[34%] rounded-full bg-[linear-gradient(115deg,rgba(255,255,255,0)_0%,rgba(255,255,255,0.16)_28%,rgba(255,255,255,0.34)_48%,rgba(255,255,255,0)_72%)] blur-md transition-transform duration-500 group-hover:translate-x-[350%]" />
           {isSubmitting ? (
             <>
-              <Loader className="w-5 h-5 mr-2" />
+              <Loader className="mr-2 h-5 w-5" />
               Guardando...
             </>
           ) : (
             <>
-              <Send className="w-5 h-5 mr-2" />
+              <Send className="mr-2 h-5 w-5" />
               Guardar mi información
             </>
           )}

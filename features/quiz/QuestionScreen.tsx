@@ -45,16 +45,50 @@ const optionIcons = {
   "party-popper": PartyPopper,
 } as const;
 
+function renderHighlightedQuestion(question: QuizQuestion) {
+  if (!question.questionHighlight) {
+    return question.question;
+  }
+
+  const highlightStart = question.question.indexOf(question.questionHighlight);
+
+  if (highlightStart === -1) {
+    return question.question;
+  }
+
+  const beforeHighlight = question.question.slice(0, highlightStart);
+  const highlightedText = question.questionHighlight;
+  const afterHighlight = question.question.slice(
+    highlightStart + highlightedText.length
+  );
+
+  return (
+    <>
+      {beforeHighlight}
+      <span className="text-[#FF671F]">{highlightedText}</span>
+      {afterHighlight}
+    </>
+  );
+}
+
 function QuestionVisual({
   question,
   questionNumber,
   compact = false,
+  displayMode = "default",
 }: {
   question: QuizQuestion;
   questionNumber: number;
   compact?: boolean;
+  displayMode?: "default" | "mobile-inline";
 }) {
   const [imageHidden, setImageHidden] = useState(false);
+  const mobileImageTransform =
+    displayMode === "mobile-inline"
+      ? `translate(${question.mobileImageOffsetX || 0}px, ${
+          question.mobileImageOffsetY || 0
+        }px) scale(${question.mobileImageScale || 1})`
+      : undefined;
 
   if (question.image && !imageHidden) {
     return (
@@ -62,6 +96,8 @@ function QuestionVisual({
         className={`relative z-10 overflow-hidden border border-[#EEDFD1] bg-white/88 p-1.5 shadow-[0_24px_44px_rgba(87,45,0,0.12)] ${
           compact
             ? "flex h-[104px] w-[70px] items-center justify-center rounded-[1rem]"
+            : displayMode === "mobile-inline"
+              ? "flex h-full w-full items-center justify-center rounded-[1.2rem] p-2"
             : "rounded-[2rem] md:rounded-[2.2rem] xl:rounded-[2.4rem]"
         }`}
       >
@@ -71,8 +107,18 @@ function QuestionVisual({
           className={`block max-w-full object-center ${
             compact
               ? "max-h-full w-full rounded-[0.9rem] object-contain"
+              : displayMode === "mobile-inline"
+                ? "h-full w-full rounded-[1rem] object-contain"
               : "max-h-[356px] rounded-[1.7rem] md:max-h-[398px] md:rounded-[1.95rem] xl:max-h-[474px] xl:rounded-[2.1rem] 2xl:max-h-[540px]"
           }`}
+          style={
+            displayMode === "mobile-inline"
+              ? {
+                  transform: mobileImageTransform,
+                  transformOrigin: "center center",
+                }
+              : undefined
+          }
           onError={() => setImageHidden(true)}
         />
       </div>
@@ -123,8 +169,8 @@ function SideRibbon({
   const [useFallback, setUseFallback] = useState(false);
   const imageSrc =
     side === "left"
-      ? "/assets/quiz-intro/borders/side-ribbon-left.png"
-      : "/assets/quiz-intro/borders/side-ribbon-right.png";
+      ? "/assets/quiz-intro/borders/side-ribbon-left.webp"
+      : "/assets/quiz-intro/borders/side-ribbon-right.webp";
 
   return (
     <div
@@ -277,7 +323,7 @@ export function QuestionScreen() {
                         {!showLogoFallback ? (
                           <div className="flex h-[1.9rem] w-[8.4rem] items-center justify-center overflow-hidden sm:h-auto sm:w-auto sm:overflow-visible">
                             <img
-                              src="/assets/quiz-intro/logo/dunkin-logo.png"
+                              src="/assets/quiz-intro/logo/dunkin-logo.webp"
                               alt="Dunkin"
                               className="h-full w-full shrink-0 object-contain sm:h-7 sm:w-auto"
                               onError={(event) => {
@@ -298,7 +344,7 @@ export function QuestionScreen() {
                       <div className="flex h-[2.15rem] items-center justify-center pl-2.5 sm:h-auto sm:pl-0">
                         <div className="flex h-[2.6rem] w-[4.8rem] items-center justify-center overflow-hidden sm:h-auto sm:w-auto sm:overflow-visible">
                           <img
-                            src="/assets/quiz-intro/logo/YES_ALL_DAY.png"
+                            src="/assets/quiz-intro/logo/YES_ALL_DAY.webp"
                             alt="Yes All Day"
                             className="relative top-[1px] h-full w-full shrink-0 scale-[1.56] object-contain sm:h-[4.75rem] sm:w-auto sm:scale-100"
                             onError={(event) => {
@@ -348,24 +394,6 @@ export function QuestionScreen() {
                           : "min-h-[214px] p-2.5"
                     }`}
                   >
-                    <div className="hidden absolute right-3 top-3 sm:hidden">
-                      <button
-                        type="button"
-                        onClick={() => setShowMobileImagePreview(true)}
-                        className="relative flex h-[138px] w-[98px] items-center justify-center overflow-hidden rounded-[1.3rem] border border-[#E8D8CB] bg-[linear-gradient(180deg,rgba(255,250,244,0.98)_0%,rgba(255,245,236,0.94)_100%)] p-1.5 shadow-[0_18px_34px_rgba(89,53,17,0.1)]"
-                        aria-label="Ver imagen de la pregunta más grande"
-                      >
-                        <div className="absolute inset-x-3 top-2 h-5 rounded-full bg-white/52 blur-md" />
-                        <QuestionVisual
-                          question={question}
-                          questionNumber={questionNumber}
-                          compact
-                        />
-                        <span className="absolute bottom-2 rounded-full border border-white/80 bg-white/92 px-2 py-1 text-[0.5rem] font-semibold uppercase tracking-[0.08em] text-[#8A5B36] shadow-[0_8px_14px_rgba(89,53,17,0.08)]">
-                          Ver grande
-                        </span>
-                      </button>
-                    </div>
                     <p
                       className={`font-black uppercase tracking-[0.19em] text-[#F34AA7] sm:text-sm ${
                         isUltraShortMobile ? "text-[0.62rem]" : "text-[0.68rem]"
@@ -383,38 +411,37 @@ export function QuestionScreen() {
                             : "text-[1.28rem] leading-[0.98]"
                       }`}
                     >
-                      {question.question}
+                      {renderHighlightedQuestion(question)}
                     </h2>
                     {question.supportingText ? (
                       <p className="hidden max-w-[15.5rem] text-[0.85rem] leading-5 text-[#6E6258] sm:block sm:max-w-[520px] sm:text-[0.95rem] sm:leading-6 md:max-w-[560px] md:text-[0.96rem] md:leading-6 xl:max-w-[620px]">
                         {question.supportingText}
                       </p>
                     ) : null}
-                    <div className={`sm:hidden ${isUltraShortMobile ? "pt-1.5" : "pt-2"}`}>
-                      <button
-                        type="button"
-                        onClick={() => setShowMobileImagePreview(true)}
-                        className={`relative flex w-full items-center justify-center overflow-hidden rounded-[1.35rem] border border-[#E8D8CB] bg-[linear-gradient(180deg,rgba(255,250,244,0.98)_0%,rgba(255,245,236,0.94)_100%)] shadow-[0_18px_34px_rgba(89,53,17,0.08)] ${
+                    <div
+                      className={`sm:hidden ${
+                        isUltraShortMobile ? "pt-1.5" : "pt-2"
+                      }`}
+                    >
+                      <div
+                        className={`relative flex w-full items-center justify-center overflow-hidden rounded-[1.45rem] border border-[#E8D8CB] bg-[linear-gradient(180deg,rgba(255,250,244,0.98)_0%,rgba(255,245,236,0.94)_100%)] shadow-[0_18px_34px_rgba(89,53,17,0.08)] ${
                           isUltraShortMobile
-                            ? "h-[82px] px-2.5 py-1.5"
+                            ? "h-[108px] px-2.5 py-2"
                             : isVeryShortMobile
-                              ? "h-[88px] px-[0.6875rem] py-[0.4375rem]"
-                              : "h-[96px] px-3 py-2"
+                              ? "h-[118px] px-3 py-2.5"
+                              : "h-[128px] px-3.5 py-3"
                         }`}
-                        aria-label="Ver imagen de la pregunta más grande"
                       >
                         <div className="absolute inset-x-4 top-3 h-5 rounded-full bg-white/55 blur-md" />
-                        <div className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-[1.1rem] bg-white/35">
+                        <div className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-[1.2rem] bg-white/38">
                           <QuestionVisual
                             question={question}
                             questionNumber={questionNumber}
-                            compact
+                            compact={false}
+                            displayMode="mobile-inline"
                           />
                         </div>
-                        <span className="absolute bottom-2.5 right-2.5 rounded-full border border-white/80 bg-white/92 px-2.5 py-1 text-[0.5rem] font-semibold uppercase tracking-[0.08em] text-[#8A5B36] shadow-[0_8px_14px_rgba(89,53,17,0.08)]">
-                          Ver grande
-                        </span>
-                      </button>
+                      </div>
                     </div>
                   </div>
 
@@ -439,10 +466,10 @@ export function QuestionScreen() {
                           transition={{ delay: 0.12 + index * 0.07 }}
                           onClick={() => handleAnswerSelect(option.id)}
                           aria-pressed={isSelected}
-                          className={`group flex w-full items-center border text-left transition-all sm:px-5 sm:py-3.5 md:gap-4 md:rounded-[1.35rem] md:px-5 md:py-2.5 xl:px-6 xl:py-3 ${
+                          className={`group relative flex w-full items-center overflow-hidden border text-left transition-all sm:px-5 sm:py-3.5 md:gap-4 md:rounded-[1.35rem] md:px-5 md:py-2.5 xl:px-6 xl:py-3 ${
                             isSelected
-                              ? "border-[#FF7A00] bg-[linear-gradient(180deg,#FFF1E2_0%,#FFE9D1_100%)] shadow-[0_18px_30px_rgba(255,122,0,0.16)] ring-1 ring-[#FFD3AF]"
-                              : "border-[#E6D9CE] bg-white shadow-[0_10px_22px_rgba(89,53,17,0.04)] hover:border-[#FFB06A] hover:bg-[#FFF9F2]"
+                              ? "border-[#FF7A00] bg-[linear-gradient(180deg,#FFF1E2_0%,#FFE4C5_100%)] shadow-[0_18px_30px_rgba(255,122,0,0.16)] ring-1 ring-[#FFD3AF]"
+                              : "border-[#E6D9CE] bg-[linear-gradient(180deg,#FFFFFF_0%,#FFF9F2_100%)] shadow-[0_10px_22px_rgba(89,53,17,0.04)] hover:border-[#FFB06A] hover:bg-[#FFF9F2]"
                           } ${
                             isUltraShortMobile
                               ? "gap-[0.4375rem] rounded-[1rem] px-2.5 py-[0.4375rem]"
@@ -451,11 +478,17 @@ export function QuestionScreen() {
                                 : "gap-2 rounded-[1.08rem] px-[0.6875rem] py-2"
                           }`}
                         >
+                          <span
+                            aria-hidden="true"
+                            className={`pointer-events-none absolute inset-y-[18%] left-[-22%] w-[30%] rounded-full bg-[linear-gradient(115deg,rgba(255,255,255,0)_0%,rgba(255,255,255,0.18)_30%,rgba(255,255,255,0.34)_52%,rgba(255,255,255,0)_72%)] blur-md transition-transform duration-500 ${
+                              isSelected ? "translate-x-[285%]" : "group-hover:translate-x-[285%]"
+                            }`}
+                          />
                           <div
                             className={`flex items-center justify-center rounded-full border sm:h-11 sm:w-11 md:h-12 md:w-12 ${
                               isSelected
                                 ? "border-[#FFB066] bg-white text-[#FF7A00] shadow-[0_10px_20px_rgba(255,122,0,0.12)]"
-                                : "border-[#FFD2A8] bg-[#FFF7EF] text-[#FF7A00]"
+                                : "border-[#FFD2A8] bg-[#FFF7EF] text-[#FF7A00] shadow-[inset_0_1px_0_rgba(255,255,255,0.66)]"
                             } ${
                               isUltraShortMobile
                                 ? "h-[1.875rem] w-[1.875rem]"
@@ -533,7 +566,7 @@ export function QuestionScreen() {
                         variant="secondary"
                         size="md"
                         onClick={goToPreviousQuestion}
-                        className={`bg-white min-w-0 w-full rounded-full border-[#E8DCCF] text-[#4A281B] shadow-none sm:w-auto md:px-7 md:py-3 ${
+                        className={`bg-[linear-gradient(180deg,#FFFFFF_0%,#FFF6ED_100%)] min-w-0 w-full rounded-full border-[#E8DCCF] text-[#4A281B] shadow-[0_10px_20px_rgba(89,53,17,0.06)] sm:w-auto md:px-7 md:py-3 ${
                           isUltraShortMobile
                             ? "px-3 py-[0.425rem] text-[0.82rem]"
                             : isVeryShortMobile
@@ -550,7 +583,7 @@ export function QuestionScreen() {
                       size="md"
                       onClick={handleNext}
                       disabled={!canGoNext}
-                      className={`min-w-0 w-full rounded-full shadow-[0_18px_30px_rgba(255,122,0,0.22)] disabled:shadow-none sm:w-auto md:px-8 md:py-3 ${
+                      className={`min-w-0 w-full rounded-full border border-[#D95816] bg-[linear-gradient(180deg,#FFB064_0%,#FF671F_50%,#DE4F0D_100%)] shadow-[0_18px_30px_rgba(255,122,0,0.22)] ring-1 ring-[#FFF1E4]/80 disabled:shadow-none sm:w-auto md:px-8 md:py-3 ${
                         isUltraShortMobile
                           ? "px-3 py-[0.425rem] text-[0.84rem]"
                           : isVeryShortMobile

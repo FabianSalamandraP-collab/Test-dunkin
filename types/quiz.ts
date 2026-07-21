@@ -14,9 +14,13 @@ export interface QuizQuestion {
   id: string;
   eyebrow?: string;
   question: string;
+  questionHighlight?: string;
   supportingText?: string;
   image?: string;
   imageAlt?: string;
+  mobileImageScale?: number;
+  mobileImageOffsetX?: number;
+  mobileImageOffsetY?: number;
   accentColor?: string;
   decorativeColor?: string;
   options: QuizOption[];
@@ -39,6 +43,9 @@ export interface QuizResult {
   drinkDescription: string;
   benefit: string;
   image?: string;
+  mobileImageScale?: number;
+  mobileImageOffsetX?: number;
+  mobileImageOffsetY?: number;
   color?: string;
   accentColor?: string;
   benefitTitle?: string;
