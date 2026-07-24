@@ -6,15 +6,30 @@ import {
   requireIntegerField,
   requireTextField,
 } from "@/lib/quiz-tracking";
+import { protectPublicRoute } from "@/lib/request-security";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
+  const protection = protectPublicRoute(request, {
+    namespace: "quiz-session-answer",
+    limit: 240,
+    windowMs: 10 * 60 * 1000,
+  });
+
+  if (protection) {
+    return protection;
+  }
+
   const context = getQuizTrackingAdminContext();
 
   if (!context.ok) {
     return NextResponse.json(
-      { error: context.error, ready: false },
+      {
+        error:
+          "El tracking del quiz no está disponible en este entorno por ahora.",
+        ready: false,
+      },
       { status: 503 }
     );
   }
@@ -92,11 +107,11 @@ export async function POST(request: Request) {
       answersCount,
     });
   } catch (error) {
-    const message =
-      error instanceof Error
-        ? error.message
-        : "No fue posible registrar la respuesta del quiz.";
+    console.error("Error registrando respuesta del quiz:", error);
 
-    return NextResponse.json({ error: message }, { status: 400 });
+    return NextResponse.json(
+      { error: "No fue posible registrar la respuesta del quiz." },
+      { status: 400 }
+    );
   }
 }

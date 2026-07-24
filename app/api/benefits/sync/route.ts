@@ -11,8 +11,7 @@ function getProvidedSecret(request: Request) {
     return authorization.replace("Bearer ", "").trim();
   }
 
-  const { searchParams } = new URL(request.url);
-  return searchParams.get("secret");
+  return null;
 }
 
 export async function POST(request: Request) {
@@ -78,10 +77,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(
       {
-        error:
-          error instanceof Error
-            ? error.message
-            : "No fue posible sincronizar los beneficios",
+        error: "No fue posible sincronizar los beneficios",
       },
       { status: 500 }
     );

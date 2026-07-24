@@ -3,18 +3,36 @@ import {
   getQuizTrackingAdminContext,
   getSessionSummary,
   insertQuizEvent,
+  normalizeOptionalPhone,
+  requireEmailField,
   requireBooleanField,
+  requireHumanNameField,
   requireTextField,
 } from "@/lib/quiz-tracking";
+import { protectPublicRoute } from "@/lib/request-security";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
+  const protection = protectPublicRoute(request, {
+    namespace: "quiz-form-submit",
+    limit: 6,
+    windowMs: 15 * 60 * 1000,
+  });
+
+  if (protection) {
+    return protection;
+  }
+
   const context = getQuizTrackingAdminContext();
 
   if (!context.ok) {
     return NextResponse.json(
-      { error: context.error, ready: false },
+      {
+        error:
+          "El registro no está disponible en este momento. Inténtalo nuevamente en unos minutos.",
+        ready: false,
+      },
       { status: 503 }
     );
   }
@@ -23,21 +41,37 @@ export async function POST(request: Request) {
     const payload = (await request.json()) as Record<string, unknown>;
     const { admin } = context.value;
 
-    const sessionId = requireTextField(payload, "sessionId");
-    const fullName = requireTextField(payload, "fullName");
-    const email = requireTextField(payload, "email");
+    const sessionId = requireTextField(payload, "sessionId", { maxLength: 80 });
+    const fullName = requireHumanNameField(payload, "fullName");
+    const email = requireEmailField(payload, "email");
     const acceptDataProcessing = requireBooleanField(
       payload,
       "acceptDataProcessing"
     );
+
+    if (!acceptDataProcessing) {
+      throw new Error(
+        "Debes aceptar el tratamiento de datos para completar tu registro."
+      );
+    }
+
     const acceptPromotions =
       typeof payload.acceptPromotions === "boolean"
         ? payload.acceptPromotions
         : false;
-    const phone =
-      typeof payload.phone === "string" && payload.phone.trim().length > 0
-        ? payload.phone.trim()
-        : null;
+    const phone = normalizeOptionalPhone(payload.phone);
+    const companyWebsite =
+      typeof payload.companyWebsite === "string"
+        ? payload.companyWebsite.trim()
+        : "";
+
+    if (companyWebsite) {
+      return NextResponse.json({
+        ready: true,
+        sessionId,
+        participantId: "screened-by-honeypot",
+      });
+    }
 
     const session = await getSessionSummary(admin, sessionId);
 
@@ -109,6 +143,10 @@ export async function POST(request: Request) {
         email,
         phone,
         acceptPromotions,
+        answersCount:
+          typeof payload.answersCount === "number"
+            ? payload.answersCount
+            : null,
       },
     });
 
@@ -118,12 +156,11 @@ export async function POST(request: Request) {
       participantId,
     });
   } catch (error) {
+    console.error("Error registrando formulario del quiz:", error);
+
     return NextResponse.json(
       {
-        error:
-          error instanceof Error
-            ? error.message
-            : "No fue posible registrar el formulario del quiz.",
+        error: "No fue posible registrar el formulario del quiz.",
       },
       { status: 400 }
     );

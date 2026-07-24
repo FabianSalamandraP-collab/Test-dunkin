@@ -11,8 +11,7 @@ import {
   postQuizTracking,
 } from "@/lib/quiz-tracking-client";
 import { useQuizStore } from "@/store/quizStore";
-import { FormData, QuizParticipant } from "@/types/quiz";
-import { getSupabaseClient } from "@/lib/supabase";
+import { FormData } from "@/types/quiz";
 import { QuizPanel } from "./components/QuizPanel";
 import { QuizBadge } from "./components/QuizBadge";
 import { quizTypography } from "./quizVisualSystem";
@@ -41,63 +40,44 @@ export function QuizForm({ onSuccess }: QuizFormProps) {
       phone: "",
       acceptDataProcessing: false,
       acceptPromotions: false,
+      companyWebsite: "",
     },
   });
 
   const onSubmit = async (data: FormData) => {
     if (!result) return;
 
+    if (!sessionId) {
+      setSubmitError(
+        "Necesitamos reiniciar el test para guardar tu registro de forma segura. Vuelve a empezar e inténtalo de nuevo."
+      );
+      return;
+    }
+
     setIsSubmitting(true);
     setSubmitError(null);
     setSubmitSuccess(false);
 
     try {
-      const supabase = getSupabaseClient();
       const trackingContext = getQuizTrackingClientContext();
-      let savedWithTrackingApi = false;
-
-      if (sessionId) {
-        const response = await postQuizTracking<{ participantId?: string }>(
-          "/api/quiz/form/submit",
-          {
-            sessionId,
-            fullName: data.name,
-            email: data.email,
-            phone: data.phone || null,
-            acceptDataProcessing: data.acceptDataProcessing,
-            acceptPromotions: data.acceptPromotions,
-            ...trackingContext,
-          },
-          { silent: true }
-        );
-
-        savedWithTrackingApi = Boolean(response?.participantId);
-      }
-
-      if (!savedWithTrackingApi) {
-        const participant: QuizParticipant = {
-          name: data.name,
+      const response = await postQuizTracking<{ participantId?: string }>(
+        "/api/quiz/form/submit",
+        {
+          sessionId,
+          fullName: data.name,
           email: data.email,
-          phone: data.phone || undefined,
-          accept_data_processing: data.acceptDataProcessing,
-          accept_promotions: data.acceptPromotions,
-          quiz_result: result.id,
-          answers,
-        };
+          phone: data.phone || null,
+          acceptDataProcessing: data.acceptDataProcessing,
+          acceptPromotions: data.acceptPromotions,
+          companyWebsite: data.companyWebsite || "",
+          answersCount: answers.length,
+          ...trackingContext,
+        },
+        { silent: true }
+      );
 
-        if (supabase) {
-          const { error } = await supabase
-            .from("quiz_participants")
-            .insert([participant]);
-
-          if (error) {
-            throw new Error(error.message);
-          }
-        } else {
-          console.warn(
-            "Supabase no está configurado. El formulario continúa sin persistencia."
-          );
-        }
+      if (!response?.participantId) {
+        throw new Error("No fue posible completar el registro.");
       }
 
       // Éxito!
@@ -186,6 +166,14 @@ export function QuizForm({ onSuccess }: QuizFormProps) {
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="relative space-y-6">
+          <input
+            type="text"
+            tabIndex={-1}
+            autoComplete="off"
+            aria-hidden="true"
+            className="hidden"
+            {...register("companyWebsite")}
+          />
           <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
             <Input
               label="Nombre completo"

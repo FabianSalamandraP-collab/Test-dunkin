@@ -2,6 +2,10 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 type Nullable<T> = T | null;
 
+const EMAIL_PATTERN = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+const PHONE_PATTERN =
+  /^(\+[0-9]{1,4}[-\s]?)?([0-9]{2,4}[-\s]?)?[0-9]{3,4}[-\s]?[0-9]{3,4}$/;
+
 export interface QuizTrackingAdminContext {
   admin: SupabaseClient;
   supabaseUrl: string;
@@ -54,6 +58,20 @@ export function normalizeOptionalText(value: unknown) {
   return trimmed.length > 0 ? trimmed : null;
 }
 
+export function normalizeOptionalPhone(value: unknown) {
+  const phone = normalizeOptionalText(value);
+
+  if (!phone) {
+    return null;
+  }
+
+  if (phone.length > 24 || !PHONE_PATTERN.test(phone)) {
+    throw new Error("El celular ingresado no es válido.");
+  }
+
+  return phone;
+}
+
 export function normalizeOptionalInteger(value: unknown) {
   if (typeof value === "number" && Number.isInteger(value)) {
     return value;
@@ -69,7 +87,11 @@ export function normalizeOptionalInteger(value: unknown) {
 
 export function requireTextField(
   payload: Record<string, unknown>,
-  key: string
+  key: string,
+  options?: {
+    minLength?: number;
+    maxLength?: number;
+  }
 ): string {
   const value = normalizeOptionalText(payload[key]);
 
@@ -77,7 +99,44 @@ export function requireTextField(
     throw new Error(`El campo "${key}" es obligatorio.`);
   }
 
+  if (options?.minLength && value.length < options.minLength) {
+    throw new Error(`El campo "${key}" es demasiado corto.`);
+  }
+
+  if (options?.maxLength && value.length > options.maxLength) {
+    throw new Error(`El campo "${key}" supera la longitud permitida.`);
+  }
+
   return value;
+}
+
+export function requireEmailField(
+  payload: Record<string, unknown>,
+  key: string
+) {
+  const email = requireTextField(payload, key, {
+    minLength: 5,
+    maxLength: 160,
+  });
+
+  if (!EMAIL_PATTERN.test(email)) {
+    throw new Error(`El campo "${key}" debe ser un correo válido.`);
+  }
+
+  return email.toLowerCase();
+}
+
+export function requireHumanNameField(
+  payload: Record<string, unknown>,
+  key: string
+) {
+  const name = requireTextField(payload, key, { minLength: 2, maxLength: 120 });
+
+  if (!/[\p{L}]/u.test(name)) {
+    throw new Error(`El campo "${key}" no es válido.`);
+  }
+
+  return name;
 }
 
 export function requireBooleanField(

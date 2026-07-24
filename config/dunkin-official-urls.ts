@@ -54,3 +54,25 @@ export function resolveDunkinOfficialUrl(
   );
 }
 
+export function sanitizeDunkinOfficialUrl(url?: string | null) {
+  if (!url) {
+    return null;
+  }
+
+  try {
+    const parsedUrl = new URL(url);
+    const hostname = parsedUrl.hostname.replace(/^www\./, "");
+
+    if (parsedUrl.protocol !== "https:") {
+      return null;
+    }
+
+    if (hostname !== "dunkincolombia.com") {
+      return null;
+    }
+
+    return parsedUrl.toString();
+  } catch {
+    return null;
+  }
+}

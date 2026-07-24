@@ -11,7 +11,7 @@ import {
   Heart,
   Instagram,
 } from "lucide-react";
-import { Button } from "@/components/ui";
+import { Button, useToast } from "@/components/ui";
 import {
   getQuizTrackingClientContext,
   postQuizTracking,
@@ -460,6 +460,7 @@ function SideRibbon({
 }
 
 export function IntroScreen() {
+  const { addToast } = useToast();
   const { startQuiz, questions } = useQuizStore();
   const [activeIndex, setActiveIndex] = useState(0);
   const [showLogoFallback, setShowLogoFallback] = useState(false);
@@ -554,24 +555,35 @@ export function IntroScreen() {
 
     setIsStartingQuiz(true);
 
-    const trackingContext = getQuizTrackingClientContext();
-    const response = await postQuizTracking<{
-      sessionId?: string;
-      startedAt?: string;
-    }>(
-      "/api/quiz/session/start",
-      {
-        ...trackingContext,
-      },
-      { silent: true }
-    );
+    try {
+      const trackingContext = getQuizTrackingClientContext();
+      const response = await postQuizTracking<{
+        sessionId?: string;
+        startedAt?: string;
+      }>(
+        "/api/quiz/session/start",
+        {
+          ...trackingContext,
+        },
+        { silent: true }
+      );
 
-    startQuiz({
-      sessionId: response?.sessionId ?? null,
-      sessionStartedAt: response?.startedAt ?? new Date().toISOString(),
-    });
+      if (!response?.sessionId) {
+        addToast({
+          type: "error",
+          message:
+            "No pudimos iniciar el test de forma segura. Recarga la página e inténtalo de nuevo.",
+        });
+        return;
+      }
 
-    setIsStartingQuiz(false);
+      startQuiz({
+        sessionId: response.sessionId,
+        sessionStartedAt: response.startedAt ?? new Date().toISOString(),
+      });
+    } finally {
+      setIsStartingQuiz(false);
+    }
   };
 
   const handleBackToTop = () => {

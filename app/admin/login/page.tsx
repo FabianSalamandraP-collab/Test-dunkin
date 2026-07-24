@@ -32,7 +32,7 @@ export default async function AdminLoginPage() {
           </h2>
           <p className="max-w-[44ch] font-sans text-[1rem] leading-8 text-[#6E6058]">
             Un workspace interno para leer resultados, revisar conversiones,
-            detectar fricción y exportar el rendimiento del quiz de Dunkin'
+            detectar fricción y exportar el rendimiento del quiz de Dunkin&apos;
             Colombia.
           </p>
         </section>

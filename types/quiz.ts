@@ -64,6 +64,7 @@ export interface FormData {
   phone?: string;
   acceptDataProcessing: boolean;
   acceptPromotions: boolean;
+  companyWebsite?: string;
 }
 
 // Tipo para un registro completo en Supabase

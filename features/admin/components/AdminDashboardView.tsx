@@ -63,7 +63,7 @@ export function AdminDashboardView({
         />
         <MetricCard
           icon={MousePointerClick}
-          label='Clics en "Ver en Dunkin\'"'
+          label={`Clics en "Ver en Dunkin'"`}
           value={String(data.summary.viewInDunkinClicks)}
           tone="ink"
           hint={`CTR ${data.summary.viewInDunkinCtr.toFixed(1)}%`}
@@ -230,7 +230,7 @@ export function AdminDashboardView({
               },
               {
                 key: "clicks",
-                label: 'Clics en "Ver en Dunkin\'"',
+                label: `Clics en "Ver en Dunkin'"`,
                 value: data.summary.viewInDunkinClicks,
               },
             ]}

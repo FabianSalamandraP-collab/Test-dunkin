@@ -29,8 +29,22 @@ function mapRow(row: DashboardParticipantRow) {
   ];
 }
 
-function escapeCsvCell(value: string | number) {
+function sanitizeSpreadsheetCell(value: string | number) {
+  if (typeof value === "number") {
+    return value;
+  }
+
   const text = String(value);
+
+  if (/^[=+\-@]/.test(text) || /^[\t\r\n]/.test(text)) {
+    return `'${text}`;
+  }
+
+  return text;
+}
+
+function escapeCsvCell(value: string | number) {
+  const text = String(sanitizeSpreadsheetCell(value));
   if (/[",\n]/.test(text)) {
     return `"${text.replace(/"/g, '""')}"`;
   }
@@ -48,8 +62,10 @@ export function createDashboardCsv(rows: DashboardParticipantRow[]) {
 
 export function createDashboardWorkbook(rows: DashboardParticipantRow[]) {
   const worksheet = XLSX.utils.aoa_to_sheet([
-    CSV_HEADERS,
-    ...rows.map((row) => mapRow(row)),
+    CSV_HEADERS.map((header) => sanitizeSpreadsheetCell(header)),
+    ...rows.map((row) =>
+      mapRow(row).map((value) => sanitizeSpreadsheetCell(value))
+    ),
   ]);
   const workbook = XLSX.utils.book_new();
 

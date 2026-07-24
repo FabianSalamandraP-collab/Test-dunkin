@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { sanitizeDunkinOfficialUrl } from "@/config/dunkin-official-urls";
 import {
   getQuizTrackingAdminContext,
   getSessionSummary,
@@ -6,15 +7,30 @@ import {
   normalizeOptionalText,
   requireTextField,
 } from "@/lib/quiz-tracking";
+import { protectPublicRoute } from "@/lib/request-security";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
+  const protection = protectPublicRoute(request, {
+    namespace: "quiz-view-in-dunkin",
+    limit: 30,
+    windowMs: 15 * 60 * 1000,
+  });
+
+  if (protection) {
+    return protection;
+  }
+
   const context = getQuizTrackingAdminContext();
 
   if (!context.ok) {
     return NextResponse.json(
-      { error: context.error, ready: false },
+      {
+        error:
+          "El tracking del quiz no está disponible en este entorno por ahora.",
+        ready: false,
+      },
       { status: 503 }
     );
   }
@@ -24,7 +40,9 @@ export async function POST(request: Request) {
     const { admin } = context.value;
     const sessionId = requireTextField(payload, "sessionId");
     const session = await getSessionSummary(admin, sessionId);
-    const targetUrl = normalizeOptionalText(payload.targetUrl);
+    const targetUrl = sanitizeDunkinOfficialUrl(
+      normalizeOptionalText(payload.targetUrl)
+    );
     const clickedAtClient =
       normalizeOptionalText(payload.clickedAtClient) ||
       new Date().toISOString();
@@ -68,12 +86,11 @@ export async function POST(request: Request) {
       trackedAt,
     });
   } catch (error) {
+    console.error("Error registrando clic en Ver en Dunkin':", error);
+
     return NextResponse.json(
       {
-        error:
-          error instanceof Error
-            ? error.message
-            : "No fue posible registrar el clic en Ver en Dunkin'.",
+        error: "No fue posible registrar el clic en Ver en Dunkin'.",
       },
       { status: 400 }
     );

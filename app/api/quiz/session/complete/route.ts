@@ -5,15 +5,30 @@ import {
   requireTextField,
   normalizeOptionalInteger,
 } from "@/lib/quiz-tracking";
+import { protectPublicRoute } from "@/lib/request-security";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
+  const protection = protectPublicRoute(request, {
+    namespace: "quiz-session-complete",
+    limit: 30,
+    windowMs: 10 * 60 * 1000,
+  });
+
+  if (protection) {
+    return protection;
+  }
+
   const context = getQuizTrackingAdminContext();
 
   if (!context.ok) {
     return NextResponse.json(
-      { error: context.error, ready: false },
+      {
+        error:
+          "El tracking del quiz no está disponible en este entorno por ahora.",
+        ready: false,
+      },
       { status: 503 }
     );
   }
@@ -85,12 +100,11 @@ export async function POST(request: Request) {
       status: completionPayload.status,
     });
   } catch (error) {
+    console.error("Error finalizando sesión del quiz:", error);
+
     return NextResponse.json(
       {
-        error:
-          error instanceof Error
-            ? error.message
-            : "No fue posible finalizar la sesión del quiz.",
+        error: "No fue posible finalizar la sesión del quiz.",
       },
       { status: 400 }
     );
