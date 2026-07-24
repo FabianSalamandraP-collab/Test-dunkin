@@ -16,12 +16,12 @@ const Footer = () => {
                 <Coffee className="text-white h-6 w-6" />
               </div>
               <span className="text-white text-xl font-bold">
-                Dunkin Colombia
+                Dunkin' Colombia
               </span>
             </div>
             <p className="max-w-md leading-relaxed text-neutral-400">
               Descubre qué dice tu bebida favorita sobre tu personalidad con la
-              campaña oficial de Dunkin Colombia.
+              campaña oficial de Dunkin' Colombia.
             </p>
           </div>
 
@@ -71,7 +71,7 @@ const Footer = () => {
 
         {/* Sección de derechos reservados */}
         <div className="mt-12 border-t border-neutral-800 pt-8 text-center text-sm text-neutral-500">
-          <p>© 2024 Dunkin Colombia. Todos los derechos reservados.</p>
+          <p>© 2024 Dunkin' Colombia. Todos los derechos reservados.</p>
         </div>
       </div>
     </footer>

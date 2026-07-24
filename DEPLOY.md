@@ -57,10 +57,13 @@ El proyecto ya puede desplegarse sin conectar Supabase. En ese caso:
 
 ## Base de Datos
 
-El proyecto usa dos tablas:
+El proyecto hoy usa estas piezas de datos:
 
 - `quiz_participants`
 - `campaign_benefits`
+- `quiz_sessions`
+- `quiz_answers`
+- `quiz_events`
 
 ### Migraciones que deben aplicarse
 
@@ -68,6 +71,7 @@ Aplicar estas migraciones:
 
 1. `supabase/migrations/20250101000000_create_quiz_participants_table.sql`
 2. `supabase/migrations/20260710090000_create_campaign_benefits_table.sql`
+3. `supabase/migrations/20260724123000_prepare_quiz_tracking_schema.sql`
 
 ### Nota importante
 
@@ -75,6 +79,28 @@ Aplicar estas migraciones:
   eliminada del repositorio para evitar conflictos de policies duplicadas.
 - `quiz_participants` debe permitir `INSERT` para `anon`, porque el formulario
   guarda la informacion desde cliente.
+
+## Checklist Exacto de Despliegue
+
+Seguir este orden exacto:
+
+1. Clonar la rama final aprobada.
+2. Crear el proyecto Supabase de destino.
+3. Cargar variables del entorno en el hosting o en `.env.local` privado.
+4. Ejecutar todas las migraciones de `supabase/migrations`.
+5. Verificar que existan `quiz_participants`, `campaign_benefits`,
+   `quiz_sessions`, `quiz_answers` y `quiz_events`.
+6. Ejecutar `npm install`.
+7. Ejecutar `npm run lint`.
+8. Ejecutar `npm run build`.
+9. Desplegar un preview.
+10. Ejecutar la sync inicial de beneficios, si aplica.
+11. Ejecutar el smoke test del tracking o validar el funnel manualmente.
+12. Probar el flujo completo del quiz en preview con Supabase real.
+13. Aprobar preview.
+14. Conectar dominio final.
+15. Confirmar que `NEXT_PUBLIC_SITE_URL` coincide con el dominio final.
+16. Revalidar producción.
 
 ## Flujo de Despliegue Recomendado
 
@@ -84,7 +110,9 @@ Aplicar estas migraciones:
 2. Ejecutar las migraciones del directorio `supabase/migrations`.
 3. Confirmar que existe la tabla `quiz_participants`.
 4. Confirmar que existe la tabla `campaign_benefits`.
-5. Confirmar que `quiz_participants` permite insercion desde `anon`.
+5. Confirmar que existen `quiz_sessions`, `quiz_answers` y `quiz_events`.
+6. Confirmar que `quiz_participants` permite insercion desde `anon` si se usara
+   el flujo legacy desde cliente.
 
 ### 2. Preparar el hosting
 
@@ -106,7 +134,23 @@ npm run build
 El proyecto ya fue validado localmente con `lint` y `build`, pero este paso se
 debe repetir en el entorno del equipo que despliega.
 
-### 4. Ejecutar la sincronizacion inicial de beneficios
+### 4. Validar tracking y persistencia
+
+Si el entorno tiene variables reales de Supabase:
+
+```bash
+npm run test:tracking:local
+```
+
+Este smoke test valida:
+
+- inicio de sesión
+- respuestas por pregunta
+- finalización
+- envío de formulario
+- clic en `Ver en Dunkin'`
+
+### 5. Ejecutar la sincronizacion inicial de beneficios
 
 Este paso solo aplica si el entorno tiene Supabase configurado.
 
@@ -135,6 +179,8 @@ curl -X POST "https://tu-dominio-o-preview.com/api/benefits/sync" \
 ### Base de datos
 
 - El formulario inserta en `quiz_participants` solo si Supabase esta configurado
+- El tracking guarda sesión, respuestas, finalización, abandono y clic final si
+  `SUPABASE_SERVICE_ROLE_KEY` está configurada
 - La recomendacion lee beneficios desde `campaign_benefits` o degrada a `live/fallback`
 - La sincronizacion actualiza beneficios activos solo si Supabase esta configurado
 
@@ -148,6 +194,7 @@ curl -X POST "https://tu-dominio-o-preview.com/api/benefits/sync" \
 
 - Variables de entorno cargadas
 - Migraciones aplicadas
+- Tracking validado en preview o por smoke test
 - Sync inicial de beneficios ejecutada, si aplica
 - Dominio final configurado en `NEXT_PUBLIC_SITE_URL`
 - `npm run lint` exitoso
@@ -163,6 +210,7 @@ curl -X POST "https://tu-dominio-o-preview.com/api/benefits/sync" \
 - Clave publica de Supabase equivocada
 - `SUPABASE_SERVICE_ROLE_KEY` ausente
 - `BENEFITS_SYNC_SECRET` ausente
+- no ejecutar la migracion `20260724123000_prepare_quiz_tracking_schema.sql`
 - No ejecutar la sync inicial de beneficios
 - Diferencias entre preview y produccion
 - Assets faltantes en `public/assets/quiz-questions/`,

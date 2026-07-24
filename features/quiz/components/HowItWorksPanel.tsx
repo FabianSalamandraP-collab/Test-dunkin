@@ -28,21 +28,21 @@ export function HowItWorksPanel({ open, steps, info }: HowItWorksPanelProps) {
         </div>
         <div className="space-y-3">
           <div className="space-y-1">
-            <p className="font-sans text-[0.76rem] font-medium uppercase tracking-[0.14em] text-[#B86B2C]">
+            <p className="font-display text-[0.8rem] font-extrabold uppercase tracking-[0.08em] text-[#B86B2C]">
               ¿Cómo funciona?
             </p>
-            <h2 className="font-sans text-[1.05rem] font-medium leading-6 text-[#4A281B] sm:text-[1.12rem]">
+            <h2 className="font-display text-[1.16rem] font-extrabold uppercase leading-[0.96] tracking-[-0.04em] text-[#4A281B] sm:text-[1.24rem]">
               Descubre tu bebida Dunkin' en solo 4 pasos.
             </h2>
           </div>
-          <div className="space-y-3 text-[0.9rem] leading-6 text-[#6B5448] sm:text-[0.95rem]">
+          <div className="space-y-3 font-display text-[0.94rem] font-extrabold uppercase leading-[1.45] tracking-[-0.025em] text-[#6B5448] sm:text-[1rem]">
             <ol className="space-y-2.5">
               {steps.map((step, index) => (
                 <li
                   key={step}
                   className="flex items-start gap-2.5 rounded-[1rem] bg-white/55 px-3 py-2.5"
                 >
-                  <span className="mt-0.5 inline-flex h-5.5 w-5.5 shrink-0 items-center justify-center rounded-full bg-[#FFE7D2] font-sans text-[0.74rem] font-medium text-[#B86B2C]">
+                  <span className="mt-0.5 inline-flex h-5.5 w-5.5 shrink-0 items-center justify-center rounded-full bg-[#FFE7D2] font-display text-[0.76rem] font-extrabold text-[#B86B2C]">
                     {index + 1}
                   </span>
                   <span>{step}</span>
@@ -50,7 +50,7 @@ export function HowItWorksPanel({ open, steps, info }: HowItWorksPanelProps) {
               ))}
             </ol>
             <div className="space-y-2 rounded-[1rem] border border-[#F0DDCF] bg-white/52 px-3.5 py-3">
-              <h3 className="font-sans text-[0.82rem] font-medium uppercase tracking-[0.12em] text-[#8E5A31]">
+              <h3 className="font-display text-[0.86rem] font-extrabold uppercase tracking-[0.08em] text-[#8E5A31]">
                 Información importante
               </h3>
               <div className="space-y-2.5">

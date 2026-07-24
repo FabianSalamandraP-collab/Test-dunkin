@@ -38,10 +38,12 @@ Validar:
 - Confirmar que existen estas migraciones en el repo:
   - `supabase/migrations/20250101000000_create_quiz_participants_table.sql`
   - `supabase/migrations/20260710090000_create_campaign_benefits_table.sql`
+  - `supabase/migrations/20260724123000_prepare_quiz_tracking_schema.sql`
 - Confirmar que ambas migraciones estan versionadas en Git.
 - Confirmar que el proyecto Supabase de destino esta creado.
 - Confirmar que `quiz_participants` permite `INSERT` para `anon`.
 - Confirmar que `campaign_benefits` existe y puede poblarse desde el servidor.
+- Confirmar que `quiz_sessions`, `quiz_answers` y `quiz_events` existen.
 
 ## 4. Variables de Entorno
 
@@ -71,6 +73,7 @@ Revisar en preview o entorno candidato:
 - Intro carga correctamente.
 - Preguntas muestran imagenes y opciones finales.
 - Resultado muestra personalidad, bebida y beneficio.
+- Tracking registra inicio, respuestas, finalización, abandono y clic final.
 - Formulario guarda en Supabase.
 - Consentimiento obligatorio funciona correctamente.
 - Consentimiento opcional de promociones funciona por separado.
@@ -140,6 +143,7 @@ El proyecto queda listo para handoff cuando se cumple todo esto:
 - Base de datos validada
 - Variables confirmadas
 - Sync inicial documentada
+- Tracking validado
 - Documentacion completa
 - Repo limpio para entrega
 

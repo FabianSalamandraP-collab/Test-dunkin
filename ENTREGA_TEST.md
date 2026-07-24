@@ -40,9 +40,13 @@ Como la base de datos la manejaran ustedes, antes de publicar deben:
 1. Crear el proyecto de Supabase productivo.
 2. Ejecutar `20250101000000_create_quiz_participants_table.sql`.
 3. Ejecutar la migracion de `campaign_benefits`.
-4. Confirmar que `quiz_participants` permita `INSERT` para `anon`.
-5. Validar que la clave publica cargada en Vercel o en el hosting sea la correcta.
-6. Cargar `SUPABASE_SERVICE_ROLE_KEY` para sincronizar beneficios desde el servidor.
+4. Ejecutar `20260724123000_prepare_quiz_tracking_schema.sql`.
+5. Confirmar que existan `quiz_sessions`, `quiz_answers` y `quiz_events`.
+6. Confirmar que `quiz_participants` permita `INSERT` para `anon` si van a usar
+   el flujo legacy desde cliente.
+7. Validar que la clave publica cargada en Vercel o en el hosting sea la correcta.
+8. Cargar `SUPABASE_SERVICE_ROLE_KEY` para sincronizar beneficios y guardar el
+   tracking desde el servidor.
 
 ## Assets obligatorios antes de publicar
 
@@ -79,6 +83,7 @@ curl -X POST "https://tu-preview.com/api/benefits/sync" \
    - Intro carga fondo, carrusel y bordes
    - Preguntas muestran visuales finales
    - Resultado muestra bebida y beneficio dinamico con link oficial
+   - Tracking crea sesión, respuestas, finalización y clic final
    - Formulario guarda en Supabase
    - Consentimientos y politica de datos funcionan correctamente
    - Footer abre redes correctas
@@ -93,7 +98,9 @@ curl -X POST "https://tu-preview.com/api/benefits/sync" \
 - Dominio final definido
 - Variables de entorno cargadas
 - Migracion de base de datos aplicada
+- Migracion de tracking aplicada
 - `quiz_participants` creado desde `20250101000000_create_quiz_participants_table.sql`
+- `quiz_sessions`, `quiz_answers` y `quiz_events` creados
 - Sincronizacion inicial de beneficios ejecutada
 - Assets finales subidos
 - Build exitoso

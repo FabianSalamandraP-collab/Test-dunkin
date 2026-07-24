@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "Dime qué tomas y te diré quién eres | Dunkin Colombia";
+export const alt = "Dime qué tomas y te diré quién eres | Dunkin' Colombia";
 export const size = {
   width: 1200,
   height: 630,
@@ -59,8 +59,8 @@ export default function OgImage() {
           textOrientation: "mixed",
         }}
       >
-        <span>DUNKIN</span>
-        <span>DUNKIN</span>
+        <span>DUNKIN'</span>
+        <span>DUNKIN'</span>
       </div>
 
       <div
@@ -98,7 +98,7 @@ export default function OgImage() {
               textTransform: "uppercase",
             }}
           >
-            Campana Dunkin Colombia
+            Campana Dunkin' Colombia
           </span>
           <div
             style={{
@@ -126,7 +126,7 @@ export default function OgImage() {
               lineHeight: 1.35,
             }}
           >
-            Descubre la bebida de Dunkin Colombia que mejor conecta con tu
+            Descubre la bebida de Dunkin' Colombia que mejor conecta con tu
             personalidad en solo 4 preguntas.
           </p>
         </div>
@@ -206,7 +206,7 @@ export default function OgImage() {
                 writingMode: "vertical-rl",
               }}
             >
-              DUNKIN
+              DUNKIN'
             </span>
           </div>
         </div>

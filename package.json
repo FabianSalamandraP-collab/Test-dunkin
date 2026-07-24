@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "test:tracking:local": "node scripts/test-quiz-tracking-local.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^4.1.2",
@@ -24,6 +25,7 @@
     "react-dom": "^19.1.1",
     "react-hook-form": "^7.54.2",
     "tailwind-merge": "^3.6.0",
+    "xlsx": "^0.18.5",
     "zustand": "^5.0.3"
   },
   "devDependencies": {

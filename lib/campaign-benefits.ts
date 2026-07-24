@@ -1,7 +1,9 @@
+import {
+  DUNKIN_ORDER_BASE_URL,
+  resolveDunkinOfficialUrl,
+} from "@/config/dunkin-official-urls";
 import { QUIZ_RESULTS } from "@/constants/quizQuestions";
 import { QuizResult } from "@/types/quiz";
-
-export const DUNKIN_ORDER_URL = "https://www.dunkincolombia.com/pedir";
 
 export interface CampaignBenefitRecord {
   external_id: string;
@@ -80,15 +82,7 @@ const GENERIC_DRINK_KEYWORDS = [
 
 const RESULT_KEYWORDS: Record<string, string[]> = {
   creative: ["iced latte", "latte", "cappuccino", "chai", "cafe", "café"],
-  balanced: [
-    "cold brew",
-    "brew",
-    "cafe",
-    "café",
-    "coffee",
-    "cold",
-    "americano",
-  ],
+  balanced: ["ice te", "ice té", "ice tea", "iced tea", "tea", "té", "te"],
   energetic: ["refresher", "mango", "piña", "pina", "dragonfruit", "limonada"],
   passionate: ["frutibatido", "batido", "frozen", "dulce", "shake"],
 };
@@ -103,16 +97,7 @@ const RESULT_FAMILY_KEYWORDS: Record<string, string[]> = {
     "chai",
     "iced",
   ],
-  balanced: [
-    "cold brew",
-    "brew",
-    "americano",
-    "espresso",
-    "coffee",
-    "cafe",
-    "café",
-    "tinto",
-  ],
+  balanced: ["ice te", "ice té", "ice tea", "iced tea", "tea", "té", "te"],
   energetic: [
     "refresher",
     "mango",
@@ -256,7 +241,7 @@ export function getFallbackBenefit(
       result.benefitDescription ||
       "Consulta opciones oficiales vigentes para tu bebida.",
     cta: result.benefitCta || "Ver beneficio",
-    url: DUNKIN_ORDER_URL,
+    url: resolveDunkinOfficialUrl(result.id),
     imageUrl: result.benefitIcon,
     source: "fallback",
   };
@@ -459,7 +444,7 @@ function normalizeCatalogProduct(
     title,
     description: product.description?.replace(/^"|"$/g, "") || null,
     image_url: imageUrl,
-    source_url: new URL(productPath, DUNKIN_ORDER_URL).toString(),
+    source_url: new URL(productPath, DUNKIN_ORDER_BASE_URL).toString(),
     category_names: categoryNames,
     target_results: resolveTargetResults(
       title,
@@ -477,7 +462,7 @@ function normalizeCatalogProduct(
 }
 
 export async function fetchLiveCampaignBenefits() {
-  const response = await fetch(DUNKIN_ORDER_URL, {
+  const response = await fetch(DUNKIN_ORDER_BASE_URL, {
     next: { revalidate: 900 },
     headers: {
       "user-agent":
@@ -716,7 +701,7 @@ export function resolveBenefitForResult(
       ? `${record.title} ${record.discount_label}`
       : record.title,
     description: buildBenefitDescription(record),
-    cta: "Ver en Dunkin",
+    cta: "Ver en Dunkin'",
     url: record.source_url,
     imageUrl: record.image_url,
     discountLabel: record.discount_label,

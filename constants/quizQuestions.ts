@@ -176,7 +176,7 @@ export const QUIZ_RESULTS: QuizResult[] = [
     drinkDescription:
       "Suave, versátil y con actitud. Va contigo porque mezcla iniciativa, curiosidad y una energía lista para arrancar el plan.",
     benefit: "Productos y promociones oficiales para Iced Latte",
-    image: "/assets/quiz-results/iced-latte.webp",
+    image: "/assets/quiz-results/lifestyle/result-lifestyle-iced-latte.png",
     mobileImageScale: 1.02,
     desktopImageScale: 1.04,
     desktopImageOffsetY: 0,
@@ -195,11 +195,11 @@ export const QUIZ_RESULTS: QuizResult[] = [
     title: "CUIDADOR MENTOR",
     description:
       "Escuchas, acompañas y entiendes antes de reaccionar. Eres esa persona que baja el ruido y le da sentido al momento.",
-    recommendedDrink: "Cold Brew",
+    recommendedDrink: "Ice Té",
     drinkDescription:
       "Profundo, equilibrado y con carácter. Una bebida ideal para quienes prefieren la calma, la conversación y las decisiones con cabeza fría.",
-    benefit: "Productos y promociones oficiales para Cold Brew",
-    image: "/assets/quiz-intro/drinks/Cold Brew.webp",
+    benefit: "Productos y promociones oficiales para Ice Té",
+    image: "/assets/quiz-results/lifestyle/result-lifestyle-ice-te.png",
     mobileImageScale: 1,
     desktopImageScale: 1.06,
     desktopImageOffsetY: 0,
@@ -207,7 +207,7 @@ export const QUIZ_RESULTS: QuizResult[] = [
     accentColor: "#D8C1AF",
     benefitTitle: "Opciones oficiales para tu bebida",
     benefitDescription:
-      "Consulta opciones oficiales vigentes para tu Cold Brew.",
+      "Consulta opciones oficiales vigentes para tu Ice Té.",
     benefitCta: "Ver opciones oficiales",
     benefitIcon: "/assets/quiz-benefits/gift-icon.png",
   },
@@ -222,7 +222,7 @@ export const QUIZ_RESULTS: QuizResult[] = [
     drinkDescription:
       "Refrescante, vibrante y tropical. Va con tu forma de lanzarte a lo nuevo sin perder el impulso del parche.",
     benefit: "Productos y promociones oficiales para Refresher Mango Piña",
-    image: "/assets/quiz-results/refresher-mango-pina.webp",
+    image: "/assets/quiz-results/lifestyle/result-lifestyle-refresher-mango-pina.png",
     mobileImageScale: 0.98,
     desktopImageScale: 1.08,
     desktopImageOffsetY: 0,
@@ -245,7 +245,7 @@ export const QUIZ_RESULTS: QuizResult[] = [
     drinkDescription:
       "Fresco, alegre y lleno de buena vibra. Encaja contigo porque siempre llegas con actitud ligera y ganas de pasarla bien.",
     benefit: "Productos y promociones oficiales para Frutibatido",
-    image: "/assets/quiz-results/frutibatido.webp",
+    image: "/assets/quiz-results/lifestyle/result-lifestyle-frutibatido.png",
     mobileImageScale: 1,
     desktopImageScale: 1.05,
     desktopImageOffsetY: 0,

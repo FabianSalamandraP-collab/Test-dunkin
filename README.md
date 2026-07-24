@@ -39,6 +39,7 @@ Aplicación profesional de Next.js para la campaña oficial de Dunkin Colombia.
 ## Instalacion
 
 1. Copia el archivo de ejemplo de variables de entorno:
+
    ```bash
    cp .env.example .env.local
    ```
@@ -96,6 +97,12 @@ necesarias. Nunca subas `.env.local` al repositorio.
 - Nunca subas credenciales al repositorio
 - Usa siempre variables de entorno para informacion sensible
 - El proyecto depende de Supabase real para formulario y beneficios
+- La arquitectura SQL y de tracking del quiz esta documentada en
+  `SUPABASE_QUIZ_DATABASE.md`
+- La API de tracking y su smoke test local estan documentados en
+  `QUIZ_TRACKING_API.md`
+- La migracion preparada para analytics y eventos del quiz es
+  `20260724123000_prepare_quiz_tracking_schema.sql`
 - La migracion valida de `quiz_participants` es
   `20250101000000_create_quiz_participants_table.sql`
 - Cumplimiento con la Ley de Proteccion de Datos Personales de Colombia

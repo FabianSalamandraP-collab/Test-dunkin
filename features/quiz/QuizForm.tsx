@@ -4,13 +4,12 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
-import {
-  Send,
-  CheckCircle2,
-  AlertCircle,
-  Info,
-} from "lucide-react";
+import { Send, CheckCircle2, AlertCircle, Info } from "lucide-react";
 import { Button, Input, Checkbox, Loader } from "@/components/ui";
+import {
+  getQuizTrackingClientContext,
+  postQuizTracking,
+} from "@/lib/quiz-tracking-client";
 import { useQuizStore } from "@/store/quizStore";
 import { FormData, QuizParticipant } from "@/types/quiz";
 import { getSupabaseClient } from "@/lib/supabase";
@@ -24,7 +23,7 @@ interface QuizFormProps {
 }
 
 export function QuizForm({ onSuccess }: QuizFormProps) {
-  const { answers, result, setFormSubmitted } = useQuizStore();
+  const { answers, result, sessionId, setFormSubmitted } = useQuizStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState(false);
@@ -54,38 +53,61 @@ export function QuizForm({ onSuccess }: QuizFormProps) {
 
     try {
       const supabase = getSupabaseClient();
-      const participant: QuizParticipant = {
-        name: data.name,
-        email: data.email,
-        phone: data.phone || undefined,
-        accept_data_processing: data.acceptDataProcessing,
-        accept_promotions: data.acceptPromotions,
-        quiz_result: result.id,
-        answers,
-      };
+      const trackingContext = getQuizTrackingClientContext();
+      let savedWithTrackingApi = false;
 
-      if (supabase) {
-        const { error } = await supabase.from("quiz_participants").insert([
-          participant,
-        ]);
-
-        if (error) {
-          throw new Error(error.message);
-        }
-      } else {
-        console.warn(
-          "Supabase no está configurado. El formulario continúa sin persistencia."
+      if (sessionId) {
+        const response = await postQuizTracking<{ participantId?: string }>(
+          "/api/quiz/form/submit",
+          {
+            sessionId,
+            fullName: data.name,
+            email: data.email,
+            phone: data.phone || null,
+            acceptDataProcessing: data.acceptDataProcessing,
+            acceptPromotions: data.acceptPromotions,
+            ...trackingContext,
+          },
+          { silent: true }
         );
+
+        savedWithTrackingApi = Boolean(response?.participantId);
+      }
+
+      if (!savedWithTrackingApi) {
+        const participant: QuizParticipant = {
+          name: data.name,
+          email: data.email,
+          phone: data.phone || undefined,
+          accept_data_processing: data.acceptDataProcessing,
+          accept_promotions: data.acceptPromotions,
+          quiz_result: result.id,
+          answers,
+        };
+
+        if (supabase) {
+          const { error } = await supabase
+            .from("quiz_participants")
+            .insert([participant]);
+
+          if (error) {
+            throw new Error(error.message);
+          }
+        } else {
+          console.warn(
+            "Supabase no está configurado. El formulario continúa sin persistencia."
+          );
+        }
       }
 
       // Éxito!
       setSubmitSuccess(true);
       setFormSubmitted(true);
 
-      // Esperar un momento para que el usuario vea el mensaje de éxito
-      setTimeout(() => {
+      // Dispara la guía al CTA apenas el estado de éxito ya quedó pintado.
+      window.requestAnimationFrame(() => {
         onSuccess();
-      }, 1500);
+      });
     } catch (error) {
       console.error("Error al enviar el formulario:", error);
       setSubmitError(
@@ -104,8 +126,8 @@ export function QuizForm({ onSuccess }: QuizFormProps) {
         className="relative overflow-hidden"
       >
         <QuizPanel className="relative flex min-h-[420px] items-center justify-center overflow-hidden p-6 text-center sm:min-h-[460px] sm:p-8 lg:min-h-[500px]">
-          <div className="pointer-events-none absolute -left-20 top-10 h-56 w-56 rounded-full bg-[#FF671F]/12 blur-[90px]" />
-          <div className="pointer-events-none absolute bottom-[-5rem] right-[-5rem] h-64 w-64 rounded-full bg-[#E9539A]/12 blur-[110px]" />
+          <div className="bg-[#FF671F]/12 pointer-events-none absolute -left-20 top-10 h-56 w-56 rounded-full blur-[90px]" />
+          <div className="bg-[#E9539A]/12 pointer-events-none absolute bottom-[-5rem] right-[-5rem] h-64 w-64 rounded-full blur-[110px]" />
           <div className="relative mx-auto max-w-[32rem]">
             <CheckCircle2 className="mx-auto mb-4 h-16 w-16 text-[#2BAA6A]" />
             <h3 className="mb-2 font-display text-xl font-extrabold tracking-[-0.03em] text-[#4A281B] sm:text-2xl">
@@ -126,7 +148,7 @@ export function QuizForm({ onSuccess }: QuizFormProps) {
       animate={{ opacity: 1, y: 0 }}
       className="relative overflow-hidden"
     >
-      <QuizPanel className="relative overflow-hidden border-transparent bg-white/58 p-5 shadow-[0_24px_48px_rgba(89,53,17,0.06)] sm:p-8 lg:bg-white/50">
+      <QuizPanel className="border-transparent bg-white/58 lg:bg-white/50 relative overflow-hidden p-5 shadow-[0_24px_48px_rgba(89,53,17,0.06)] sm:p-8">
         <div
           className="pointer-events-none absolute inset-0 opacity-90"
           style={{
@@ -158,7 +180,7 @@ export function QuizForm({ onSuccess }: QuizFormProps) {
               </p>
             </div>
           </div>
-          <div className="flex h-11 w-11 items-center justify-center rounded-full border border-[rgba(245,130,32,0.08)] bg-white/62 text-[#FF7A00] shadow-[0_14px_28px_rgba(89,53,17,0.06)]">
+          <div className="bg-white/62 flex h-11 w-11 items-center justify-center rounded-full border border-[rgba(245,130,32,0.08)] text-[#FF7A00] shadow-[0_14px_28px_rgba(89,53,17,0.06)]">
             <Info className="h-5 w-5" />
           </div>
         </div>
@@ -169,7 +191,7 @@ export function QuizForm({ onSuccess }: QuizFormProps) {
               label="Nombre completo"
               placeholder="Escribe tu nombre completo"
               error={errors.name?.message}
-              className="rounded-[1.25rem] border-[rgba(245,130,32,0.08)] bg-white/72 shadow-[0_10px_22px_rgba(89,53,17,0.05)] backdrop-blur-[10px]"
+              className="bg-white/72 rounded-[1.25rem] border-[rgba(245,130,32,0.08)] shadow-[0_10px_22px_rgba(89,53,17,0.05)] backdrop-blur-[10px]"
               {...register("name", {
                 required: "Por favor, ingresa tu nombre completo",
                 minLength: {
@@ -184,7 +206,7 @@ export function QuizForm({ onSuccess }: QuizFormProps) {
               type="email"
               placeholder="tu@email.com"
               error={errors.email?.message}
-              className="rounded-[1.25rem] border-[rgba(245,130,32,0.08)] bg-white/72 shadow-[0_10px_22px_rgba(89,53,17,0.05)] backdrop-blur-[10px]"
+              className="bg-white/72 rounded-[1.25rem] border-[rgba(245,130,32,0.08)] shadow-[0_10px_22px_rgba(89,53,17,0.05)] backdrop-blur-[10px]"
               {...register("email", {
                 required: "Por favor, ingresa tu correo electrónico",
                 pattern: {
@@ -200,10 +222,11 @@ export function QuizForm({ onSuccess }: QuizFormProps) {
                 type="tel"
                 placeholder="+57 300 123 4567"
                 error={errors.phone?.message}
-                className="rounded-[1.25rem] border-[rgba(245,130,32,0.08)] bg-white/72 shadow-[0_10px_22px_rgba(89,53,17,0.05)] backdrop-blur-[10px]"
+                className="bg-white/72 rounded-[1.25rem] border-[rgba(245,130,32,0.08)] shadow-[0_10px_22px_rgba(89,53,17,0.05)] backdrop-blur-[10px]"
                 {...register("phone", {
                   pattern: {
-                    value: /^(\+[0-9]{1,4}[-\s]?)?([0-9]{2,4}[-\s]?)?[0-9]{3,4}[-\s]?[0-9]{3,4}$/,
+                    value:
+                      /^(\+[0-9]{1,4}[-\s]?)?([0-9]{2,4}[-\s]?)?[0-9]{3,4}[-\s]?[0-9]{3,4}$/,
                     message: "Por favor, ingresa un número de celular válido",
                   },
                 })}
@@ -217,7 +240,7 @@ export function QuizForm({ onSuccess }: QuizFormProps) {
               label: (
                 <span className="font-sans text-sm font-medium leading-6 text-[#4A281B]">
                   Autorizo de manera previa, expresa e informada a DONUCOL S.A.,
-                  responsable de la marca Dunkin Colombia, para recolectar,
+                  responsable de la marca Dunkin' Colombia, para recolectar,
                   almacenar, usar y tratar mis datos personales con la finalidad
                   de gestionar mi participación en este test y generar mi
                   resultado.
@@ -225,7 +248,8 @@ export function QuizForm({ onSuccess }: QuizFormProps) {
               ),
               error: errors.acceptDataProcessing,
               register: register("acceptDataProcessing", {
-                required: "Debes aceptar el tratamiento de datos para continuar",
+                required:
+                  "Debes aceptar el tratamiento de datos para continuar",
               }),
               details: (
                 <p>
@@ -234,7 +258,7 @@ export function QuizForm({ onSuccess }: QuizFormProps) {
                   finalidades descritas en dicha política. El consentimiento
                   para participar en el test es independiente del consentimiento
                   opcional para recibir promociones, novedades, productos,
-                  servicios y campañas de Dunkin Colombia a través de los medios
+                  servicios y campañas de Dunkin' Colombia a través de los medios
                   de contacto suministrados.
                 </p>
               ),
@@ -246,7 +270,7 @@ export function QuizForm({ onSuccess }: QuizFormProps) {
               label: (
                 <span className="font-sans text-sm font-medium leading-6 text-[#4A281B]">
                   Autorizo recibir información sobre promociones, novedades,
-                  productos, servicios y campañas de Dunkin Colombia a través de
+                  productos, servicios y campañas de Dunkin' Colombia a través de
                   los medios de contacto suministrados.
                 </span>
               ),

@@ -9,6 +9,8 @@ interface QuizStore {
   questions: QuizQuestion[];
   currentQuestionIndex: number;
   answers: QuizAnswer[];
+  sessionId: string | null;
+  sessionStartedAt: string | null;
   hasStarted: boolean;
   isCompleted: boolean;
   result: QuizResult | null;
@@ -16,12 +18,19 @@ interface QuizStore {
 
   // Acciones
   setQuestions: (questions: QuizQuestion[]) => void;
-  startQuiz: () => void;
+  startQuiz: (tracking?: {
+    sessionId?: string | null;
+    sessionStartedAt?: string | null;
+  }) => void;
+  setTrackingSession: (tracking: {
+    sessionId?: string | null;
+    sessionStartedAt?: string | null;
+  }) => void;
   selectAnswer: (questionId: string, selectedOptionId: string) => void;
   goToNextQuestion: () => void;
   goToPreviousQuestion: () => void;
   resetQuiz: () => void;
-  completeQuiz: (result?: QuizResult) => void;
+  completeQuiz: (result?: QuizResult) => QuizResult;
   setFormSubmitted: (submitted: boolean) => void;
 
   // Datos derivados
@@ -80,6 +89,8 @@ export const useQuizStore = create<QuizStore>()(
       questions: QUIZ_QUESTIONS,
       currentQuestionIndex: 0,
       answers: [],
+      sessionId: null,
+      sessionStartedAt: null,
       hasStarted: false,
       isCompleted: false,
       result: null,
@@ -90,14 +101,24 @@ export const useQuizStore = create<QuizStore>()(
         set({ questions });
       },
 
-      startQuiz: () => {
+      startQuiz: (tracking) => {
         set({
           currentQuestionIndex: 0,
           answers: [],
+          sessionId: tracking?.sessionId ?? null,
+          sessionStartedAt:
+            tracking?.sessionStartedAt || new Date().toISOString(),
           hasStarted: true,
           isCompleted: false,
           result: null,
           formSubmitted: false,
+        });
+      },
+
+      setTrackingSession: (tracking) => {
+        set({
+          sessionId: tracking.sessionId ?? null,
+          sessionStartedAt: tracking.sessionStartedAt ?? get().sessionStartedAt,
         });
       },
 
@@ -141,6 +162,8 @@ export const useQuizStore = create<QuizStore>()(
         set({
           currentQuestionIndex: 0,
           answers: [],
+          sessionId: null,
+          sessionStartedAt: null,
           hasStarted: false,
           isCompleted: false,
           result: null,
@@ -155,6 +178,7 @@ export const useQuizStore = create<QuizStore>()(
           isCompleted: true,
           result: finalResult,
         });
+        return finalResult;
       },
 
       setFormSubmitted: (submitted: boolean) => {
@@ -190,6 +214,8 @@ export const useQuizStore = create<QuizStore>()(
       partialize: (state) => ({
         currentQuestionIndex: state.currentQuestionIndex,
         answers: state.answers,
+        sessionId: state.sessionId,
+        sessionStartedAt: state.sessionStartedAt,
       }),
       migrate: (persistedState) => {
         const state = persistedState as Partial<QuizStore> | undefined;
@@ -205,6 +231,12 @@ export const useQuizStore = create<QuizStore>()(
               ? state.currentQuestionIndex
               : 0,
           answers: Array.isArray(state?.answers) ? state.answers : [],
+          sessionId:
+            typeof state?.sessionId === "string" ? state.sessionId : null,
+          sessionStartedAt:
+            typeof state?.sessionStartedAt === "string"
+              ? state.sessionStartedAt
+              : null,
           hasStarted: hasStoredProgress,
           isCompleted: false,
           result: null,

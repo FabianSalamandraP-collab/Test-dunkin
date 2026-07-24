@@ -27,23 +27,23 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Dime qué tomas y te diré quién eres | Dunkin Colombia",
-    template: "%s | Dunkin Colombia",
+    default: "Dime qué tomas y te diré quién eres | Dunkin' Colombia",
+    template: "%s | Dunkin' Colombia",
   },
   description:
-    "Descubre qué dice tu bebida favorita de Dunkin sobre tu personalidad. Campaña oficial de Dunkin Colombia.",
+    "Descubre qué dice tu bebida favorita de Dunkin' sobre tu personalidad. Campaña oficial de Dunkin' Colombia.",
   keywords: [
-    "Dunkin Colombia",
-    "campaña Dunkin",
-    "personalidad Dunkin",
-    "bebida Dunkin",
+    "Dunkin' Colombia",
+    "campaña Dunkin'",
+    "personalidad Dunkin'",
+    "bebida Dunkin'",
     "dime qué tomas",
     "Bogotá",
-    "café Dunkin",
+    "café Dunkin'",
   ],
-  authors: [{ name: "Dunkin Colombia" }],
-  creator: "Dunkin Colombia",
-  publisher: "Dunkin Colombia",
+  authors: [{ name: "Dunkin' Colombia" }],
+  creator: "Dunkin' Colombia",
+  publisher: "Dunkin' Colombia",
   icons: {
     icon: [{ url: "/favicon.ico", type: "image/x-icon" }],
     shortcut: ["/favicon.ico"],
@@ -58,16 +58,16 @@ export const metadata: Metadata = {
     type: "website",
     locale: "es_CO",
     url: `${siteUrl}/quiz`,
-    siteName: "Dime qué tomas y te diré quién eres | Dunkin Colombia",
-    title: "Dime qué tomas y te diré quién eres | Dunkin Colombia",
+    siteName: "Dime qué tomas y te diré quién eres | Dunkin' Colombia",
+    title: "Dime qué tomas y te diré quién eres | Dunkin' Colombia",
     description:
-      "Descubre qué dice tu bebida favorita de Dunkin sobre tu personalidad. Campaña oficial de Dunkin Colombia.",
+      "Descubre qué dice tu bebida favorita de Dunkin' sobre tu personalidad. Campaña oficial de Dunkin' Colombia.",
     images: [
       {
         url: "/og-image",
         width: 1200,
         height: 630,
-        alt: "Campaña Dunkin Colombia",
+        alt: "Campaña Dunkin' Colombia",
       },
     ],
   },
@@ -75,9 +75,9 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@dunkin_co",
     creator: "@dunkin_co",
-    title: "Dime qué tomas y te diré quién eres | Dunkin Colombia",
+    title: "Dime qué tomas y te diré quién eres | Dunkin' Colombia",
     description:
-      "Descubre qué dice tu bebida favorita de Dunkin sobre tu personalidad. Campaña oficial de Dunkin Colombia.",
+      "Descubre qué dice tu bebida favorita de Dunkin' sobre tu personalidad. Campaña oficial de Dunkin' Colombia.",
     images: ["/og-image"],
   },
   robots: {

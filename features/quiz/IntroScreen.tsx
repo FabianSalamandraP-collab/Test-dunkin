@@ -12,6 +12,10 @@ import {
   Instagram,
 } from "lucide-react";
 import { Button } from "@/components/ui";
+import {
+  getQuizTrackingClientContext,
+  postQuizTracking,
+} from "@/lib/quiz-tracking-client";
 import { useQuizStore } from "@/store/quizStore";
 import { QuizIconButton } from "./components/QuizIconButton";
 import { QuizIconLink } from "./components/QuizIconLink";
@@ -39,11 +43,11 @@ interface IntroDrink {
 const INTRO_DRINKS: IntroDrink[] = [
   {
     id: "cold-brew",
-    name: "Cold Brew",
+    name: "Ice Té",
     accent: "#5A361F",
     textColor: "#4C2B18",
     cup: "cold-brew",
-    imageSrc: "/assets/quiz-intro/drinks/Cold Brew.webp",
+    imageSrc: "/assets/quiz-intro/drinks/intro-drink-carousel-cold-brew.webp",
     imageOffsetMobile: 8,
     imageOffsetDesktop: 12,
     imageOffsetDesktopXl: 16,
@@ -57,7 +61,7 @@ const INTRO_DRINKS: IntroDrink[] = [
     accent: "#FF4FBF",
     textColor: "#C83E99",
     cup: "frozen",
-    imageSrc: "/assets/quiz-intro/drinks/Frutibatido.webp",
+    imageSrc: "/assets/quiz-intro/drinks/intro-drink-carousel-frutibatido.webp",
     imageActiveScaleMobile: 1.08,
     imageActiveScaleDesktop: 1.12,
     imageActiveScaleDesktopXl: 1.14,
@@ -68,7 +72,7 @@ const INTRO_DRINKS: IntroDrink[] = [
     accent: "#D5A064",
     textColor: "#8A5B36",
     cup: "iced-latte",
-    imageSrc: "/assets/quiz-intro/drinks/Iced_Latte.webp",
+    imageSrc: "/assets/quiz-intro/drinks/intro-drink-carousel-iced-latte.webp",
     imageOffsetMobile: 6,
     imageOffsetDesktop: 10,
     imageOffsetDesktopXl: 14,
@@ -82,18 +86,20 @@ const INTRO_DRINKS: IntroDrink[] = [
     accent: "#FF9A1F",
     textColor: "#7A4D2C",
     cup: "americano",
-    imageSrc: "/assets/quiz-intro/drinks/Mango_piña_Refresher.webp",
+    imageSrc:
+      "/assets/quiz-intro/drinks/intro-drink-carousel-mango-pina-refresher.webp",
     imageActiveScaleMobile: 1.08,
     imageActiveScaleDesktop: 1.12,
     imageActiveScaleDesktopXl: 1.14,
   },
   {
     id: "matcha-latte",
-    name: "Soda Dunkin Manzana Verde",
+    name: "Soda Dunkin' Manzana Verde",
     accent: "#9BAF6B",
     textColor: "#6E7E46",
     cup: "americano",
-    imageSrc: "/assets/quiz-intro/drinks/Soda_Dunkin_Manzana_Verde.webp",
+    imageSrc:
+      "/assets/quiz-intro/drinks/intro-drink-carousel-soda-dunkin-manzana-verde.webp",
     imageScaleMobile: 0.88,
     imageScaleDesktop: 0.84,
     imageScaleDesktopXl: 0.84,
@@ -103,19 +109,19 @@ const INTRO_DRINKS: IntroDrink[] = [
 
 const HOW_IT_WORKS_STEPS = [
   "Responde 4 preguntas rápidas sobre tu forma de ser y cómo disfrutas tus planes.",
-  "Descubre la bebida Dunkin que mejor representa tu personalidad.",
-  "Conoce tu personalidad Dunkin y la bebida que la refleja.",
-  "Recibe recomendaciones de productos Dunkin que van con tu bebida match.",
+  "Descubre la bebida Dunkin' que mejor representa tu personalidad.",
+  "Conoce tu personalidad Dunkin' y la bebida que la refleja.",
+  "Recibe recomendaciones de productos Dunkin' que van con tu bebida match.",
 ];
 
 const HOW_IT_WORKS_INFO = [
-  "Las recomendaciones mostradas provienen del sitio oficial de Dunkin Colombia y corresponden a información publicada por la marca.",
+  "Las recomendaciones mostradas provienen del sitio oficial de Dunkin' Colombia y corresponden a información publicada por la marca.",
   "Nuestro objetivo es ayudarte a descubrir la bebida que mejor conecta con tu personalidad y mostrarte opciones oficiales para disfrutarla.",
-  "Los productos, promociones, precios, disponibilidad y condiciones pueden cambiar sin previo aviso y son responsabilidad de Dunkin Colombia.",
+  "Los productos, promociones, precios, disponibilidad y condiciones pueden cambiar sin previo aviso y son responsabilidad de Dunkin' Colombia.",
 ];
 
 const INTRO_FOOTER_ITEMS = [
-  "Test oficial de Dunkin Colombia",
+  "Test oficial de Dunkin' Colombia",
   "Participa y descubre tu match",
   "Recomendaciones para ti",
 ];
@@ -305,7 +311,7 @@ function DrinkVisual({
           <div className="bg-white/30 absolute inset-x-3 top-4 h-4 rounded-full" />
           <div className="absolute inset-y-8 left-1/2 w-1 -translate-x-1/2 rounded-full bg-[#FF7A00]" />
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rotate-90 text-[0.7rem] font-black tracking-[0.28em] text-[#FF7A00]">
-            DUNKIN
+            DUNKIN'
           </div>
           <div className="absolute inset-x-2 bottom-12 top-10 bg-[radial-gradient(circle_at_30%_18%,rgba(255,255,255,0.28),transparent_22%),radial-gradient(circle_at_68%_60%,rgba(255,255,255,0.15),transparent_22%)]" />
         </div>
@@ -322,7 +328,7 @@ function DrinkVisual({
           <div className="absolute inset-x-2 -top-4 h-16 rounded-full bg-[radial-gradient(circle_at_50%_52%,#FFF8EF_0%,#F4E8D6_45%,transparent_72%)]" />
           <div className="absolute inset-x-5 -top-7 h-10 rounded-full bg-[radial-gradient(circle_at_50%_55%,#4B2417_0%,#2F130B_36%,transparent_72%)] opacity-95" />
           <div className="absolute left-1/2 top-[56%] -translate-x-1/2 -translate-y-1/2 rotate-90 text-sm font-black tracking-[0.25em] text-[#FF7A00]">
-            DUNKIN
+            DUNKIN'
           </div>
           <div className="absolute inset-x-3 bottom-14 top-16 bg-[radial-gradient(circle_at_35%_25%,rgba(255,255,255,0.28),transparent_26%),radial-gradient(circle_at_65%_60%,rgba(255,255,255,0.16),transparent_24%)]" />
         </div>
@@ -334,10 +340,10 @@ function DrinkVisual({
     <div
       className={`flex h-72 items-end justify-center transition-transform ${scaleClass}`}
     >
-      <div className="relative h-54 w-32 overflow-hidden rounded-b-[2.2rem] rounded-t-[1.1rem] border border-[#E3D7CC] bg-gradient-to-b from-[#FFFFFF] via-[#F4EEE8] to-[#ECE4DD] shadow-[0_22px_45px_rgba(80,47,19,0.12)]">
+      <div className="h-54 relative w-32 overflow-hidden rounded-b-[2.2rem] rounded-t-[1.1rem] border border-[#E3D7CC] bg-gradient-to-b from-[#FFFFFF] via-[#F4EEE8] to-[#ECE4DD] shadow-[0_22px_45px_rgba(80,47,19,0.12)]">
         <div className="absolute inset-x-5 top-4 h-3 rounded-full bg-[#3B1C14]" />
         <div className="absolute left-1/2 top-[55%] -translate-x-1/2 -translate-y-1/2 rotate-[8deg] text-xs font-black tracking-[0.18em] text-[#FF7A00]">
-          DUNKIN
+          DUNKIN'
         </div>
       </div>
     </div>
@@ -415,7 +421,7 @@ function SideRibbon({
 
   return (
     <div
-      className={`pointer-events-none absolute inset-y-0 overflow-hidden flex ${
+      className={`pointer-events-none absolute inset-y-0 flex overflow-hidden ${
         side === "left" ? "left-0" : "right-0"
       } w-[26px] sm:w-[34px] md:w-[42px] lg:w-[72px] xl:w-[78px] ${className ?? ""}`}
     >
@@ -461,10 +467,12 @@ export function IntroScreen() {
   const [showHowItWorks, setShowHowItWorks] = useState(false);
   const [viewportWidth, setViewportWidth] = useState(1280);
   const [showBackToTop, setShowBackToTop] = useState(false);
+  const [isStartingQuiz, setIsStartingQuiz] = useState(false);
   const activeDrink = INTRO_DRINKS[activeIndex];
   const lastPointerDownAtRef = useRef<number>(0);
   const [bumpKey, setBumpKey] = useState(0);
   const isMobile = viewportWidth < 640;
+  const isDesktop = viewportWidth >= 1024;
 
   useEffect(() => {
     setBumpKey((current) => current + 1);
@@ -508,7 +516,8 @@ export function IntroScreen() {
     lastPointerDownAtRef.current = Date.now();
   };
 
-  const shouldIgnoreClick = () => Date.now() - lastPointerDownAtRef.current < 450;
+  const shouldIgnoreClick = () =>
+    Date.now() - lastPointerDownAtRef.current < 450;
 
   const handlePrevPointerDown = () => {
     pointerGate();
@@ -540,8 +549,29 @@ export function IntroScreen() {
     setDrinkByIndex(index);
   };
 
-  const handleStartQuiz = () => {
-    startQuiz();
+  const handleStartQuiz = async () => {
+    if (isStartingQuiz) return;
+
+    setIsStartingQuiz(true);
+
+    const trackingContext = getQuizTrackingClientContext();
+    const response = await postQuizTracking<{
+      sessionId?: string;
+      startedAt?: string;
+    }>(
+      "/api/quiz/session/start",
+      {
+        ...trackingContext,
+      },
+      { silent: true }
+    );
+
+    startQuiz({
+      sessionId: response?.sessionId ?? null,
+      sessionStartedAt: response?.startedAt ?? new Date().toISOString(),
+    });
+
+    setIsStartingQuiz(false);
   };
 
   const handleBackToTop = () => {
@@ -561,17 +591,15 @@ export function IntroScreen() {
         <div className="pointer-events-none absolute right-[72px] top-0 hidden h-[120px] w-[168px] rounded-bl-[2.9rem] bg-[#FA192A] shadow-[inset_8px_-8px_18px_rgba(255,255,255,0.12)] lg:block xl:right-[78px]" />
         <div className="pointer-events-none absolute bottom-0 left-[72px] hidden h-[120px] w-[168px] rounded-tr-[2.9rem] bg-[#FA192A] shadow-[inset_-8px_8px_18px_rgba(255,255,255,0.12)] lg:block xl:left-[78px]" />
         <div className="pointer-events-none absolute bottom-0 right-[72px] hidden h-[120px] w-[168px] rounded-tl-[2.9rem] bg-[#FA192A] shadow-[inset_8px_8px_18px_rgba(255,255,255,0.12)] lg:block xl:right-[78px]" />
-
-        <div className="relative mx-[26px] rounded-[2rem] border border-[#f0ded0] bg-[linear-gradient(180deg,#fbf6f0_0%,#f7efe5_100%)] px-4 py-5 sm:mx-[34px] sm:px-6 sm:py-6 md:mx-[42px] md:px-7 md:py-6 lg:mx-[72px] lg:my-0 lg:px-8 lg:py-7 xl:mx-[78px]">
+        <div className="relative z-10 mx-[26px] rounded-[2rem] border border-[#f0ded0] bg-[linear-gradient(180deg,#fbf6f0_0%,#f7efe5_100%)] px-4 py-5 shadow-[0_18px_42px_rgba(89,53,17,0.08)] sm:mx-[34px] sm:px-6 sm:py-6 md:mx-[42px] md:px-7 md:py-6 lg:mx-[72px] lg:my-0 lg:rounded-[2rem] lg:border lg:border-[#f0ded0] lg:bg-[linear-gradient(180deg,#fbf6f0_0%,#f7efe5_100%)] lg:px-8 lg:py-7 lg:shadow-[0_18px_42px_rgba(89,53,17,0.08)] xl:mx-[78px]">
           <div
             className={`pointer-events-none absolute inset-0 rounded-[2rem] bg-no-repeat ${
               isMobile ? "opacity-[0.86]" : "opacity-90"
             }`}
             style={{
-              backgroundImage:
-                isMobile
-                  ? "url('/assets/quiz-intro/backgrounds/mobile/hero-stage-background.jpg')"
-                  : "url('/assets/quiz-intro/backgrounds/desktop/hero-stage-background.jpg')",
+              backgroundImage: isMobile
+                ? "url('/assets/quiz-intro/backgrounds/mobile/hero-stage-background.jpg')"
+                : "url('/assets/quiz-intro/backgrounds/desktop/hero-stage-background.jpg')",
               backgroundPosition: isMobile ? "50% 50%" : "50% 34%",
               backgroundSize: isMobile ? "cover" : "cover",
               backgroundRepeat: "no-repeat",
@@ -594,8 +622,8 @@ export function IntroScreen() {
           <div
             className={`pointer-events-none absolute inset-0 rounded-[2rem] ${
               isMobile
-                ? "bg-[radial-gradient(circle_at_50%_30%,rgba(255,138,0,0.08)_0%,rgba(247,84,166,0.06)_18%,rgba(255,138,0,0.03)_32%,rgba(255,255,255,0)_48%),radial-gradient(circle_at_50%_64%,rgba(255,173,102,0.05)_0%,rgba(247,84,166,0.03)_20%,rgba(255,255,255,0)_44%)] opacity-24"
-                : "bg-[radial-gradient(circle_at_64%_20%,rgba(255,138,0,0.16)_0%,rgba(247,84,166,0.12)_22%,rgba(255,138,0,0.08)_38%,rgba(255,255,255,0)_58%)] opacity-56"
+                ? "opacity-24 bg-[radial-gradient(circle_at_50%_30%,rgba(255,138,0,0.08)_0%,rgba(247,84,166,0.06)_18%,rgba(255,138,0,0.03)_32%,rgba(255,255,255,0)_48%),radial-gradient(circle_at_50%_64%,rgba(255,173,102,0.05)_0%,rgba(247,84,166,0.03)_20%,rgba(255,255,255,0)_44%)]"
+                : "opacity-56 bg-[radial-gradient(circle_at_64%_20%,rgba(255,138,0,0.16)_0%,rgba(247,84,166,0.12)_22%,rgba(255,138,0,0.08)_38%,rgba(255,255,255,0)_58%)]"
             }`}
           />
           <div
@@ -628,14 +656,14 @@ export function IntroScreen() {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.45, delay: 0.08 }}
-                className="relative mx-auto grid w-[14.5rem] grid-cols-[6.35rem_auto_6.95rem] items-center text-[2rem] font-black tracking-[-0.04em] text-[#FF7A00] sm:mx-0 sm:flex sm:w-auto sm:items-center sm:gap-4 lg:-ml-8 lg:w-[410px] lg:max-w-none lg:justify-center"
+                className="lg:max-w-none relative mx-auto grid w-[14.5rem] grid-cols-[6.35rem_auto_6.95rem] items-center text-[2rem] font-black tracking-[-0.04em] text-[#FF7A00] sm:mx-0 sm:flex sm:w-auto sm:items-center sm:gap-4 lg:-ml-8 lg:w-[410px] lg:justify-center"
               >
                 <div className="flex h-[5.45rem] items-center justify-center pr-2 sm:h-[4.5rem] sm:pr-0 lg:h-[4.5rem]">
                   {!showLogoFallback ? (
                     <img
                       src="/assets/quiz-intro/logo/dunkin-logo.webp"
-                      alt="Dunkin"
-                      className="h-full max-w-full shrink-0 object-contain lg:h-[82%]"
+                      alt="Dunkin'"
+                      className="max-w-full h-full shrink-0 object-contain lg:h-[82%]"
                       onError={(event) => {
                         event.currentTarget.style.display = "none";
                         setShowLogoFallback(true);
@@ -654,7 +682,7 @@ export function IntroScreen() {
                   <img
                     src="/assets/quiz-intro/logo/YES_ALL_DAY.webp"
                     alt="Yes All Day"
-                    className="relative top-[1px] h-full max-w-full shrink-0 object-contain"
+                    className="max-w-full relative top-[1px] h-full shrink-0 object-contain"
                     onError={(event) => {
                       event.currentTarget.style.display = "none";
                     }}
@@ -668,10 +696,12 @@ export function IntroScreen() {
                 onClick={() => setShowHowItWorks((current) => !current)}
                 aria-expanded={showHowItWorks}
                 aria-controls="how-it-works-panel"
-                className="items-center gap-2 font-sans font-medium lg:-mt-8 lg:justify-self-end"
+                className="lg:bg-white/68 items-center gap-2 font-display text-[0.84rem] font-extrabold uppercase tracking-[-0.03em] lg:-mt-8 lg:justify-self-end lg:border-0 lg:shadow-[0_10px_24px_rgba(89,53,17,0.08)]"
               >
                 <CircleHelp className="h-4 w-4 text-[#C9833A]" />
-                <span className="hidden sm:inline">¿Cómo funciona el test?</span>
+                <span className="hidden sm:inline">
+                  ¿Cómo funciona el test?
+                </span>
                 <span className="sm:hidden">Ayuda</span>
               </Button>
             </div>
@@ -683,19 +713,47 @@ export function IntroScreen() {
             />
 
             <div className="relative z-10 mt-4 grid grid-cols-1 gap-3 px-[1.35rem] sm:mt-5 sm:gap-5 sm:px-0 lg:grid-cols-[0.88fr_1.12fr] lg:items-start lg:gap-7">
-            <motion.div
-              initial={{ opacity: 0, x: -24 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5 }}
-              className="order-1 mx-auto flex w-full max-w-[420px] flex-col items-center space-y-2 text-center lg:order-1 lg:mx-0 lg:block lg:max-w-[440px] lg:space-y-4 lg:pt-3 lg:pl-4 lg:text-left"
-            >
-              <div className="space-y-2.5">
-                <div className="space-y-2 lg:hidden">
-                  <div className="pt-1">
+              <motion.div
+                initial={{ opacity: 0, x: -24 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5 }}
+                className="order-1 mx-auto flex w-full max-w-[420px] flex-col items-center space-y-2 text-center lg:order-1 lg:mx-0 lg:block lg:max-w-[440px] lg:space-y-4 lg:pl-4 lg:pt-3 lg:text-left"
+              >
+                <div className="space-y-2.5">
+                  <div className="space-y-2 lg:hidden">
+                    <div className="pt-1">
+                      <div
+                        className={`bg-white/55 mx-auto w-full max-w-[248px] overflow-hidden rounded-[1.65rem] border border-[#F0DFD0] p-2.5 shadow-[0_18px_40px_rgba(89,53,17,0.12)] ${
+                          showHeadlineFallback ? "hidden" : ""
+                        } flex aspect-square items-center justify-center`}
+                      >
+                        <img
+                          src="/assets/quiz-intro/headlines/dime-que-tomas.png"
+                          alt="Dime qué tomas y te diré quién eres"
+                          className="h-full w-full select-none object-contain"
+                          onError={(event) => {
+                            event.currentTarget.style.display = "none";
+                            setShowHeadlineFallback(true);
+                          }}
+                        />
+                      </div>
+                      {showHeadlineFallback ? (
+                        <h1 className="font-display text-[1.26rem] font-extrabold uppercase leading-[0.9] tracking-[-0.05em] text-[#442214]">
+                          Dime qué tomas
+                          <br />y te diré quién eres
+                        </h1>
+                      ) : null}
+                      <span className="sr-only">
+                        Dime qué tomas y te diré quién eres
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="hidden max-w-[410px] space-y-2.5 text-[#4F2B1B] lg:block">
                     <div
-                      className={`mx-auto w-full max-w-[248px] overflow-hidden rounded-[1.65rem] border border-[#F0DFD0] bg-white/55 p-2.5 shadow-[0_18px_40px_rgba(89,53,17,0.12)] ${
+                      className={`w-full max-w-[480px] overflow-hidden rounded-[1.85rem] border border-[rgba(240,223,208,0.72)] bg-[rgba(251,246,240,0.62)] p-2.5 shadow-[0_18px_40px_rgba(89,53,17,0.09)] lg:border-0 lg:bg-[rgba(251,246,240,0.68)] lg:shadow-[0_20px_48px_rgba(89,53,17,0.1)] ${
                         showHeadlineFallback ? "hidden" : ""
-                      } aspect-square flex items-center justify-center`}
+                      } flex aspect-square items-center justify-center`}
                     >
                       <img
                         src="/assets/quiz-intro/headlines/dime-que-tomas.png"
@@ -708,324 +766,309 @@ export function IntroScreen() {
                       />
                     </div>
                     {showHeadlineFallback ? (
-                      <h1 className="font-display text-[1.26rem] font-extrabold uppercase leading-[0.9] tracking-[-0.05em] text-[#442214]">
-                        Dime qué tomas
-                        <br />y te diré quién eres
+                      <h1 className="max-w-[520px] font-display text-[2.05rem] font-extrabold uppercase leading-[0.9] tracking-[-0.06em] text-[#442214] sm:text-[2.95rem] lg:text-[3.6rem]">
+                        DIME QUÉ
+                        <br />
+                        TOMAS
+                        <br />
+                        <span className="text-[#FF7A00]">Y TE DIRÉ</span>
+                        <br />
+                        QUIÉN ERES
                       </h1>
                     ) : null}
                     <span className="sr-only">
                       Dime qué tomas y te diré quién eres
                     </span>
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.45, delay: 0.12 }}
+                      className="hidden items-center gap-2.5 text-center lg:-mt-1 lg:flex lg:flex-col"
+                    >
+                      <div className="relative">
+                        <motion.span
+                          aria-hidden="true"
+                          className="pointer-events-none absolute inset-[-10px] rounded-full bg-[radial-gradient(circle,rgba(255,103,31,0.28)_0%,rgba(255,103,31,0.14)_42%,rgba(255,103,31,0)_76%)] blur-xl"
+                          animate={{
+                            opacity: [0.58, 0.82, 0.58],
+                            scale: [1, 1.04, 1],
+                          }}
+                          transition={{
+                            duration: 3.2,
+                            repeat: Number.POSITIVE_INFINITY,
+                            ease: "easeInOut",
+                          }}
+                        />
+                        <Button
+                          size="lg"
+                          onClick={handleStartQuiz}
+                          disabled={isStartingQuiz}
+                          className="ring-white/35 group relative mx-auto w-full max-w-[20.5rem] overflow-hidden border border-[#DD6500] bg-[#EF6A00] px-9 py-4 text-[#F8F4F1] shadow-[0_8px_18px_rgba(239,106,0,0.16)] ring-1 [border-radius:999px] hover:border-[#EF6A00] hover:bg-[#FFF8F1] hover:text-[#EF6A00] hover:shadow-[0_10px_22px_rgba(239,106,0,0.12)] active:border-[#EF6A00] active:bg-[#FFF8F1] active:text-[#EF6A00] active:shadow-[0_10px_22px_rgba(239,106,0,0.12)] disabled:opacity-70"
+                        >
+                          <span className="relative z-10 flex items-center justify-center gap-2.5 font-display font-extrabold uppercase tracking-[-0.04em]">
+                            <span className="text-[1.16rem]">
+                              Descubre tu bebida ideal
+                            </span>
+                            <span className="bg-white/18 group-hover:bg-[#EF6A00]/12 group-active:bg-[#EF6A00]/12 flex h-9 w-9 items-center justify-center rounded-full shadow-[inset_0_1px_0_rgba(255,255,255,0.18)] transition-transform duration-300 group-hover:translate-x-0.5 group-active:translate-x-0.5">
+                              <ArrowRight className="h-4.5 w-4.5 transition-transform duration-300 group-hover:translate-x-0.5" />
+                            </span>
+                          </span>
+                        </Button>
+                      </div>
+                      <div className="bg-white/88 inline-flex items-center rounded-full border border-[#F2DFC9] px-3.5 py-1.5 font-sans text-[0.72rem] font-medium text-[#7A5134] shadow-[0_10px_22px_rgba(102,66,30,0.08)]">
+                        <span>4 preguntas • 1 minuto</span>
+                      </div>
+                      <p className="bg-white/86 max-w-[430px] rounded-[1.1rem] border border-[#EFDCCB] px-4 py-3 font-sans text-[0.95rem] font-medium leading-7 text-[#4E3325] shadow-[0_10px_26px_rgba(102,66,30,0.08)] backdrop-blur-[3px]">
+                        Responde 4 preguntas y descubre la bebida Dunkin' que
+                        mejor va con tu mood.
+                      </p>
+                      <div className="relative mx-auto w-full max-w-[26rem] overflow-hidden rounded-[1.2rem] border border-[#EFDCCB] bg-[linear-gradient(180deg,rgba(255,249,242,0.9)_0%,rgba(255,244,237,0.86)_100%)] px-4 py-3 shadow-[0_10px_26px_rgba(102,66,30,0.08)] backdrop-blur-[3px] lg:max-w-[28.5rem] lg:px-5 lg:py-3.5">
+                        <div className="pointer-events-none absolute inset-y-0 left-0 w-14 bg-[linear-gradient(90deg,rgba(255,247,239,0.94)_0%,rgba(255,247,239,0)_100%)]" />
+                        <div className="pointer-events-none absolute inset-y-0 right-0 w-14 bg-[linear-gradient(270deg,rgba(255,247,239,0.94)_0%,rgba(255,247,239,0)_100%)]" />
+                        <div className="flex min-h-[4.1rem] items-center justify-center lg:min-h-[4.35rem]">
+                          <span className="font-sans text-[0.76rem] font-medium uppercase tracking-[0.18em] text-[#8E5F43] lg:text-[0.8rem]">
+                            Espacio reservado para banner lateral
+                          </span>
+                        </div>
+                      </div>
+                    </motion.div>
                   </div>
-                </div>
 
-                <div className="hidden max-w-[410px] space-y-2.5 text-[#4F2B1B] lg:block">
-                  <div
-                    className={`w-full max-w-[480px] overflow-hidden rounded-[1.85rem] border border-[rgba(240,223,208,0.72)] bg-[rgba(251,246,240,0.62)] p-2.5 shadow-[0_18px_40px_rgba(89,53,17,0.09)] ${
-                      showHeadlineFallback ? "hidden" : ""
-                    } aspect-square flex items-center justify-center`}
-                  >
-                    <img
-                      src="/assets/quiz-intro/headlines/dime-que-tomas.png"
-                      alt="Dime qué tomas y te diré quién eres"
-                      className="h-full w-full select-none object-contain"
-                      onError={(event) => {
-                        event.currentTarget.style.display = "none";
-                        setShowHeadlineFallback(true);
-                      }}
-                    />
-                  </div>
-                  {showHeadlineFallback ? (
-                    <h1 className="font-display max-w-[520px] text-[2.05rem] font-extrabold uppercase leading-[0.9] tracking-[-0.06em] text-[#442214] sm:text-[2.95rem] lg:text-[3.6rem]">
-                      DIME QUÉ
-                      <br />
-                      TOMAS
-                      <br />
-                      <span className="text-[#FF7A00]">Y TE DIRÉ</span>
-                      <br />
-                      QUIÉN ERES
-                    </h1>
-                  ) : null}
-                  <span className="sr-only">
-                    Dime qué tomas y te diré quién eres
-                  </span>
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.45, delay: 0.12 }}
-                    className="hidden items-center gap-2.5 text-center lg:-mt-1 lg:flex lg:flex-col"
-                  >
-                    <div className="relative">
-                      <motion.span
-                        aria-hidden="true"
-                        className="pointer-events-none absolute inset-[-10px] rounded-full bg-[radial-gradient(circle,rgba(255,103,31,0.28)_0%,rgba(255,103,31,0.14)_42%,rgba(255,103,31,0)_76%)] blur-xl"
-                        animate={{ opacity: [0.58, 0.82, 0.58], scale: [1, 1.04, 1] }}
-                        transition={{
-                          duration: 3.2,
-                          repeat: Number.POSITIVE_INFINITY,
-                          ease: "easeInOut",
-                        }}
-                      />
+                  <div className="flex flex-col items-center space-y-1.5 pt-0 lg:items-start">
                     <Button
                       size="lg"
                       onClick={handleStartQuiz}
-                      className="group relative mx-auto w-full max-w-[20.5rem] overflow-hidden border border-[#DD6500] bg-[#EF6A00] px-9 py-4 text-[#F8F4F1] shadow-[0_8px_18px_rgba(239,106,0,0.16)] ring-1 ring-white/35 [border-radius:999px] hover:border-[#EF6A00] hover:bg-[#FFF8F1] hover:text-[#EF6A00] hover:shadow-[0_10px_22px_rgba(239,106,0,0.12)] active:border-[#EF6A00] active:bg-[#FFF8F1] active:text-[#EF6A00] active:shadow-[0_10px_22px_rgba(239,106,0,0.12)]"
+                      disabled={isStartingQuiz}
+                      className="ring-white/30 group relative w-full max-w-[18.2rem] overflow-hidden border border-[#DD6500] bg-[#EF6A00] px-7 py-3.5 text-[#F8F4F1] shadow-[0_8px_18px_rgba(239,106,0,0.15)] ring-1 [border-radius:999px] hover:border-[#EF6A00] hover:bg-[#FFF8F1] hover:text-[#EF6A00] hover:shadow-[0_10px_20px_rgba(239,106,0,0.12)] active:border-[#EF6A00] active:bg-[#FFF8F1] active:text-[#EF6A00] active:shadow-[0_10px_20px_rgba(239,106,0,0.12)] sm:w-auto sm:min-w-[272px] sm:px-11 sm:py-5 lg:hidden"
                     >
-                      <span className="relative z-10 flex items-center justify-center gap-2.5 font-display font-extrabold uppercase tracking-[-0.04em]">
-                        <span className="text-[1.16rem]">
+                      <span className="relative z-10 flex items-center justify-center gap-2 font-display font-extrabold uppercase tracking-[-0.04em]">
+                        <span className="text-[1rem] sm:text-[1.12rem] lg:hidden">
+                          Haz el test
+                        </span>
+                        <span className="hidden text-[1.12rem] sm:text-[1.16rem] lg:inline">
                           Descubre tu bebida ideal
                         </span>
-                        <span
-                          className="flex h-9 w-9 items-center justify-center rounded-full bg-white/18 shadow-[inset_0_1px_0_rgba(255,255,255,0.18)] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:bg-[#EF6A00]/12 group-active:translate-x-0.5 group-active:bg-[#EF6A00]/12"
-                        >
+                        <span className="h-8.5 w-8.5 bg-white/18 group-hover:bg-[#EF6A00]/12 group-active:bg-[#EF6A00]/12 flex items-center justify-center rounded-full shadow-[inset_0_1px_0_rgba(255,255,255,0.18)] transition-transform duration-300 group-hover:translate-x-0.5 group-active:translate-x-0.5">
                           <ArrowRight className="h-4.5 w-4.5 transition-transform duration-300 group-hover:translate-x-0.5" />
                         </span>
                       </span>
                     </Button>
-                    </div>
-                    <div className="inline-flex items-center rounded-full border border-[#F2DFC9] bg-white/88 px-3.5 py-1.5 font-sans text-[0.72rem] font-medium text-[#7A5134] shadow-[0_10px_22px_rgba(102,66,30,0.08)]">
-                      <span>4 preguntas • 1 minuto</span>
-                    </div>
-                  </motion.div>
-                  <p className="max-w-[430px] rounded-[1.1rem] border border-[#EFDCCB] bg-white/86 px-4 py-3 font-sans text-[0.95rem] font-medium leading-7 text-[#4E3325] shadow-[0_10px_26px_rgba(102,66,30,0.08)] backdrop-blur-[3px]">
-                    Responde 4 preguntas y descubre la bebida Dunkin que mejor
-                    va con tu mood.
-                  </p>
-                  <div className="relative mx-auto w-full max-w-[26rem] overflow-hidden rounded-[1.2rem] border border-[#EFDCCB] bg-[linear-gradient(180deg,rgba(255,249,242,0.9)_0%,rgba(255,244,237,0.86)_100%)] px-4 py-3 shadow-[0_10px_26px_rgba(102,66,30,0.08)] backdrop-blur-[3px] lg:max-w-[28.5rem] lg:px-5 lg:py-3.5">
-                    <div className="pointer-events-none absolute inset-y-0 left-0 w-14 bg-[linear-gradient(90deg,rgba(255,247,239,0.94)_0%,rgba(255,247,239,0)_100%)]" />
-                    <div className="pointer-events-none absolute inset-y-0 right-0 w-14 bg-[linear-gradient(270deg,rgba(255,247,239,0.94)_0%,rgba(255,247,239,0)_100%)]" />
-                    <div className="flex min-h-[4.1rem] items-center justify-center lg:min-h-[4.35rem]">
-                      <span className="font-sans text-[0.76rem] font-medium uppercase tracking-[0.18em] text-[#8E5F43] lg:text-[0.8rem]">
-                        Espacio reservado para banner lateral
+                    <div className="bg-white/86 inline-flex items-center rounded-full border border-[#F2DFC9] px-3.5 py-1.5 font-sans text-[0.7rem] font-medium text-[#3E342F] shadow-[0_10px_22px_rgba(102,66,30,0.08)] lg:hidden">
+                      <span className="lg:hidden">4 preguntas • 1 minuto</span>
+                      <span className="hidden lg:inline">
+                        4 preguntas • 1 minuto
                       </span>
+                    </div>
+                    <div className="relative w-full max-w-[21.5rem] overflow-hidden rounded-[1.15rem] border border-[#F0DFD0] bg-[linear-gradient(180deg,rgba(255,249,242,0.92)_0%,rgba(255,244,237,0.88)_100%)] px-4 py-3 shadow-[0_10px_22px_rgba(102,66,30,0.08)] lg:hidden">
+                      <div className="pointer-events-none absolute inset-y-0 left-0 w-12 bg-[linear-gradient(90deg,rgba(255,247,239,0.94)_0%,rgba(255,247,239,0)_100%)]" />
+                      <div className="pointer-events-none absolute inset-y-0 right-0 w-12 bg-[linear-gradient(270deg,rgba(255,247,239,0.94)_0%,rgba(255,247,239,0)_100%)]" />
+                      <div className="flex min-h-[3.35rem] items-center justify-center">
+                        <span className="font-sans text-[0.76rem] font-medium uppercase tracking-[0.18em] text-[#8E5F43]">
+                          Espacio reservado para banner lateral
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
+              </motion.div>
 
-                <div className="flex flex-col items-center space-y-1.5 pt-0 lg:items-start">
-                  <Button
-                    size="lg"
-                    onClick={handleStartQuiz}
-                    className="group relative w-full max-w-[18.2rem] overflow-hidden border border-[#DD6500] bg-[#EF6A00] px-7 py-3.5 text-[#F8F4F1] shadow-[0_8px_18px_rgba(239,106,0,0.15)] ring-1 ring-white/30 [border-radius:999px] hover:border-[#EF6A00] hover:bg-[#FFF8F1] hover:text-[#EF6A00] hover:shadow-[0_10px_20px_rgba(239,106,0,0.12)] active:border-[#EF6A00] active:bg-[#FFF8F1] active:text-[#EF6A00] active:shadow-[0_10px_20px_rgba(239,106,0,0.12)] sm:min-w-[272px] sm:w-auto sm:px-11 sm:py-5 lg:hidden"
+              <motion.div
+                initial={{ opacity: 0, x: 24 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.55, delay: 0.05 }}
+                className="lg:max-w-none relative order-2 mx-auto w-full max-w-[368px] lg:order-2 lg:mx-0 lg:-mt-[13.2rem] lg:ml-[6.25rem] xl:-mt-[14.55rem] xl:ml-[7.25rem] 2xl:ml-[7.75rem]"
+              >
+                <div className="relative mx-auto flex min-h-[330px] w-full max-w-[1180px] flex-col items-center justify-start overflow-visible rounded-[1.75rem] px-[1.25rem] pb-2 pt-2 sm:min-h-[620px] sm:rounded-[2rem] sm:px-4 sm:pb-2 sm:pt-2 lg:min-h-[740px]">
+                  <div className="pointer-events-none absolute left-[18%] top-[14%] h-3.5 w-3.5 rounded-full bg-[#F2A400] sm:top-[22%]" />
+                  <div className="pointer-events-none absolute right-[16%] top-[12%] h-3.5 w-3.5 rounded-full bg-[#F2A400] sm:top-[20%]" />
+                  <div className="pointer-events-none absolute right-[14%] top-[34%] h-2.5 w-2.5 rounded-full bg-[#F34AA7] sm:top-[38%]" />
+                  <div className="pointer-events-none absolute bottom-[16%] left-[20%] h-3 w-3 rounded-full bg-[#F34AA7]" />
+                  <div className="pointer-events-none absolute bottom-[18%] right-[18%] h-3 w-3 rounded-full bg-[#F2A400]" />
+                  <div
+                    className={`pointer-events-none absolute inset-x-0 mx-auto rounded-full blur-2xl ${
+                      isMobile
+                        ? "top-2 h-[160px] w-[160px] bg-[radial-gradient(circle,rgba(255,208,170,0.4)_0%,rgba(248,105,168,0.16)_34%,rgba(255,255,255,0)_72%)]"
+                        : "top-14 h-[340px] w-[340px] bg-[radial-gradient(circle,rgba(255,236,219,0.26)_0%,rgba(255,236,219,0.12)_36%,rgba(255,255,255,0)_70%)] sm:h-[430px] sm:w-[430px]"
+                    }`}
+                  />
+                  <div
+                    className={`pointer-events-none absolute inset-x-0 mx-auto ${
+                      isMobile
+                        ? "bottom-[4.35rem] h-[1.1rem] w-[70%] rounded-full bg-[radial-gradient(circle,rgba(232,195,165,0.9)_0%,rgba(232,195,165,0.42)_54%,rgba(255,255,255,0)_100%)] blur-md"
+                        : "hidden"
+                    }`}
+                  />
+                  <div
+                    className={`pointer-events-none absolute inset-x-0 mx-auto ${
+                      isMobile
+                        ? "bottom-[4.7rem] h-[3.4rem] w-[78%] rounded-[999px] bg-[linear-gradient(180deg,rgba(255,248,241,0.72)_0%,rgba(243,223,205,0.58)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.58)]"
+                        : "hidden"
+                    }`}
+                  />
+
+                  <QuizIconButton
+                    onPointerDown={isMobile ? undefined : handlePrevPointerDown}
+                    onClick={isMobile ? goPrev : handlePrevClick}
+                    tone="cream"
+                    size="md"
+                    className="absolute left-3 top-[14%] z-[80] -translate-y-1/2 sm:left-5 sm:top-[42%] lg:left-4 lg:h-12 lg:w-12 xl:left-0"
+                    aria-label="Ver bebida anterior"
                   >
-                    <span className="relative z-10 flex items-center justify-center gap-2 font-display font-extrabold uppercase tracking-[-0.04em]">
-                      <span className="text-[1rem] sm:text-[1.12rem] lg:hidden">
-                        Haz el test
-                      </span>
-                      <span className="hidden text-[1.12rem] sm:text-[1.16rem] lg:inline">
-                        Descubre tu bebida ideal
-                      </span>
-                      <span className="flex h-8.5 w-8.5 items-center justify-center rounded-full bg-white/18 shadow-[inset_0_1px_0_rgba(255,255,255,0.18)] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:bg-[#EF6A00]/12 group-active:translate-x-0.5 group-active:bg-[#EF6A00]/12">
-                        <ArrowRight className="h-4.5 w-4.5 transition-transform duration-300 group-hover:translate-x-0.5" />
-                      </span>
-                    </span>
-                  </Button>
-                  <div className="inline-flex items-center rounded-full border border-[#F2DFC9] bg-white/86 px-3.5 py-1.5 font-sans text-[0.7rem] font-medium text-[#3E342F] shadow-[0_10px_22px_rgba(102,66,30,0.08)] lg:hidden">
-                    <span className="lg:hidden">4 preguntas • 1 minuto</span>
-                    <span className="hidden lg:inline">4 preguntas • 1 minuto</span>
-                  </div>
-                  <div className="relative w-full max-w-[21.5rem] overflow-hidden rounded-[1.15rem] border border-[#F0DFD0] bg-[linear-gradient(180deg,rgba(255,249,242,0.92)_0%,rgba(255,244,237,0.88)_100%)] px-4 py-3 shadow-[0_10px_22px_rgba(102,66,30,0.08)] lg:hidden">
-                    <div className="pointer-events-none absolute inset-y-0 left-0 w-12 bg-[linear-gradient(90deg,rgba(255,247,239,0.94)_0%,rgba(255,247,239,0)_100%)]" />
-                    <div className="pointer-events-none absolute inset-y-0 right-0 w-12 bg-[linear-gradient(270deg,rgba(255,247,239,0.94)_0%,rgba(255,247,239,0)_100%)]" />
-                    <div className="flex min-h-[3.35rem] items-center justify-center">
-                      <span className="font-sans text-[0.76rem] font-medium uppercase tracking-[0.18em] text-[#8E5F43]">
-                        Espacio reservado para banner lateral
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
+                    <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5" />
+                  </QuizIconButton>
 
-            <motion.div
-              initial={{ opacity: 0, x: 24 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.55, delay: 0.05 }}
-              className="order-2 relative mx-auto w-full max-w-[368px] lg:order-2 lg:mx-0 lg:ml-[6.25rem] lg:max-w-none lg:-mt-[13.2rem] xl:ml-[7.25rem] xl:-mt-[14.55rem] 2xl:ml-[7.75rem]"
-            >
-              <div className="relative mx-auto flex min-h-[330px] w-full max-w-[1180px] flex-col items-center justify-start overflow-visible rounded-[1.75rem] px-[1.25rem] pb-2 pt-2 sm:min-h-[620px] sm:rounded-[2rem] sm:px-4 sm:pb-2 sm:pt-2 lg:min-h-[740px]">
-                <div className="pointer-events-none absolute left-[18%] top-[14%] h-3.5 w-3.5 rounded-full bg-[#F2A400] sm:top-[22%]" />
-                <div className="pointer-events-none absolute right-[16%] top-[12%] h-3.5 w-3.5 rounded-full bg-[#F2A400] sm:top-[20%]" />
-                <div className="pointer-events-none absolute right-[14%] top-[34%] h-2.5 w-2.5 rounded-full bg-[#F34AA7] sm:top-[38%]" />
-                <div className="pointer-events-none absolute left-[20%] bottom-[16%] h-3 w-3 rounded-full bg-[#F34AA7]" />
-                <div className="pointer-events-none absolute right-[18%] bottom-[18%] h-3 w-3 rounded-full bg-[#F2A400]" />
-                <div
-                  className={`pointer-events-none absolute inset-x-0 mx-auto rounded-full blur-2xl ${
-                    isMobile
-                      ? "top-2 h-[160px] w-[160px] bg-[radial-gradient(circle,rgba(255,208,170,0.4)_0%,rgba(248,105,168,0.16)_34%,rgba(255,255,255,0)_72%)]"
-                      : "top-14 h-[340px] w-[340px] bg-[radial-gradient(circle,rgba(255,236,219,0.26)_0%,rgba(255,236,219,0.12)_36%,rgba(255,255,255,0)_70%)] sm:h-[430px] sm:w-[430px]"
-                  }`}
-                />
-                <div
-                  className={`pointer-events-none absolute inset-x-0 mx-auto ${
-                    isMobile
-                      ? "bottom-[4.35rem] h-[1.1rem] w-[70%] rounded-full bg-[radial-gradient(circle,rgba(232,195,165,0.9)_0%,rgba(232,195,165,0.42)_54%,rgba(255,255,255,0)_100%)] blur-md"
-                      : "hidden"
-                  }`}
-                />
-                <div
-                  className={`pointer-events-none absolute inset-x-0 mx-auto ${
-                    isMobile
-                      ? "bottom-[4.7rem] h-[3.4rem] w-[78%] rounded-[999px] bg-[linear-gradient(180deg,rgba(255,248,241,0.72)_0%,rgba(243,223,205,0.58)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.58)]"
-                      : "hidden"
-                  }`}
-                />
+                  <QuizIconButton
+                    onPointerDown={isMobile ? undefined : handleNextPointerDown}
+                    onClick={isMobile ? goNext : handleNextClick}
+                    tone="cream"
+                    size="md"
+                    className="absolute right-3 top-[14%] z-[80] -translate-y-1/2 sm:right-5 sm:top-[42%] lg:right-4 lg:h-12 lg:w-12 xl:right-0"
+                    aria-label="Ver siguiente bebida"
+                  >
+                    <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />
+                  </QuizIconButton>
 
-                <QuizIconButton
-                  onPointerDown={isMobile ? undefined : handlePrevPointerDown}
-                  onClick={isMobile ? goPrev : handlePrevClick}
-                  tone="cream"
-                  size="md"
-                  className="absolute left-3 top-[14%] z-[80] -translate-y-1/2 sm:left-5 sm:top-[42%] lg:left-4 lg:h-12 lg:w-12 xl:left-0"
-                  aria-label="Ver bebida anterior"
-                >
-                  <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5" />
-                </QuizIconButton>
+                  <div className="relative -mt-3 flex h-[292px] w-full items-end justify-center overflow-visible sm:-mt-4 sm:h-[560px] lg:-mt-6 lg:h-[730px]">
+                    {INTRO_DRINKS.map((drink, index) => {
+                      const state = getCarouselState(
+                        index,
+                        activeIndex,
+                        INTRO_DRINKS.length,
+                        viewportWidth
+                      );
+                      const isActive = state.slot === "active";
+                      const shouldFloatActive =
+                        isActive &&
+                        viewportWidth >= 640 &&
+                        viewportWidth < 1024;
 
-                <QuizIconButton
-                  onPointerDown={isMobile ? undefined : handleNextPointerDown}
-                  onClick={isMobile ? goNext : handleNextClick}
-                  tone="cream"
-                  size="md"
-                  className="absolute right-3 top-[14%] z-[80] -translate-y-1/2 sm:right-5 sm:top-[42%] lg:right-4 lg:h-12 lg:w-12 xl:right-0"
-                  aria-label="Ver siguiente bebida"
-                >
-                  <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />
-                </QuizIconButton>
-
-                <div className="relative -mt-3 flex h-[292px] w-full items-end justify-center overflow-visible sm:-mt-4 sm:h-[560px] lg:-mt-6 lg:h-[730px]">
-                  {INTRO_DRINKS.map((drink, index) => {
-                    const state = getCarouselState(
-                      index,
-                      activeIndex,
-                      INTRO_DRINKS.length,
-                      viewportWidth
-                    );
-                    const isActive = state.slot === "active";
-                    const shouldFloatActive = isActive && viewportWidth >= 640 && viewportWidth < 1024;
-
-                    return (
-                      <div
-                        key={drink.id}
-                        className="pointer-events-none absolute inset-x-0 bottom-[5.9rem] flex justify-center sm:bottom-10 lg:bottom-12"
-                        style={{ zIndex: state.zIndex }}
-                      >
-                        <motion.div
-                          initial={false}
-                          animate={{
-                            opacity: state.opacity,
-                            x: state.x,
-                            y: shouldFloatActive
-                              ? [state.y, state.y - 10, state.y]
-                              : state.y,
-                          }}
-                          transition={{
-                            x: {
-                              type: "spring",
-                              stiffness: 180,
-                              damping: 24,
-                            },
-                            opacity: { duration: 0.22, ease: "easeOut" },
-                            y: shouldFloatActive
-                              ? {
-                                  duration: 2.8,
-                                  repeat: Infinity,
-                                  ease: "easeInOut",
-                                }
-                              : { duration: 0.22, ease: "easeOut" },
-                          }}
-                          className="flex w-[136px] flex-col items-center sm:w-[260px] lg:w-[336px] xl:w-[360px]"
+                      return (
+                        <div
+                          key={drink.id}
+                          className="pointer-events-none absolute inset-x-0 bottom-[5.9rem] flex justify-center sm:bottom-10 lg:bottom-12"
+                          style={{ zIndex: state.zIndex }}
                         >
                           <motion.div
-                            key={`${drink.id}-${isActive ? activeIndex : "idle"}`}
                             initial={false}
-                            animate={{ scale: state.scale }}
+                            animate={{
+                              opacity: state.opacity,
+                              x: state.x,
+                              y: shouldFloatActive
+                                ? [state.y, state.y - 10, state.y]
+                                : state.y,
+                            }}
                             transition={{
-                              type: "spring",
-                              stiffness: 220,
-                              damping: 20,
+                              x: {
+                                type: "spring",
+                                stiffness: 180,
+                                damping: 24,
+                              },
+                              opacity: { duration: 0.22, ease: "easeOut" },
+                              y: shouldFloatActive
+                                ? {
+                                    duration: 2.8,
+                                    repeat: Infinity,
+                                    ease: "easeInOut",
+                                  }
+                                : { duration: 0.22, ease: "easeOut" },
                             }}
-                            className={`origin-bottom rounded-[1.8rem] transition-all ${
-                              isActive
-                                ? "drop-shadow-[0_24px_40px_rgba(102,66,30,0.16)]"
-                                : "drop-shadow-[0_10px_26px_rgba(102,66,30,0.08)]"
-                            }`}
+                            className="flex w-[136px] flex-col items-center sm:w-[260px] lg:w-[336px] xl:w-[360px]"
                           >
-                            <div
-                              key={isActive ? bumpKey : undefined}
-                              className={isActive ? "dunkin-bump" : ""}
+                            <motion.div
+                              key={`${drink.id}-${isActive ? activeIndex : "idle"}`}
+                              initial={false}
+                              animate={{ scale: state.scale }}
+                              transition={{
+                                type: "spring",
+                                stiffness: 220,
+                                damping: 20,
+                              }}
+                              className={`origin-bottom rounded-[1.8rem] transition-all ${
+                                isActive
+                                  ? "drop-shadow-[0_24px_40px_rgba(102,66,30,0.16)]"
+                                  : "drop-shadow-[0_10px_26px_rgba(102,66,30,0.08)]"
+                              }`}
                             >
-                              <DrinkStage
-                                drink={drink}
-                                isActive={isActive}
-                                viewportWidth={viewportWidth}
-                              />
-                            </div>
-                          </motion.div>
-                          <span
-                            className={`mt-1 items-center justify-center overflow-hidden border text-center font-display font-extrabold uppercase leading-[0.96] tracking-[0.06em] shadow-[0_8px_18px_rgba(102,66,30,0.06)] backdrop-blur-[6px] sm:mt-2 sm:inline-flex sm:min-h-[42px] sm:max-w-[156px] sm:px-4 sm:py-1.5 sm:text-[10.8px] lg:min-h-[40px] lg:max-w-[152px] lg:px-4 lg:py-1.5 lg:text-[10.6px] xl:min-h-[42px] xl:max-w-[164px] xl:text-[10.9px] ${
-                              isMobile
-                                ? state.slot === "hidden"
-                                  ? "hidden"
-                                  : isActive
-                                    ? "inline-flex min-h-[34px] max-w-[136px] px-3 py-1 text-[8px]"
-                                    : "inline-flex min-h-[28px] max-w-[102px] px-2.5 py-0.5 text-[6.8px]"
-                                : "inline-flex sm:max-w-none"
-                            } ${
-                              isActive ? "opacity-100" : "opacity-[0.96]"
-                            } rounded-full rotate-0`}
-                            style={{
-                              color: drink.textColor,
-                              background: isActive
-                                ? "linear-gradient(180deg, rgba(255,248,239,0.82) 0%, rgba(255,240,228,0.72) 100%)"
-                                : "linear-gradient(180deg, rgba(255,248,239,0.68) 0%, rgba(255,242,233,0.56) 100%)",
-                              borderColor:
-                                `${drink.textColor}${isActive ? "32" : "1E"}`,
-                            }}
-                          >
-                            <span className="line-clamp-2 block w-full break-words text-center">
-                              {drink.name}
+                              <div
+                                key={isActive ? bumpKey : undefined}
+                                className={isActive ? "dunkin-bump" : ""}
+                              >
+                                <DrinkStage
+                                  drink={drink}
+                                  isActive={isActive}
+                                  viewportWidth={viewportWidth}
+                                />
+                              </div>
+                            </motion.div>
+                            <span
+                              className={`mt-1 items-center justify-center overflow-hidden border text-center font-display font-extrabold uppercase leading-[0.96] tracking-[0.06em] shadow-[0_8px_18px_rgba(102,66,30,0.06)] backdrop-blur-[6px] sm:mt-2 sm:inline-flex sm:min-h-[42px] sm:max-w-[156px] sm:px-4 sm:py-1.5 sm:text-[10.8px] lg:min-h-[40px] lg:max-w-[152px] lg:px-4 lg:py-1.5 lg:text-[10.6px] xl:min-h-[42px] xl:max-w-[164px] xl:text-[10.9px] ${
+                                isMobile
+                                  ? state.slot === "hidden"
+                                    ? "hidden"
+                                    : isActive
+                                      ? "inline-flex min-h-[34px] max-w-[136px] px-3 py-1 text-[8px]"
+                                      : "inline-flex min-h-[28px] max-w-[102px] px-2.5 py-0.5 text-[6.8px]"
+                                  : "sm:max-w-none inline-flex"
+                              } ${
+                                isActive ? "opacity-100" : "opacity-[0.96]"
+                              } rotate-0 rounded-full`}
+                              style={{
+                                color: drink.textColor,
+                                background: isActive
+                                  ? "linear-gradient(180deg, rgba(255,248,239,0.82) 0%, rgba(255,240,228,0.72) 100%)"
+                                  : "linear-gradient(180deg, rgba(255,248,239,0.68) 0%, rgba(255,242,233,0.56) 100%)",
+                                borderColor: `${drink.textColor}${isActive ? "32" : "1E"}`,
+                              }}
+                            >
+                              <span className="line-clamp-2 block w-full break-words text-center">
+                                {drink.name}
+                              </span>
                             </span>
-                          </span>
-                        </motion.div>
-                      </div>
-                    );
-                  })}
-                </div>
+                          </motion.div>
+                        </div>
+                      );
+                    })}
+                  </div>
 
-                <div className="relative z-20 -mt-3 space-y-1.5 text-center sm:-mt-5 sm:space-y-1">
-                  <span className="inline-flex rounded-full border border-[#F2DFC9] bg-[linear-gradient(180deg,rgba(255,248,239,0.96)_0%,rgba(255,241,230,0.92)_100%)] px-3.5 py-1 font-sans text-[0.62rem] font-medium uppercase tracking-[0.16em] text-[#E8711B] shadow-[0_10px_20px_rgba(102,66,30,0.06)] sm:text-[0.68rem]">
-                    Tu match puede ser
-                  </span>
-                  <h2 className="font-display mx-auto flex min-h-[4.5rem] max-w-[16.5rem] items-center justify-center px-2 text-[1.64rem] font-extrabold leading-[0.92] tracking-[-0.04em] text-[#3A1F15] [text-shadow:0_1px_0_rgba(255,255,255,0.24)] sm:min-h-[5rem] sm:max-w-[20rem] sm:px-0 sm:text-[2.1rem] lg:h-[5.6rem] lg:w-[24rem] lg:max-w-[24rem] lg:text-[2.28rem] xl:w-[26rem] xl:max-w-[26rem] xl:text-[2.4rem]">
-                    {activeDrink.name}
-                  </h2>
-                  <p className="mx-auto min-h-[6.9rem] max-w-[14.75rem] rounded-[1.3rem] border border-[#EFD9CC] bg-[linear-gradient(180deg,rgba(255,250,246,0.92)_0%,rgba(255,244,238,0.84)_100%)] px-4 py-3 font-sans text-[0.82rem] font-medium leading-6 text-[#3E342F] shadow-[0_12px_26px_rgba(102,66,30,0.06)] backdrop-blur-[4px] sm:max-w-[22rem] sm:min-h-[4.9rem] sm:rounded-[1rem] sm:border-0 sm:bg-white/64 sm:px-3 sm:py-2 sm:text-[0.95rem] sm:leading-5 sm:shadow-[0_8px_18px_rgba(102,66,30,0.05)] sm:backdrop-blur-[2px]">
-                    Una bebida con personalidad que va con tu mood.
-                  </p>
-                </div>
+                  <div className="relative z-20 -mt-3 space-y-1.5 text-center sm:-mt-5 sm:space-y-1">
+                    <span className="inline-flex rounded-full border border-[#F2DFC9] bg-[linear-gradient(180deg,rgba(255,248,239,0.96)_0%,rgba(255,241,230,0.92)_100%)] px-3.5 py-1 font-sans text-[0.62rem] font-medium uppercase tracking-[0.16em] text-[#E8711B] shadow-[0_10px_20px_rgba(102,66,30,0.06)] sm:text-[0.68rem]">
+                      Tu match puede ser
+                    </span>
+                    <h2 className="mx-auto flex min-h-[4.5rem] max-w-[16.5rem] items-center justify-center px-2 font-display text-[1.64rem] font-extrabold leading-[0.92] tracking-[-0.04em] text-[#3A1F15] [text-shadow:0_1px_0_rgba(255,255,255,0.24)] sm:min-h-[5rem] sm:max-w-[20rem] sm:px-0 sm:text-[2.1rem] lg:h-[5.6rem] lg:w-[24rem] lg:max-w-[24rem] lg:text-[2.28rem] xl:w-[26rem] xl:max-w-[26rem] xl:text-[2.4rem]">
+                      {activeDrink.name}
+                    </h2>
+                    <p className="sm:bg-white/64 mx-auto min-h-[6.9rem] max-w-[14.75rem] rounded-[1.3rem] border border-[#EFD9CC] bg-[linear-gradient(180deg,rgba(255,250,246,0.92)_0%,rgba(255,244,238,0.84)_100%)] px-4 py-3 font-sans text-[0.82rem] font-medium leading-6 text-[#3E342F] shadow-[0_12px_26px_rgba(102,66,30,0.06)] backdrop-blur-[4px] sm:min-h-[4.9rem] sm:max-w-[22rem] sm:rounded-[1rem] sm:border-0 sm:px-3 sm:py-2 sm:text-[0.95rem] sm:leading-5 sm:shadow-[0_8px_18px_rgba(102,66,30,0.05)] sm:backdrop-blur-[2px]">
+                      Una bebida con personalidad que va con tu mood.
+                    </p>
+                  </div>
 
-                <div className="relative z-20 mt-3 flex items-center gap-2 sm:mt-2">
-                  {INTRO_DRINKS.map((drink, index) => (
-                    <button
-                      key={drink.id}
-                      type="button"
-                      onPointerDown={
-                        isMobile ? undefined : () => handleDotPointerDown(index)
-                      }
-                      onClick={isMobile ? () => setDrinkByIndex(index) : () => handleDotClick(index)}
-                      className={`h-2.5 rounded-full transition-all ${
-                        index === activeIndex
-                          ? "w-6 bg-[#FF7A00]"
-                          : "w-2.5 bg-[#CBAE98]"
-                      }`}
-                      aria-label={`Ver ${drink.name}`}
-                    />
-                  ))}
+                  <div className="relative z-20 mt-3 flex items-center gap-2 sm:mt-2">
+                    {INTRO_DRINKS.map((drink, index) => (
+                      <button
+                        key={drink.id}
+                        type="button"
+                        onPointerDown={
+                          isMobile
+                            ? undefined
+                            : () => handleDotPointerDown(index)
+                        }
+                        onClick={
+                          isMobile
+                            ? () => setDrinkByIndex(index)
+                            : () => handleDotClick(index)
+                        }
+                        className={`h-2.5 rounded-full transition-all ${
+                          index === activeIndex
+                            ? "w-6 bg-[#FF7A00]"
+                            : "w-2.5 bg-[#CBAE98]"
+                        }`}
+                        aria-label={`Ver ${drink.name}`}
+                      />
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </motion.div>
-          </div>
+              </motion.div>
+            </div>
           </div>
 
           <div className="relative z-10 mt-7 border-t border-[#EEDFD2] pt-6">
