@@ -1,20 +1,19 @@
 "use client";
 
-// Pantalla de resultados del quiz
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
+import JSConfetti from "js-confetti";
 import {
+  ArrowRight,
+  Check,
   Coffee,
+  Heart,
   RefreshCw,
   Share2,
-  Gift,
-  Menu,
-  ArrowRight,
-  ArrowUp,
-  Heart,
-  Copy,
-  Check,
+  Snowflake,
+  Sparkles,
+  Zap,
 } from "lucide-react";
 import { Button } from "@/components/ui";
 import {
@@ -23,84 +22,98 @@ import {
 } from "@/lib/campaign-benefits";
 import { useQuizStore } from "@/store/quizStore";
 import { QuizForm } from "./QuizForm";
+import { QuizBadge } from "./components/QuizBadge";
+import { QuizChip } from "./components/QuizChip";
+import {
+  quizTypography,
+  resultTraitMap,
+} from "./quizVisualSystem";
 
-function SideRibbon({
-  side,
-  className,
-}: {
-  side: "left" | "right";
-  className?: string;
-}) {
-  const items = Array.from({ length: 40 });
-  const [useFallback, setUseFallback] = useState(false);
-  const imageSrc =
-    side === "left"
-      ? "/assets/quiz-intro/borders/side-ribbon-left.webp"
-      : "/assets/quiz-intro/borders/side-ribbon-right.webp";
+const desktopLifestyleAssetMap: Record<
+  string,
+  {
+    src: string;
+    fileName: string;
+  }
+> = {
+  creative: {
+    src: "/assets/quiz-results/lifestyle/iced-latte-desktop-lifestyle.webp",
+    fileName: "iced-latte-desktop-lifestyle.webp",
+  },
+  balanced: {
+    src: "/assets/quiz-results/lifestyle/cold-brew-desktop-lifestyle.webp",
+    fileName: "cold-brew-desktop-lifestyle.webp",
+  },
+  energetic: {
+    src: "/assets/quiz-results/lifestyle/refresher-mango-pina-desktop-lifestyle.webp",
+    fileName: "refresher-mango-pina-desktop-lifestyle.webp",
+  },
+  passionate: {
+    src: "/assets/quiz-results/lifestyle/frutibatido-desktop-lifestyle.webp",
+    fileName: "frutibatido-desktop-lifestyle.webp",
+  },
+};
 
-  return (
-    <div
-      className={`pointer-events-none absolute inset-y-0 overflow-hidden flex ${
-        side === "left" ? "left-0" : "right-0"
-      } w-[26px] sm:w-[34px] md:w-[42px] lg:w-[72px] xl:w-[78px] ${className ?? ""}`}
-    >
-      {!useFallback ? (
-        <div aria-hidden="true" className="flex w-full flex-col">
-          {items.map((_, index) => (
-            <img
-              key={`${side}-ribbon-${index}`}
-              src={imageSrc}
-              alt=""
-              className="-mt-px block h-auto w-full shrink-0 first:mt-0"
-              onError={() => setUseFallback(true)}
-            />
-          ))}
-        </div>
-      ) : (
-        <div
-          className={`flex h-full w-full flex-col items-center justify-around bg-[linear-gradient(180deg,#f34aa7_0%,#ea4f9b_20%,#ef6f6c_50%,#f34aa7_100%)] ${
-            side === "left" ? "pl-0.5" : "pr-0.5"
-          }`}
-        >
-          {items.map((_, index) => (
-            <span
-              key={`${side}-${index}`}
-              className={`text-[0.78rem] font-black uppercase tracking-[0.18em] text-[#FF9A1F] ${
-                side === "left" ? "-rotate-90" : "rotate-90"
-              }`}
-            >
-              DUNKIN'
-            </span>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
+const resultFeatureRailMap: Record<
+  string,
+  Array<{
+    title: string;
+    caption: string;
+    icon: typeof Snowflake;
+  }>
+> = {
+  creative: [
+    { title: "Suave y frío", caption: "Listo para arrancar", icon: Snowflake },
+    { title: "Cremoso balance", caption: "Versátil como tú", icon: Coffee },
+    { title: "Energía ligera", caption: "Movimiento sin drama", icon: Zap },
+  ],
+  balanced: [
+    { title: "Frío con calma", caption: "Cabeza clara", icon: Snowflake },
+    { title: "Profundo y limpio", caption: "Carácter sereno", icon: Coffee },
+    { title: "Ritmo estable", caption: "Te acompaña fácil", icon: Zap },
+  ],
+  energetic: [
+    { title: "Tropical al instante", caption: "Se siente fresco", icon: Snowflake },
+    { title: "Explosión frutal", caption: "Mucho color y sabor", icon: Sparkles },
+    { title: "Plan que despega", caption: "Vibra que contagia", icon: Zap },
+  ],
+  passionate: [
+    { title: "Frío y alegre", caption: "Mood buen parche", icon: Snowflake },
+    { title: "Dulce con flow", caption: "Ligero y smooth", icon: Heart },
+    { title: "Buena energía", caption: "Te sube la vibra", icon: Zap },
+  ],
+};
 
 export function ResultScreen() {
   const router = useRouter();
   const formSectionRef = useRef<HTMLDivElement | null>(null);
+  const confettiRef = useRef<JSConfetti | null>(null);
   const { result, resetQuiz, formSubmitted } = useQuizStore();
+  const shouldReduceMotion = useReducedMotion();
   const [resultImageHidden, setResultImageHidden] = useState(false);
+  const [desktopLifestyleHidden, setDesktopLifestyleHidden] = useState(false);
+  const [copySuccess, setCopySuccess] = useState(false);
   const [benefitIconHidden, setBenefitIconHidden] = useState(false);
   const [dynamicBenefit, setDynamicBenefit] =
     useState<ResolvedCampaignBenefit | null>(null);
   const [isBenefitLoading, setIsBenefitLoading] = useState(true);
-  const [showBackToTop, setShowBackToTop] = useState(false);
-  const [copySuccess, setCopySuccess] = useState(false);
 
   if (!result) {
     return null;
   }
 
-  const benefitData = dynamicBenefit || getFallbackBenefit(result);
   const mobileResultImageTransform = `translate(${result.mobileImageOffsetX || 0}px, ${
     result.mobileImageOffsetY || 0
   }px) scale(${result.mobileImageScale || 1})`;
-  const desktopResultImageTransform = `translate(${result.desktopImageOffsetX || 0}px, ${
-    result.desktopImageOffsetY || 0
-  }px) scale(${result.desktopImageScale || 1.12})`;
+  const resultTraits = resultTraitMap[result.id] || [];
+  const resultFeatureRail = resultFeatureRailMap[result.id] || [];
+  const desktopLifestyleAsset = desktopLifestyleAssetMap[result.id];
+  const mobileHeroImageSrc =
+    desktopLifestyleAsset && !desktopLifestyleHidden
+      ? desktopLifestyleAsset.src
+      : result.image;
+  const benefitData = dynamicBenefit || getFallbackBenefit(result);
+  const resultTitleColor = `${result.color || "#FF671F"}D9`;
 
   useEffect(() => {
     let isMounted = true;
@@ -114,7 +127,7 @@ export function ResultScreen() {
         });
 
         if (!response.ok) {
-          throw new Error("No fue posible consultar el beneficio");
+          throw new Error("No fue posible consultar la recomendación");
         }
 
         const payload = (await response.json()) as {
@@ -126,9 +139,7 @@ export function ResultScreen() {
           setBenefitIconHidden(false);
           setIsBenefitLoading(false);
         }
-      } catch (error) {
-        console.error("Error cargando beneficio dinamico:", error);
-
+      } catch {
         if (isMounted) {
           setDynamicBenefit(null);
           setBenefitIconHidden(false);
@@ -145,27 +156,48 @@ export function ResultScreen() {
   }, [result.id]);
 
   useEffect(() => {
-    const updateScrollState = () => setShowBackToTop(window.scrollY > 520);
-
-    updateScrollState();
-    window.addEventListener("scroll", updateScrollState, { passive: true });
-
-    return () => window.removeEventListener("scroll", updateScrollState);
-  }, []);
-
-  useEffect(() => {
     setResultImageHidden(false);
+    setDesktopLifestyleHidden(false);
+    setCopySuccess(false);
     setBenefitIconHidden(false);
     setDynamicBenefit(null);
   }, [result.id]);
 
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, behavior: "auto" });
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [result.id]);
+
+  useEffect(() => {
+    if (shouldReduceMotion) {
+      return;
+    }
+
+    confettiRef.current ??= new JSConfetti();
+
+    void confettiRef.current.addConfetti({
+      confettiNumber: 90,
+      confettiRadius: 5,
+      confettiColors: [
+        result.color || "#FF671F",
+        result.accentColor || "#FFD9B8",
+        "#E9539A",
+        "#F2B11B",
+        "#FFF4EA",
+      ],
+    });
+  }, [result.id, result.color, result.accentColor, shouldReduceMotion]);
+
   const handleShare = () => {
     const shareText =
-      "Ya descubrí mi match Dunkin. Haz el test y mira cuál te sale a ti.";
+      "Ya descubrí mi match Dunkin'. Haz el test y mira cuál te sale a ti.";
 
     if (navigator.share) {
       navigator.share({
-        title: "Comparte tu resultado Dunkin",
+        title: "Comparte tu resultado Dunkin'",
         text: shareText,
         url: window.location.href,
       });
@@ -180,22 +212,20 @@ export function ResultScreen() {
     }
   };
 
-  const handleCopyLink = () => {
-    navigator.clipboard
-      .writeText(window.location.href)
-      .then(() => {
-        setCopySuccess(true);
-        window.setTimeout(() => setCopySuccess(false), 2200);
-      })
-      .catch(() => {});
-  };
-
   const handleClaimBenefit = () => {
     if (!formSubmitted) {
-      formSectionRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
+      if (formSectionRef.current) {
+        const topOffset = window.innerWidth >= 1024 ? 72 : 32;
+        const nextTop =
+          formSectionRef.current.getBoundingClientRect().top +
+          window.scrollY -
+          topOffset;
+
+        window.scrollTo({
+          top: Math.max(nextTop, 0),
+          behavior: "smooth",
+        });
+      }
       return;
     }
 
@@ -208,623 +238,740 @@ export function ResultScreen() {
   };
 
   const handleFormSuccess = () => {
-    // Se ejecuta cuando el formulario se envía correctamente
-    // Aquí podrías mostrar más botones o navegar a otra página
-  };
-
-  const handleBackToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    return;
   };
 
   return (
-    <div className="min-h-screen bg-[#f4eee7] px-3 py-3 sm:px-5 sm:py-5">
-      <div className="relative mx-auto max-w-[1360px] overflow-hidden rounded-[2rem] bg-[linear-gradient(180deg,#f8f4ef_0%,#fbf8f4_100%)] shadow-[0_30px_80px_rgba(89,53,17,0.12)]">
-        <SideRibbon side="left" />
-        <SideRibbon side="right" />
-        <div className="mx-[26px] space-y-4 px-4 py-4 sm:mx-[34px] sm:space-y-6 sm:px-8 sm:py-8 md:mx-[42px] md:px-7 md:py-7 lg:mx-[72px] lg:px-10 xl:mx-[78px] xl:px-12">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="bg-white/82 relative overflow-hidden rounded-[1.8rem] px-4 py-5 shadow-[0_24px_55px_rgba(89,53,17,0.08)] ring-1 ring-[#ECE2D8] backdrop-blur-[3px] sm:rounded-[2rem] sm:px-8 sm:py-7 lg:px-10 lg:py-10"
-        >
-          <div
-            className="pointer-events-none absolute inset-0 opacity-80"
-            style={{
-              background: `radial-gradient(circle_at_18%_28%, ${
-                result.color || "#FF7A00"
-              }18 0%, rgba(255,255,255,0) 62%), radial-gradient(circle_at_84%_78%, ${
-                result.accentColor || "#FFD9B8"
-              }26 0%, rgba(255,255,255,0) 58%)`,
-            }}
-          />
-          <div className="absolute right-[12%] top-[16%] hidden grid-cols-6 gap-3 opacity-75 lg:grid">
-            {Array.from({ length: 24 }).map((_, index) => (
-              <span
-                key={index}
-                className="h-[3px] w-[3px] rounded-full bg-[#FFB066]"
-              />
-            ))}
-          </div>
-          <div
-            className="absolute bottom-[8%] right-[12%] hidden h-[320px] w-[320px] rounded-full lg:block"
-            style={{
-              background: `radial-gradient(circle, ${result.accentColor || "#FFC27A"} 0%, rgba(255,255,255,0) 62%)`,
-            }}
-          />
+    <div className="result-desktop-stage min-h-screen px-5 py-5 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
+      <div className="pointer-events-none absolute inset-0 overflow-hidden lg:hidden">
+        <div
+          className="absolute inset-0 opacity-[0.44]"
+          style={{
+            backgroundImage:
+              "url('/assets/quiz-results/backgrounds/mobile/result-stage-background.jpg')",
+            backgroundPosition: "center center",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "cover",
+          }}
+        />
+        <div
+          className="absolute inset-x-[-10%] top-[-6%] h-[34%] bg-cover bg-top bg-no-repeat opacity-[0.88]"
+          style={{
+            backgroundImage:
+              "url('/assets/quiz-results/backgrounds/mobile/result-stage-background.jpg')",
+            backgroundPosition: "center top",
+            backgroundSize: "cover",
+          }}
+        />
+        <div
+          className="absolute inset-x-[-10%] top-[22%] h-[34%] bg-cover bg-center bg-no-repeat opacity-[0.8]"
+          style={{
+            backgroundImage:
+              "url('/assets/quiz-results/backgrounds/mobile/result-stage-background.jpg')",
+            backgroundPosition: "center center",
+            backgroundSize: "cover",
+            transform: "rotate(180deg) scale(1.02)",
+            transformOrigin: "center center",
+          }}
+        />
+        <div
+          className="absolute inset-x-[-10%] top-[50%] h-[34%] bg-cover bg-center bg-no-repeat opacity-[0.82]"
+          style={{
+            backgroundImage:
+              "url('/assets/quiz-results/backgrounds/mobile/result-stage-background.jpg')",
+            backgroundPosition: "center center",
+            backgroundSize: "cover",
+          }}
+        />
+        <div
+          className="absolute inset-x-[-10%] bottom-[-6%] h-[34%] bg-cover bg-bottom bg-no-repeat opacity-[0.78]"
+          style={{
+            backgroundImage:
+              "url('/assets/quiz-results/backgrounds/mobile/result-stage-background.jpg')",
+            backgroundPosition: "center bottom",
+            backgroundSize: "cover",
+            transform: "rotate(180deg) scale(1.02)",
+            transformOrigin: "center center",
+          }}
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(247,241,234,0.12)_0%,rgba(247,241,234,0.04)_22%,rgba(247,241,234,0.02)_48%,rgba(247,241,234,0.08)_78%,rgba(247,241,234,0.18)_100%)]" />
+      </div>
+      <div className="result-desktop-shell relative mx-auto max-w-[1320px]">
+        <div className="pointer-events-none absolute -left-20 top-12 h-56 w-56 rounded-full bg-[#FF671F]/10 blur-[90px]" />
+        <div
+          className="pointer-events-none absolute right-[-5rem] top-[18%] h-80 w-80 rounded-full blur-[120px]"
+          style={{
+            backgroundColor: `${result.color || "#FF671F"}18`,
+          }}
+        />
+        <div
+          className="pointer-events-none absolute bottom-[-5rem] left-[26%] h-80 w-80 rounded-full blur-[120px]"
+          style={{
+            backgroundColor: `${result.accentColor || "#FFD9B8"}4F`,
+          }}
+        />
 
-          <div className="relative flex flex-col gap-3 md:grid md:grid-cols-[0.96fr_0.84fr] md:items-center md:gap-7 lg:grid-cols-[0.95fr_0.85fr] xl:gap-10">
-            <div className="space-y-3 text-left md:space-y-7">
-              <div
-                className="relative overflow-hidden rounded-[1.35rem] border border-[#EEE1D4] p-3.5 shadow-[0_16px_30px_rgba(89,53,17,0.05)] md:space-y-3 md:rounded-none md:border-0 md:bg-transparent md:p-0 md:shadow-none"
-                style={{
-                  background: `linear-gradient(180deg, rgba(255,252,248,0.96) 0%, ${
-                    result.accentColor || "#FFF0E0"
-                  }64 100%)`,
-                }}
-              >
-                <motion.div
-                  aria-hidden="true"
-                  className="pointer-events-none absolute -left-[16%] top-[18%] h-[180px] w-[180px] rounded-full blur-[34px] md:h-[240px] md:w-[240px]"
+        <div className="space-y-6 px-5 py-6 sm:px-8 sm:py-8 lg:px-12 lg:py-12 xl:px-16">
+          <motion.div
+            initial={{ opacity: 0, y: 28 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
+            className="relative overflow-hidden rounded-[1.85rem] border border-white/70 bg-[linear-gradient(180deg,rgba(255,252,248,0.92)_0%,rgba(252,244,236,0.94)_100%)] px-4 py-5 shadow-[0_20px_48px_rgba(89,53,17,0.09)] sm:px-7 sm:py-7 lg:border-0 lg:bg-transparent lg:px-0 lg:py-0 lg:shadow-none"
+          >
+            <div
+              className="pointer-events-none absolute inset-0 opacity-90 lg:hidden"
+              style={{
+                background: `radial-gradient(circle_at_18%_28%, ${
+                  result.color || "#FF7A00"
+                }16 0%, rgba(255,255,255,0) 62%), radial-gradient(circle_at_84%_78%, ${
+                  result.accentColor || "#FFD9B8"
+                }32 0%, rgba(255,255,255,0) 58%)`,
+              }}
+            />
+            <div className="pointer-events-none absolute left-[-2rem] top-[14%] h-24 w-24 rounded-full bg-white/35 blur-3xl lg:hidden" />
+            <div
+              className="pointer-events-none absolute right-[-2.4rem] top-[34%] h-28 w-28 rounded-full blur-3xl lg:hidden"
+              style={{ backgroundColor: `${result.color || "#FF671F"}18` }}
+            />
+            <div
+              className="pointer-events-none absolute bottom-[-1.8rem] left-[18%] h-24 w-24 rounded-full blur-3xl lg:hidden"
+              style={{ backgroundColor: `${result.accentColor || "#FFD9B8"}38` }}
+            />
+
+            <div className="relative mb-7 lg:hidden">
+              <div className="relative overflow-hidden rounded-[1.9rem] border border-transparent bg-[linear-gradient(180deg,rgba(255,252,248,0.86)_0%,rgba(252,244,236,0.92)_100%)] px-4 py-4 shadow-[0_18px_40px_rgba(89,53,17,0.08)] backdrop-blur-[8px]">
+                <div
+                  className="pointer-events-none absolute right-3 top-3 h-[78px] w-[78px] rotate-[8deg] rounded-[1.55rem] border border-white/60 bg-white/72 p-2 shadow-[0_12px_24px_rgba(89,53,17,0.08)]"
+                  style={{ borderColor: `${result.accentColor || "#FFD9B8"}AA` }}
+                >
+                  {!resultImageHidden && result.image ? (
+                    <img
+                      src={result.image}
+                      alt={result.recommendedDrink}
+                      className="h-full w-full object-contain"
+                      onError={() => setResultImageHidden(true)}
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center rounded-[1rem] bg-white/82">
+                      <Coffee className="h-7 w-7 text-[#B8895D]/70" strokeWidth={1.8} />
+                    </div>
+                  )}
+                </div>
+
+                <QuizBadge
+                  className="gap-2 rounded-full px-4 py-2 shadow-[0_10px_24px_rgba(89,53,17,0.06)]"
                   style={{
-                    background: `radial-gradient(circle, ${
-                      result.color || "#FF7A00"
-                    }8a 0%, ${result.accentColor || "#FFD9B8"}00 72%)`,
-                  }}
-                  animate={{
-                    scale: [0.92, 1.1, 0.96],
-                    opacity: [0.4, 0.72, 0.46],
-                    x: [0, 18, -8],
-                    y: [0, -16, 10],
-                  }}
-                  transition={{
-                    duration: 6.8,
-                    repeat: Number.POSITIVE_INFINITY,
-                    ease: "easeInOut",
-                  }}
-                />
-                <motion.div
-                  aria-hidden="true"
-                  className="pointer-events-none absolute bottom-[-18%] right-[-10%] h-[150px] w-[150px] rounded-full blur-[30px] md:h-[220px] md:w-[220px]"
-                  style={{
-                    background: `radial-gradient(circle, ${
-                      result.accentColor || "#FFD9B8"
-                    }88 0%, rgba(255,255,255,0) 74%)`,
-                  }}
-                  animate={{
-                    scale: [0.88, 1.06, 0.92],
-                    opacity: [0.28, 0.52, 0.32],
-                    x: [0, -18, 10],
-                    y: [0, 12, -10],
-                  }}
-                  transition={{
-                    duration: 7.6,
-                    repeat: Number.POSITIVE_INFINITY,
-                    ease: "easeInOut",
-                  }}
-                />
-                <motion.div
-                  className="relative inline-flex rounded-full border bg-[#FFF3E8]/92 px-3 py-1 text-[0.64rem] font-bold uppercase tracking-[0.16em] shadow-[0_8px_18px_rgba(89,53,17,0.05)] sm:text-[0.68rem]"
-                  style={{
+                    borderColor: `${result.accentColor || "#FFD9B8"}99`,
+                    backgroundColor: "rgba(255,248,241,0.92)",
                     color: result.color || "#B86B2C",
-                    borderColor: `${result.accentColor || "#F2D8C4"}66`,
-                  }}
-                  animate={{
-                    y: [0, -1, 0],
-                    boxShadow: [
-                      "0 8px 18px rgba(89,53,17,0.05)",
-                      `0 10px 22px ${result.color || "#FF7A00"}18`,
-                      "0 8px 18px rgba(89,53,17,0.05)",
-                    ],
-                  }}
-                  transition={{
-                    duration: 5.8,
-                    repeat: Number.POSITIVE_INFINITY,
-                    ease: "easeInOut",
                   }}
                 >
-                  <motion.span
-                    aria-hidden="true"
-                    className="pointer-events-none absolute inset-0 rounded-full"
-                    style={{
-                      background: `linear-gradient(120deg, rgba(255,255,255,0) 0%, ${result.color || "#FF7A00"}10 36%, rgba(255,255,255,0.22) 50%, rgba(255,255,255,0) 68%)`,
-                    }}
-                    animate={{ x: ["-130%", "140%"] }}
-                    transition={{
-                      duration: 4.8,
-                      repeat: Number.POSITIVE_INFINITY,
-                      repeatDelay: 1.8,
-                      ease: [0.22, 1, 0.36, 1],
-                    }}
-                  />
-                  Tu match Dunkin
-                </motion.div>
-                <p className="mt-2 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#7A6A5B] sm:text-sm">
-                  {result.badge || "Tu personalidad"}
-                </p>
-                <motion.h1
-                  className="max-w-[13rem] text-[1.62rem] font-black uppercase leading-[0.86] tracking-[-0.05em] sm:max-w-none sm:text-[3rem] md:text-[2.8rem] lg:text-[3.35rem] xl:text-[3.7rem]"
-                  style={{ color: result.color || "#FF7A00" }}
-                  animate={{
-                    textShadow: [
-                      "0 0 0 rgba(255,255,255,0), 0 0 0 rgba(0,0,0,0)",
-                      `0 0 14px ${result.accentColor || "#FFD9B8"}52, 0 6px 18px ${result.color || "#FF7A00"}18`,
-                      "0 0 0 rgba(255,255,255,0), 0 0 0 rgba(0,0,0,0)",
-                    ],
-                    y: [0, -1, 0],
-                    scale: [1, 1.01, 1],
-                  }}
-                  transition={{
-                    duration: 6.2,
-                    repeat: Number.POSITIVE_INFINITY,
-                    ease: "easeInOut",
-                  }}
-                >
-                  {result.title}
-                </motion.h1>
-                <p className="max-w-[17.25rem] text-[0.8rem] leading-[1.38] text-[#5E5146] md:max-w-[560px] md:text-[1.02rem] md:leading-7 xl:max-w-[620px] xl:text-[1.08rem] xl:leading-8">
-                  {result.description}
-                </p>
-                <div className="mt-3 space-y-3 md:hidden">
-                  <div className="-mx-3.5">
+                  <Heart className="h-3.5 w-3.5" fill="currentColor" strokeWidth={0} />
+                  <span className={quizTypography.matchBadge}>Tu Match Dunkin'</span>
+                </QuizBadge>
+
+                <div className="mt-4 grid grid-cols-[minmax(0,1fr)_138px] gap-3">
+                  <div className="min-w-0 space-y-3 pt-1">
+                    <h1
+                      className={`${quizTypography.drinkHeroTitle} max-w-[6ch] text-[2.55rem] leading-[0.88] text-balance`}
+                      style={{ color: resultTitleColor }}
+                    >
+                      {result.recommendedDrink}
+                    </h1>
+                    <p className="font-sans max-w-[22ch] text-[0.9rem] font-medium leading-7 text-[#5D5047]">
+                      {result.drinkDescription}
+                    </p>
+                  </div>
+
+                  <div className="relative">
+                    <div className="pointer-events-none absolute left-[-0.8rem] top-6 text-[#FF7A00]">
+                      <div className="mb-1 h-[2px] w-5 rounded-full bg-current" />
+                      <div className="mb-1 ml-1 h-[2px] w-3 rounded-full bg-current" />
+                      <div className="ml-2 h-[2px] w-4 rounded-full bg-current" />
+                    </div>
+
+                    <div className="pointer-events-none absolute left-[-0.55rem] top-[4.5rem] text-[#EE5F77]">
+                      <div className="h-4 w-4 rounded-full border-2 border-current border-t-transparent border-r-transparent" />
+                    </div>
+
                     <div
-                      className="relative h-[270px] overflow-hidden"
+                      className="relative overflow-hidden rounded-[1.7rem] border border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.94)_0%,rgba(252,244,236,0.96)_100%)] p-2 shadow-[0_20px_42px_rgba(89,53,17,0.11)]"
                       style={{
-                        background: `radial-gradient(circle_at_50%_34%, ${result.color || "#FF7A00"}22 0%, ${result.accentColor || "#FFD9B8"}78 52%, rgba(255,255,255,0) 82%)`,
+                        borderColor: `${result.accentColor || "#FFD9B8"}A8`,
                       }}
                     >
-                      <div className="absolute inset-x-7 top-3 h-5 rounded-full bg-white/48 blur-md" />
-                      <div
-                        className="absolute bottom-4 left-1/2 h-5 w-[72%] -translate-x-1/2 rounded-[999px] blur-md"
-                        style={{ backgroundColor: `${result.color || "#C98F5C"}22` }}
-                      />
-                      {!resultImageHidden && result.image ? (
-                        <div className="relative z-10 flex h-full w-full items-center justify-center px-2">
+                      <motion.div
+                        className="relative aspect-[4/5] overflow-hidden rounded-[1.2rem] bg-[linear-gradient(180deg,#FFF8F1_0%,#F8E3D2_100%)]"
+                        animate={{ y: [0, -4, 0] }}
+                        transition={{
+                          duration: 6.4,
+                          repeat: Number.POSITIVE_INFINITY,
+                          ease: "easeInOut",
+                        }}
+                      >
+                        {mobileHeroImageSrc && !resultImageHidden ? (
                           <img
-                            src={result.image}
+                            src={mobileHeroImageSrc}
                             alt={result.recommendedDrink}
-                            className="h-full w-full object-contain drop-shadow-[0_24px_34px_rgba(87,45,0,0.18)]"
+                            className="h-full w-full object-cover"
                             style={{
                               transform: mobileResultImageTransform,
                               transformOrigin: "center center",
                             }}
-                            onError={() => setResultImageHidden(true)}
+                            onError={() => {
+                              if (mobileHeroImageSrc !== result.image) {
+                                setDesktopLifestyleHidden(true);
+                                return;
+                              }
+                              setResultImageHidden(true);
+                            }}
                           />
+                        ) : (
+                          <div className="flex h-full w-full items-center justify-center bg-[linear-gradient(180deg,#FFF6ED_0%,#F5DEC6_100%)]">
+                            <Coffee className="h-10 w-10 text-[#B8895D]/70" strokeWidth={1.7} />
+                          </div>
+                        )}
+                        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[24%] bg-[linear-gradient(180deg,rgba(17,10,4,0)_0%,rgba(17,10,4,0.12)_100%)]" />
+                      </motion.div>
+
+                      <div className="pointer-events-none absolute bottom-[-0.9rem] left-[-0.85rem] flex h-[76px] w-[76px] rotate-[-14deg] items-center justify-center rounded-full border border-[#FFC9A4] bg-[radial-gradient(circle_at_30%_30%,#FFF7EF_0%,#FDE6D4_64%,#F8D3BA_100%)] text-center font-display text-[0.58rem] font-extrabold uppercase tracking-[0.13em] text-[#EE5F77] shadow-[0_16px_30px_rgba(89,53,17,0.12)]">
+                        <div className="space-y-0.5">
+                          <p>Match</p>
+                          <Heart className="mx-auto h-3 w-3" fill="currentColor" strokeWidth={0} />
+                          <p>Perfecto</p>
                         </div>
-                      ) : (
-                        <div className="relative z-10 flex h-full w-full items-end justify-center px-8 pb-3">
-                          <div className="relative flex h-[208px] w-[152px] items-end justify-center rounded-[1.75rem] bg-[linear-gradient(180deg,#f6dfc7_0%,#d49755_100%)] shadow-[0_18px_28px_rgba(140,81,24,0.16)]">
-                            <div className="bg-white/50 absolute inset-x-3 top-3 h-4 rounded-full blur-md" />
-                            <div className="border-white/70 absolute -top-3 left-1/2 h-8 w-[72%] -translate-x-1/2 rounded-full border-[3px] bg-[#f6d8b7]" />
-                            <span className="absolute inset-y-0 right-4 flex items-center text-[1.02rem] font-black tracking-[-0.08em] text-[#FF7A00] [writing-mode:vertical-rl]">
-                              DUNKIN'
-                            </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="relative grid gap-8 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:items-start lg:gap-14 xl:gap-16">
+              <div className="order-2 min-w-0 space-y-5 lg:order-1 lg:space-y-8 lg:pt-3 xl:max-w-[560px]">
+                <div className="hidden space-y-4 lg:block lg:space-y-5 lg:pl-6 xl:pl-8">
+                  <QuizBadge
+                    className="gap-2 rounded-full px-4 py-2 shadow-[0_10px_24px_rgba(89,53,17,0.06)] lg:shadow-none"
+                    style={{
+                      borderColor: `${result.accentColor || "#FFD9B8"}99`,
+                      backgroundColor: "rgba(255,248,241,0.9)",
+                      color: result.color || "#B86B2C",
+                    }}
+                  >
+                    <Heart className="h-3.5 w-3.5" fill="currentColor" strokeWidth={0} />
+                    <span className={quizTypography.matchBadge}>
+                      Tu Match Dunkin'
+                    </span>
+                  </QuizBadge>
+
+                  <h1
+                    className={`${quizTypography.drinkHeroTitle} max-w-[10ch] text-[2.9rem] sm:text-[3.55rem] lg:text-[4.4rem] xl:text-[5.1rem]`}
+                    style={{ color: resultTitleColor }}
+                  >
+                    {result.recommendedDrink}
+                  </h1>
+
+                  <p className={`${quizTypography.supporting} max-w-[42ch] text-[1rem] lg:text-[1.06rem]`}>
+                    {result.drinkDescription}
+                  </p>
+                </div>
+
+                <div className="hidden min-w-0 overflow-hidden rounded-[2rem] border border-[#EFD9C8] bg-[linear-gradient(180deg,rgba(255,255,255,0.82)_0%,rgba(255,248,242,0.78)_100%)] px-5 py-5 shadow-[0_18px_40px_rgba(89,53,17,0.06)] backdrop-blur-[10px] sm:px-6 sm:py-6 lg:block lg:ml-6 lg:px-7 xl:ml-8 xl:px-8">
+                  <div className="grid gap-5 sm:grid-cols-[82px_minmax(0,1fr)] sm:items-start lg:gap-6">
+                    <div
+                      className="flex h-[82px] w-[82px] items-center justify-center rounded-full border bg-[linear-gradient(180deg,#FFF9F3_0%,#FDEBDD_100%)] text-[#F08A2B] shadow-[0_10px_24px_rgba(89,53,17,0.07)]"
+                      style={{ borderColor: `${result.accentColor || "#FFD9B8"}B0` }}
+                    >
+                      <Sparkles className="h-8 w-8" strokeWidth={1.7} />
+                    </div>
+
+                    <div className="min-w-0 space-y-4 lg:pr-4">
+                      <div className="space-y-2">
+                        <p className="font-sans text-[0.82rem] font-medium uppercase tracking-[0.2em] text-[#B0907C]">
+                          Tu personalidad
+                        </p>
+                        <h2 className={`${quizTypography.personalityTitle} break-words text-[1.48rem] leading-[0.96] sm:text-[1.6rem]`}>
+                          {result.personalityType || result.title}
+                        </h2>
+                        <p className="font-sans max-w-[34ch] text-[0.98rem] font-medium leading-[1.75] text-[#5A4A40]">
+                          {result.description}
+                        </p>
+                      </div>
+
+                      {resultTraits.length > 0 ? (
+                        <div className="flex flex-wrap gap-3">
+                          {resultTraits.map((trait) => (
+                            <QuizChip
+                              key={trait}
+                              className="gap-2 rounded-full px-4 py-2"
+                              style={{
+                                borderColor: `${result.color || "#FF671F"}1F`,
+                                backgroundColor:
+                                  trait === resultTraits[1]
+                                    ? "rgba(242, 119, 154, 0.12)"
+                                    : "rgba(255, 249, 243, 0.92)",
+                                color: result.color || "#B86B2C",
+                              }}
+                            >
+                              <span
+                                className="flex h-5 w-5 items-center justify-center rounded-full"
+                                style={{
+                                  backgroundColor:
+                                    trait === resultTraits[1]
+                                      ? "rgba(242, 119, 154, 0.14)"
+                                      : "rgba(255, 255, 255, 0.88)",
+                                  color:
+                                    trait === resultTraits[1]
+                                      ? "#E9539A"
+                                      : result.color || "#FF671F",
+                                }}
+                              >
+                                <Sparkles className="h-3.5 w-3.5" strokeWidth={2} />
+                              </span>
+                              <span className={quizTypography.chip}>{trait}</span>
+                            </QuizChip>
+                          ))}
+                        </div>
+                      ) : null}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="lg:hidden">
+                  <div
+                    className="relative min-h-[23rem] overflow-hidden rounded-[1.85rem] border border-transparent bg-[linear-gradient(180deg,rgba(255,252,248,0.86)_0%,rgba(252,244,236,0.92)_100%)] px-4 py-4 shadow-[0_18px_40px_rgba(89,53,17,0.08)] backdrop-blur-[10px]"
+                  >
+                    <div
+                      className="pointer-events-none absolute inset-0 opacity-90"
+                      style={{
+                        background: `radial-gradient(circle at 18% 24%, ${
+                          result.accentColor || "#FFD9B8"
+                        }3D 0%, rgba(255,255,255,0) 44%), radial-gradient(circle at 84% 82%, ${
+                          result.color || "#FF671F"
+                        }16 0%, rgba(255,255,255,0) 54%)`,
+                      }}
+                    />
+                    <div className="relative flex min-h-[calc(23rem-2rem)] flex-col">
+                      <div className="grid grid-cols-[82px_minmax(0,1fr)] items-start gap-4">
+                        <div
+                          className="flex h-[82px] w-[82px] items-center justify-center overflow-hidden rounded-full border bg-[linear-gradient(180deg,#FFF8F2_0%,#FDEBDD_100%)] shadow-[0_14px_28px_rgba(89,53,17,0.08)]"
+                          style={{
+                            borderColor: `${result.accentColor || "#FFD9B8"}A6`,
+                          }}
+                        >
+                          {isBenefitLoading ? (
+                            <div className="h-[72%] w-[72%] animate-pulse rounded-full bg-white/70" />
+                          ) : !benefitIconHidden && benefitData.imageUrl ? (
+                            <img
+                              src={benefitData.imageUrl}
+                              alt={benefitData.title}
+                              className="h-[72%] w-[72%] object-contain"
+                              onError={() => setBenefitIconHidden(true)}
+                            />
+                          ) : (
                             <Coffee
-                              className="text-white/70 absolute left-1/2 top-[41%] h-8 w-8 -translate-x-1/2"
+                              className="h-8 w-8 text-[#B8895D]/70"
                               strokeWidth={1.8}
                             />
-                          </div>
+                          )}
                         </div>
+
+                        <div className="min-w-0 flex-1">
+                          <p
+                            className="font-sans text-[0.72rem] font-medium uppercase tracking-[0.16em]"
+                            style={{ color: result.color || "#FF671F" }}
+                          >
+                            Recomendación
+                          </p>
+
+                          {isBenefitLoading ? (
+                            <div className="space-y-2.5 animate-pulse">
+                              <div className="h-6 w-[72%] rounded-full bg-white/74" />
+                              <div className="h-4.5 w-full rounded-full bg-white/64" />
+                              <div className="h-4.5 w-[92%] rounded-full bg-white/58" />
+                              <div className="h-4.5 w-[78%] rounded-full bg-white/52" />
+                            </div>
+                          ) : (
+                            <div className="mt-2 flex min-h-[8.7rem] flex-col space-y-2">
+                              <h3 className="line-clamp-2 min-h-[3.45rem] font-display break-words text-[1.06rem] font-extrabold tracking-[-0.03em] text-[#201711]">
+                                {benefitData.title}
+                              </h3>
+                              <p className="line-clamp-3 min-h-[6.1rem] font-sans text-[0.96rem] font-medium leading-7 text-[#5D5047]">
+                                {benefitData.description}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {isBenefitLoading ? (
+                        <>
+                          <div className="mt-4 flex flex-wrap gap-2 animate-pulse">
+                            <div className="h-8 w-[138px] rounded-full bg-white/74" />
+                            <div className="h-8 w-[104px] rounded-full bg-white/62" />
+                          </div>
+                          <div className="mt-auto pt-5">
+                            <div className="h-[52px] w-full animate-pulse rounded-full bg-[#EF6A00]/18" />
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          {benefitData.discountLabel || benefitData.priceLabel ? (
+                            <div className="mt-4 flex flex-wrap gap-2">
+                              {benefitData.discountLabel ? (
+                                <span className="rounded-full bg-[#FF671F] px-3 py-1.5 font-sans text-[0.68rem] font-medium uppercase tracking-[0.14em] text-[#F8F4F1]">
+                                  {benefitData.discountLabel}
+                                </span>
+                              ) : null}
+                              {benefitData.priceLabel ? (
+                                <span className="rounded-full border border-[#E8DCCF] bg-white/78 px-3 py-1.5 font-sans text-[0.68rem] font-medium uppercase tracking-[0.12em] text-[#4A281B]">
+                                  {benefitData.priceLabel}
+                                </span>
+                              ) : null}
+                            </div>
+                          ) : null}
+
+                          <div className="mt-auto pt-5">
+                            <Button
+                              variant="quizCta"
+                              size="quiz"
+                              onClick={handleClaimBenefit}
+                              disabled={isBenefitLoading}
+                              className="w-full justify-between px-6 font-sans text-[0.98rem] disabled:opacity-70"
+                            >
+                              <span>{formSubmitted ? benefitData.cta : "Ver recomendación"}</span>
+                              <span className="ml-3 flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#EE5F77] shadow-[0_10px_22px_rgba(89,53,17,0.1)]">
+                                <ArrowRight className="h-4.5 w-4.5" strokeWidth={2.6} />
+                              </span>
+                            </Button>
+                          </div>
+                        </>
                       )}
                     </div>
                   </div>
-                  <div
-                    className="relative overflow-hidden space-y-2 rounded-[1.15rem] border p-3 shadow-[0_12px_24px_rgba(89,53,17,0.05)]"
-                    style={{
-                      borderColor: `${result.accentColor || "#F0E1D4"}7a`,
-                      background: `linear-gradient(180deg, #FFF8F2 0%, ${
-                        result.accentColor || "#FFF2E6"
-                      }70 100%)`,
-                    }}
-                  >
-                    <motion.div
-                      aria-hidden="true"
-                      className="pointer-events-none absolute -left-[18%] top-[22%] h-[120px] w-[120px] rounded-full blur-[28px]"
-                      style={{
-                        background: `radial-gradient(circle, ${
-                          result.color || "#FF7A00"
-                        }58 0%, rgba(255,255,255,0) 72%)`,
-                      }}
-                      animate={{
-                        scale: [0.94, 1.08, 0.98],
-                        opacity: [0.36, 0.64, 0.4],
-                        x: [0, 10, -6],
-                        y: [0, -12, 8],
-                      }}
-                      transition={{
-                        duration: 6.2,
-                        repeat: Number.POSITIVE_INFINITY,
-                        ease: "easeInOut",
-                      }}
-                    />
-                    <motion.div
-                      aria-hidden="true"
-                      className="pointer-events-none absolute bottom-[-28%] right-[-14%] h-[115px] w-[115px] rounded-full blur-[26px]"
-                      style={{
-                        background: `radial-gradient(circle, ${
-                          result.accentColor || "#FFD9B8"
-                        }88 0%, rgba(255,255,255,0) 74%)`,
-                      }}
-                      animate={{
-                        scale: [0.88, 1.04, 0.92],
-                        opacity: [0.28, 0.5, 0.3],
-                        x: [0, -10, 6],
-                        y: [0, 8, -8],
-                      }}
-                      transition={{
-                        duration: 7.4,
-                        repeat: Number.POSITIVE_INFINITY,
-                        ease: "easeInOut",
-                      }}
-                    />
-                    <p className="text-[0.66rem] font-semibold uppercase tracking-[0.18em] text-[#7A6A5B]">
-                      La bebida que va contigo
-                    </p>
-                    <div className="flex items-start gap-2">
-                      <h2 className="text-[1.32rem] font-black uppercase leading-[0.92] tracking-[-0.05em] text-[#4A281B]">
-                        {result.recommendedDrink}
-                      </h2>
-                      <Heart className="mt-0.5 h-4.5 w-4.5 shrink-0 fill-[#FF5DB1] text-[#FF5DB1]" />
-                    </div>
-                    <p className="text-[0.78rem] leading-[1.36] text-[#5E5146]">
-                      {result.drinkDescription}
-                    </p>
-                  </div>
                 </div>
-              </div>
 
-              <div
-                className="relative hidden overflow-hidden space-y-2 rounded-[1.15rem] border border-[#F0E1D4] p-3.5 shadow-[0_12px_24px_rgba(89,53,17,0.05)] md:block md:space-y-2.5 md:rounded-[1.5rem] md:p-5"
-                style={{
-                  borderColor: `${result.accentColor || "#F0E1D4"}7a`,
-                  background: `linear-gradient(180deg, #FFF8F2 0%, ${
-                    result.accentColor || "#FFF2E6"
-                  }66 100%)`,
-                }}
-              >
-                <motion.div
-                  aria-hidden="true"
-                  className="pointer-events-none absolute -left-[10%] top-[16%] h-[190px] w-[190px] rounded-full blur-[34px]"
-                  style={{
-                    background: `radial-gradient(circle, ${
-                      result.color || "#FF7A00"
-                    }5e 0%, rgba(255,255,255,0) 72%)`,
-                  }}
-                  animate={{
-                    scale: [0.94, 1.1, 0.98],
-                    opacity: [0.38, 0.68, 0.42],
-                    x: [0, 14, -10],
-                    y: [0, -18, 10],
-                  }}
-                  transition={{
-                    duration: 6.6,
-                    repeat: Number.POSITIVE_INFINITY,
-                    ease: "easeInOut",
-                  }}
-                />
-                <motion.div
-                  aria-hidden="true"
-                  className="pointer-events-none absolute bottom-[-26%] right-[-6%] h-[180px] w-[180px] rounded-full blur-[32px]"
-                  style={{
-                    background: `radial-gradient(circle, ${
-                      result.accentColor || "#FFD9B8"
-                    }92 0%, rgba(255,255,255,0) 74%)`,
-                  }}
-                  animate={{
-                    scale: [0.9, 1.06, 0.94],
-                    opacity: [0.3, 0.54, 0.34],
-                    x: [0, -14, 8],
-                    y: [0, 12, -10],
-                  }}
-                  transition={{
-                    duration: 7.8,
-                    repeat: Number.POSITIVE_INFINITY,
-                    ease: "easeInOut",
-                  }}
-                />
-                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#7A6A5B] sm:text-sm">
-                  La bebida que va contigo
-                </p>
-                <div className="flex items-start gap-2">
-                  <h2 className="text-[1.42rem] font-black uppercase leading-[0.92] tracking-[-0.05em] text-[#4A281B] sm:text-[2.8rem] md:text-[2.45rem] xl:text-[3rem]">
-                    {result.recommendedDrink}
-                  </h2>
-                  <Heart className="mt-0.5 h-5 w-5 shrink-0 fill-[#FF5DB1] text-[#FF5DB1] sm:h-7 sm:w-7" />
-                </div>
-                <p className="max-w-[560px] text-[0.8rem] leading-[1.42] text-[#5E5146] md:text-[1.02rem] md:leading-7 xl:max-w-[620px] xl:text-[1.08rem] xl:leading-8">
-                  {result.drinkDescription}
-                </p>
-                <p className="rounded-[0.9rem] bg-white/84 px-3 py-2 text-[0.7rem] font-medium leading-[1.3] text-[#7F5F4D] sm:text-[0.82rem]">
-                  La bebida que mejor acompaña tu mood.
-                </p>
-              </div>
-            </div>
-
-            <div className="hidden md:relative md:flex md:min-h-[430px] md:w-auto md:items-center md:justify-center lg:min-h-[472px] xl:min-h-[520px]">
-              <div
-                className="absolute inset-x-[7%] top-[7%] bottom-[7%] rounded-[3.2rem]"
-                style={{
-                  background: `linear-gradient(180deg, rgba(255,251,246,0.94) 0%, ${
-                    result.accentColor || "#FFE3C7"
-                  }24 100%)`,
-                  boxShadow:
-                    "0 36px 72px rgba(89,53,17,0.08), inset 0 1px 0 rgba(255,255,255,0.8)",
-                }}
-              />
-              <div
-                className="pointer-events-none absolute left-[10%] top-[13%] h-[170px] w-[170px] rounded-full blur-[54px] lg:h-[210px] lg:w-[210px] xl:h-[250px] xl:w-[250px]"
-                style={{
-                  background: `radial-gradient(circle, ${
-                    result.accentColor || "#FFD9B8"
-                  }80 0%, rgba(255,255,255,0) 72%)`,
-                }}
-              />
-              <div
-                className="pointer-events-none absolute bottom-[11%] right-[10%] h-[210px] w-[210px] rounded-full blur-[70px] lg:h-[250px] lg:w-[250px] xl:h-[300px] xl:w-[300px]"
-                style={{
-                  background: `radial-gradient(circle, ${
-                    result.color || "#FF7A00"
-                  }2d 0%, rgba(255,255,255,0) 72%)`,
-                }}
-              />
-
-              {!resultImageHidden && result.image ? (
-                <div className="relative z-10 w-[312px] lg:w-[344px] xl:w-[384px]">
-                  <div
-                    className="relative aspect-[4/5] overflow-hidden rounded-[2.7rem] border p-4 shadow-[0_34px_62px_rgba(89,53,17,0.14),inset_0_1px_0_rgba(255,255,255,0.62)] lg:rounded-[3rem] lg:p-5"
-                    style={{
-                      borderColor: `${result.accentColor || "#E7D2BF"}88`,
-                      background: `linear-gradient(180deg, rgba(255,255,255,0.7) 0%, ${
-                        result.accentColor || "#FFD9B8"
-                      }34 100%)`,
-                    }}
-                  >
-                    <div
-                      className="pointer-events-none absolute inset-[12px] rounded-[2.2rem] border lg:inset-[14px] lg:rounded-[2.5rem]"
-                      style={{
-                        borderColor: `${result.color || "#FF7A00"}22`,
-                      }}
-                    />
-                    <div className="pointer-events-none absolute inset-x-[14%] top-4 h-7 rounded-full bg-white/72 blur-xl" />
-                    <div
-                      className="pointer-events-none absolute bottom-4 left-1/2 h-10 w-[62%] -translate-x-1/2 rounded-[999px] blur-2xl"
-                      style={{
-                        backgroundColor: `${result.color || "#FF7A00"}24`,
-                      }}
-                    />
-                    <div className="relative h-full w-full overflow-hidden rounded-[2.15rem] shadow-[0_20px_44px_rgba(89,53,17,0.14)] lg:rounded-[2.4rem]">
-                      <div
-                        className="absolute inset-0 z-0"
-                        style={{
-                          background: `linear-gradient(180deg, ${
-                            result.accentColor || "#FFF4EA"
-                          }18 0%, rgba(26,18,12,0.08) 100%)`,
-                        }}
-                      />
-                      <img
-                        src={result.image}
-                        alt={result.recommendedDrink}
-                        className="relative z-10 h-full w-full rounded-[2.15rem] object-cover lg:rounded-[2.4rem]"
-                        style={{
-                          transform: desktopResultImageTransform,
-                          transformOrigin: "center center",
-                        }}
-                        onError={() => setResultImageHidden(true)}
-                      />
-                      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 h-[28%] bg-[linear-gradient(180deg,rgba(17,10,4,0)_0%,rgba(17,10,4,0.12)_100%)]" />
-                    </div>
-                  </div>
-                </div>
-              ) : (
                 <div
-                  className="relative z-10 flex aspect-[4/5] w-[312px] items-center justify-center overflow-hidden rounded-[2.7rem] border shadow-[0_34px_62px_rgba(89,53,17,0.14)] lg:w-[344px] lg:rounded-[3rem] xl:w-[384px]"
+                  className="result-desktop-soft-surface relative hidden min-h-[20rem] overflow-hidden rounded-[1.8rem] px-4 py-4 sm:px-5 sm:py-5 lg:ml-6 lg:block lg:rounded-[1.75rem] lg:px-7 lg:py-6 xl:ml-8 xl:px-8"
                   style={{
-                    borderColor: `${result.accentColor || "#E7D2BF"}88`,
-                    background: `linear-gradient(180deg, rgba(255,252,247,0.96) 0%, ${
+                    backgroundImage: `linear-gradient(180deg, rgba(255,251,247,0.86) 0%, rgba(252,244,236,0.94) 100%), radial-gradient(circle at 18% 26%, ${
                       result.accentColor || "#FFD9B8"
-                    }42 100%)`,
+                    }24 0%, rgba(255,255,255,0) 48%), radial-gradient(circle at 82% 76%, ${
+                      result.color || "#FF671F"
+                    }12 0%, rgba(255,255,255,0) 56%)`,
                   }}
                 >
-                  <div className="pointer-events-none absolute inset-x-[16%] top-5 h-7 rounded-full bg-white/74 blur-xl" />
-                  <div
-                    className="pointer-events-none absolute bottom-5 left-1/2 h-10 w-[62%] -translate-x-1/2 rounded-[999px] blur-2xl"
-                    style={{
-                      backgroundColor: `${result.color || "#FF7A00"}24`,
+                  <div className="pointer-events-none absolute right-4 top-3 hidden text-[#F3B36A] lg:block">
+                    <Sparkles className="h-5 w-5" strokeWidth={1.8} />
+                  </div>
+
+                  <div className="relative grid min-h-[calc(20rem-3rem)] gap-4 sm:grid-cols-[88px_minmax(0,1fr)] sm:items-start sm:gap-5 lg:grid-cols-[84px_minmax(0,1fr)] lg:gap-6">
+                    <div
+                      className="flex h-[88px] w-[88px] items-center justify-center overflow-hidden rounded-[1.45rem] border bg-white/80 shadow-[0_16px_34px_rgba(89,53,17,0.08)] lg:h-[84px] lg:w-[84px] lg:border-[rgba(255,255,255,0.45)] lg:bg-white/68 lg:shadow-none"
+                      style={{
+                        borderColor: `${result.accentColor || "#FFD9B8"}88`,
+                      }}
+                    >
+                      {isBenefitLoading ? (
+                        <div className="h-[70%] w-[70%] animate-pulse rounded-[1rem] bg-white/70" />
+                      ) : !benefitIconHidden && benefitData.imageUrl ? (
+                        <img
+                          src={benefitData.imageUrl}
+                          alt={benefitData.title}
+                          className="h-full w-full object-cover"
+                          onError={() => setBenefitIconHidden(true)}
+                        />
+                      ) : (
+                        <Coffee
+                          className="h-8 w-8 text-[#B8895D]/70"
+                          strokeWidth={1.8}
+                        />
+                      )}
+                    </div>
+
+                    <div className="flex min-w-0 flex-col space-y-3 lg:pr-4">
+                      {isBenefitLoading ? (
+                        <>
+                          <div className="flex flex-wrap items-center gap-2.5 animate-pulse">
+                            <div className="h-8 w-[146px] rounded-full bg-white/74" />
+                            <div className="h-8 w-[110px] rounded-full bg-white/62" />
+                          </div>
+                          <div className="space-y-2.5 animate-pulse">
+                            <div className="h-6 w-[76%] rounded-full bg-white/72" />
+                            <div className="h-4.5 w-full rounded-full bg-white/62" />
+                            <div className="h-4.5 w-[88%] rounded-full bg-white/56" />
+                            <div className="h-4.5 w-[68%] rounded-full bg-white/50" />
+                          </div>
+                          <div className="mt-auto pt-3">
+                            <div className="h-[48px] w-full animate-pulse rounded-full bg-[#EF6A00]/18 sm:w-[240px]" />
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="flex flex-wrap items-center gap-2.5">
+                            <QuizChip
+                              style={{
+                                borderColor: `${result.color || "#FF671F"}26`,
+                                backgroundColor: "rgba(255,255,255,0.76)",
+                                color: result.color || "#B86B2C",
+                              }}
+                            >
+                              <span className={quizTypography.chip}>Recomendación</span>
+                            </QuizChip>
+                            {benefitData.discountLabel ? (
+                              <span className="rounded-full bg-[#FF671F] px-3 py-1.5 font-sans text-[0.68rem] font-medium uppercase tracking-[0.14em] text-[#F8F4F1] sm:text-[0.72rem]">
+                                {benefitData.discountLabel}
+                              </span>
+                            ) : null}
+                            {benefitData.priceLabel ? (
+                              <span className="rounded-full border border-[#E8DCCF] bg-white/78 px-3 py-1.5 font-sans text-[0.68rem] font-medium uppercase tracking-[0.12em] text-[#4A281B] sm:text-[0.72rem]">
+                                {benefitData.priceLabel}
+                              </span>
+                            ) : null}
+                          </div>
+
+                          <div className="flex min-h-[8.8rem] flex-col space-y-2">
+                            <h3 className="line-clamp-2 min-h-[3.5rem] max-w-[30ch] break-words font-display text-[1.05rem] font-extrabold tracking-[-0.03em] text-[#201711] sm:text-[1.15rem]">
+                              {benefitData.title}
+                            </h3>
+                            <p className={`${quizTypography.supportingCompact} line-clamp-4 min-h-[6.2rem] max-w-[44ch]`}>
+                              {benefitData.description}
+                            </p>
+                          </div>
+
+                          <Button
+                            variant="quizCta"
+                            size="quiz"
+                            onClick={handleClaimBenefit}
+                            disabled={isBenefitLoading}
+                            className="mt-auto w-full justify-center px-4 font-sans text-[0.92rem] disabled:opacity-70 sm:w-auto sm:min-w-[240px]"
+                          >
+                            {formSubmitted ? benefitData.cta : "Ver recomendación"}
+                          </Button>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-3 sm:flex-row lg:mx-auto lg:w-full lg:max-w-[600px] lg:justify-center lg:px-8 lg:pb-5 xl:max-w-[620px] xl:px-10 xl:pb-6">
+                  <Button
+                    variant="quizCta"
+                    size="quiz"
+                    onClick={handleShare}
+                    className="w-full justify-center px-4 text-[0.92rem] sm:w-auto sm:min-w-[220px] lg:min-w-[236px]"
+                  >
+                    {copySuccess ? "Enlace copiado" : "Compartir"}
+                    {copySuccess ? (
+                      <Check className="ml-2 h-4 w-4" strokeWidth={2.5} />
+                    ) : (
+                      <Share2 className="ml-2 h-4 w-4" strokeWidth={2.2} />
+                    )}
+                  </Button>
+
+                  <Button
+                    variant="quizSecondary"
+                    size="quiz"
+                    onClick={() => {
+                      resetQuiz();
+                      router.push("/quiz");
                     }}
-                  />
-                  <Coffee
-                    className="relative z-10 h-16 w-16 text-[#B8895D]/70"
-                    strokeWidth={1.7}
-                  />
-                </div>
-              )}
-            </div>
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.08 }}
-          className="grid gap-2.5 md:gap-5 lg:grid-cols-[minmax(0,1fr)_auto]"
-        >
-          <div
-            className="rounded-[1.35rem] px-3.5 py-3.5 ring-1 ring-[#EADDCF] sm:rounded-[1.7rem] sm:px-6 sm:py-5"
-            style={{
-              background: `linear-gradient(180deg, rgba(255,248,242,0.92) 0%, ${
-                result.accentColor || "#FFD9B8"
-              }26 100%)`,
-            }}
-          >
-            {isBenefitLoading ? (
-              <div className="grid animate-pulse grid-cols-[60px_minmax(0,1fr)] items-start gap-3 md:grid-cols-[132px_minmax(0,1fr)] md:items-stretch md:gap-5 lg:grid-cols-[168px_minmax(0,1fr)] lg:gap-6">
-                <div className="h-[60px] w-[60px] rounded-[1rem] bg-[linear-gradient(180deg,#FFF1E0_0%,#FFE3C3_100%)] md:h-full md:w-[132px] md:rounded-[1.35rem] lg:w-[168px] lg:rounded-[1.5rem]" />
-                <div className="min-w-0 space-y-2 md:flex md:flex-col md:justify-center md:space-y-3">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="h-6 w-32 rounded-full bg-[#FFE5CC]" />
-                    <span className="h-6 w-20 rounded-full bg-[#FFD4B2]" />
-                  </div>
-                  <div className="h-5 w-[72%] rounded-full bg-white/80 sm:h-7" />
-                  <div className="space-y-2">
-                    <div className="h-4 w-full rounded-full bg-white/75" />
-                    <div className="h-4 w-[88%] rounded-full bg-white/70" />
-                  </div>
+                    className="w-full justify-center px-4 text-[0.92rem] sm:w-auto sm:min-w-[220px] lg:min-w-[236px]"
+                  >
+                    Repetir test
+                    <RefreshCw className="ml-2 h-4 w-4" strokeWidth={2.2} />
+                  </Button>
                 </div>
               </div>
-            ) : (
-              <div className="grid grid-cols-[60px_minmax(0,1fr)] items-start gap-3 md:grid-cols-[132px_minmax(0,1fr)] md:items-stretch md:gap-5 lg:grid-cols-[168px_minmax(0,1fr)] lg:gap-6">
-                <div className="flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-[1rem] bg-[#FFE6CF] text-[#FF7A00] md:h-full md:w-[132px] md:rounded-[1.35rem] md:bg-[linear-gradient(180deg,#FFF1E0_0%,#FFE3C3_100%)] md:p-3 md:shadow-[inset_0_1px_0_rgba(255,255,255,0.5)] lg:w-[168px] lg:rounded-[1.5rem]">
-                  {!benefitIconHidden &&
-                  (benefitData.imageUrl || result.benefitIcon) ? (
-                    <img
-                      src={benefitData.imageUrl || result.benefitIcon}
-                      alt={benefitData.title}
-                      className="h-full w-full object-contain md:rounded-[1rem] md:object-cover"
-                      onError={() => setBenefitIconHidden(true)}
+
+              <div className="order-1 hidden min-w-0 lg:-ml-7 lg:order-2 lg:block xl:-ml-8">
+                <div className="relative mx-auto flex w-full max-w-[640px] min-w-0 flex-col items-center justify-center gap-0 lg:max-w-[700px] lg:pt-7 xl:pt-8">
+                  <div
+                    className="pointer-events-none absolute right-[1rem] top-[1rem] hidden h-[104px] w-[104px] rotate-[14deg] items-center justify-center rounded-full border border-[#FFC9A4] bg-[radial-gradient(circle_at_30%_30%,#FFF7EF_0%,#FDE6D4_64%,#F8D3BA_100%)] text-center font-display text-[0.68rem] font-extrabold uppercase tracking-[0.14em] text-[#EE5F77] shadow-[0_18px_38px_rgba(89,53,17,0.12)] lg:flex"
+                  >
+                    <div className="space-y-1">
+                      <p>Match</p>
+                      <Heart className="mx-auto h-4 w-4" fill="currentColor" strokeWidth={0} />
+                      <p>Perfecto</p>
+                    </div>
+                  </div>
+
+                  <div className="pointer-events-none absolute left-[0.3rem] top-[9rem] hidden text-[#FF7A00] lg:block">
+                    <div className="mb-1 h-[2px] w-7 rounded-full bg-current" />
+                    <div className="mb-1 ml-2 h-[2px] w-4 rounded-full bg-current" />
+                    <div className="ml-1 h-[2px] w-6 rounded-full bg-current" />
+                  </div>
+
+                  <div className="pointer-events-none absolute left-[1.4rem] top-[47%] hidden text-[#EE5F77] lg:block">
+                    <div className="h-5 w-5 rounded-full border-2 border-current border-t-transparent border-r-transparent" />
+                  </div>
+
+                  <div className="pointer-events-none absolute right-[2.6rem] top-[48%] hidden text-white lg:block">
+                    <div className="h-6 w-6 rounded-full border-2 border-current border-l-transparent border-b-transparent" />
+                  </div>
+
+                  <div
+                    className="result-desktop-media-panel relative w-full overflow-hidden rounded-[2rem] p-2.5 shadow-[0_22px_48px_rgba(89,53,17,0.12)] sm:rounded-[2.6rem] sm:p-4 lg:rounded-[var(--result-radius-xl)] lg:p-5 lg:shadow-none"
+                    style={{
+                      backgroundImage: `linear-gradient(180deg, rgba(255,255,255,0.94) 0%, rgba(255,249,243,0.98) 100%), radial-gradient(circle at 18% 22%, ${
+                        result.accentColor || "#FFD9B8"
+                      }24 0%, rgba(255,255,255,0) 42%), radial-gradient(circle at 82% 84%, ${
+                        result.color || "#FF671F"
+                      }12 0%, rgba(255,255,255,0) 48%)`,
+                    }}
+                  >
+                    <div
+                      className="pointer-events-none absolute inset-x-[18%] top-2 h-10 rounded-full blur-2xl lg:hidden"
+                      style={{ backgroundColor: `${result.accentColor || "#FFD9B8"}72` }}
                     />
-                  ) : (
-                    <Gift className="h-6 w-6 md:h-12 md:w-12 lg:h-14 lg:w-14" strokeWidth={2} />
-                  )}
-                </div>
-                <div className="min-w-0 space-y-2 md:flex md:flex-col md:justify-center md:space-y-3">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="inline-flex rounded-full bg-[#FFE5CC] px-3 py-1 text-[0.68rem] font-bold uppercase tracking-[0.16em] text-[#C16A22]">
-                      Recomendación para tu mood
-                    </span>
-                    {benefitData.discountLabel ? (
-                      <span className="inline-flex rounded-full bg-[#FF7A00] px-3 py-1 text-[0.68rem] font-bold uppercase tracking-[0.14em] text-white">
-                        {benefitData.discountLabel}
-                      </span>
-                    ) : null}
-                    {benefitData.priceLabel ? (
-                      <span className="inline-flex rounded-full border border-[#E5CEBB] bg-white/75 px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-[#7A5A45]">
-                        {benefitData.priceLabel}
-                      </span>
-                    ) : null}
+                    <div
+                      className="pointer-events-none absolute bottom-4 left-1/2 h-10 w-[58%] -translate-x-1/2 rounded-full blur-2xl lg:hidden"
+                      style={{ backgroundColor: `${result.color || "#FF671F"}24` }}
+                    />
+                    <motion.div
+                      className="relative aspect-[4/5] overflow-hidden rounded-[1.75rem] bg-[linear-gradient(180deg,#FFF8F1_0%,#F8E3D2_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.55)] sm:rounded-[2.2rem] lg:rounded-[1.9rem] lg:shadow-none"
+                      animate={{ y: [0, -5, 0] }}
+                      transition={{
+                        duration: 6.4,
+                        repeat: Number.POSITIVE_INFINITY,
+                        ease: "easeInOut",
+                      }}
+                    >
+                      {!resultImageHidden && result.image ? (
+                        <img
+                          src={result.image}
+                          alt={result.recommendedDrink}
+                          className="h-full w-full object-cover lg:hidden"
+                          style={{
+                            transform: mobileResultImageTransform,
+                            transformOrigin: "center center",
+                          }}
+                          onError={() => setResultImageHidden(true)}
+                        />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center bg-[linear-gradient(180deg,#FFF6ED_0%,#F5DEC6_100%)] lg:hidden">
+                          <Coffee
+                            className="h-16 w-16 text-[#B8895D]/70 sm:h-20 sm:w-20"
+                            strokeWidth={1.7}
+                          />
+                        </div>
+                      )}
+
+                      {!desktopLifestyleHidden && desktopLifestyleAsset ? (
+                        <img
+                          src={desktopLifestyleAsset.src}
+                          alt={`${result.recommendedDrink} lifestyle`}
+                          className="hidden h-full w-full object-cover lg:block"
+                          onError={() => setDesktopLifestyleHidden(true)}
+                        />
+                      ) : null}
+
+                      {desktopLifestyleAsset && desktopLifestyleHidden ? (
+                        <div className="hidden h-full w-full items-center justify-center bg-[linear-gradient(180deg,rgba(255,248,241,0.96)_0%,rgba(248,227,210,0.98)_100%)] px-10 text-center lg:flex">
+                          <div className="max-w-[360px] space-y-4">
+                            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-[#F0C9A9] bg-white/72 text-[#FF7A00] shadow-[0_14px_28px_rgba(89,53,17,0.08)]">
+                              <Sparkles className="h-7 w-7" strokeWidth={1.8} />
+                            </div>
+                            <div className="space-y-2">
+                              <p className="font-sans text-[0.74rem] font-medium uppercase tracking-[0.22em] text-[#C3895A]">
+                                Espacio reservado para foto lifestyle desktop
+                              </p>
+                              <p className="font-display text-[1.1rem] font-extrabold tracking-[-0.04em] text-[#2A1D17]">
+                                {desktopLifestyleAsset.fileName}
+                              </p>
+                              <p className="font-sans text-[0.95rem] font-medium leading-7 text-[#6B5A4E]">
+                                Pon la foto en
+                                {" "}
+                                <span className="font-sans font-medium text-[#B86B2C]">
+                                  /public/assets/quiz-results/lifestyle/
+                                </span>
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      ) : null}
+
+                      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[26%] bg-[linear-gradient(180deg,rgba(17,10,4,0)_0%,rgba(17,10,4,0.12)_100%)] lg:hidden" />
+                    </motion.div>
+
+                    
                   </div>
-                  <h3 className="text-[0.95rem] font-bold leading-5 text-[#4A281B] sm:text-xl md:text-[1.25rem] md:leading-7 lg:text-[1.55rem] lg:leading-8">
-                    {benefitData.title}
-                  </h3>
-                  <p className="text-[0.8rem] leading-5 text-[#65594E] sm:text-base md:text-[0.97rem] md:leading-6 lg:max-w-[780px] lg:text-[1rem] lg:leading-7">
-                    {benefitData.description}
-                  </p>
+
+                  {resultFeatureRail.length > 0 ? (
+                    <div className="-mx-1 mt-3 flex gap-3 overflow-x-auto px-1 pb-1 lg:hidden">
+                      {resultFeatureRail.map((item) => {
+                        const Icon = item.icon;
+
+                        return (
+                          <div
+                            key={item.title}
+                            className="min-w-[176px] shrink-0 rounded-[1.35rem] border border-white/60 bg-[linear-gradient(180deg,rgba(255,251,247,0.92)_0%,rgba(252,244,236,0.96)_100%)] px-4 py-3 shadow-[0_14px_30px_rgba(89,53,17,0.08)]"
+                          >
+                            <div className="flex items-start gap-3">
+                              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/78 text-[#B06235] shadow-[0_8px_18px_rgba(89,53,17,0.06)]">
+                                <Icon className="h-4.5 w-4.5" strokeWidth={1.8} />
+                              </div>
+                              <div className="min-w-0">
+                                <p className="font-sans text-[0.72rem] font-medium uppercase tracking-[0.14em] text-[#A05C35]">
+                                  {item.title}
+                                </p>
+                                <p className="mt-1 text-[0.84rem] leading-5 text-[#5D5047]">
+                                  {item.caption}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : null}
+
+                  {resultFeatureRail.length > 0 ? (
+                    <div className="result-desktop-rail relative z-10 mt-4 hidden w-full max-w-[600px] grid-cols-3 overflow-hidden lg:mx-auto lg:grid">
+                      {resultFeatureRail.map((item, index) => {
+                        const Icon = item.icon;
+
+                        return (
+                          <div
+                            key={item.title}
+                            className={`flex min-h-[90px] items-center gap-3 px-4 py-3.5 xl:px-5 ${
+                              index < resultFeatureRail.length - 1
+                                ? "border-r border-[#EEDFD2]"
+                                : ""
+                            }`}
+                          >
+                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/74 text-[#B06235] shadow-[0_8px_18px_rgba(89,53,17,0.06)]">
+                              <Icon className="h-4.5 w-4.5" strokeWidth={1.8} />
+                            </div>
+                            <div className="min-w-0">
+                              <p className="font-sans text-[0.68rem] font-medium uppercase tracking-[0.14em] text-[#A05C35] xl:text-[0.7rem]">
+                                {item.title}
+                              </p>
+                              <p className="mt-0.5 font-sans text-[0.82rem] font-medium leading-5 text-[#5D5047] xl:text-[0.84rem]">
+                                {item.caption}
+                              </p>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : null}
                 </div>
               </div>
-            )}
-          </div>
-          <Button
-            size="lg"
-            onClick={handleClaimBenefit}
-            disabled={isBenefitLoading}
-            className="group relative w-full overflow-hidden rounded-full border border-[#D95816] bg-[linear-gradient(180deg,#FFB064_0%,#FF671F_50%,#DE4F0D_100%)] px-7 py-3 text-white shadow-[0_18px_30px_rgba(255,122,0,0.22)] ring-1 ring-[#FFF1E4]/80 disabled:cursor-wait disabled:opacity-75 lg:w-auto lg:self-center lg:px-8 lg:py-3.5"
-          >
-            <span className="pointer-events-none absolute inset-y-[12%] left-[-24%] w-[34%] rounded-full bg-[linear-gradient(115deg,rgba(255,255,255,0)_0%,rgba(255,255,255,0.16)_28%,rgba(255,255,255,0.34)_48%,rgba(255,255,255,0)_72%)] blur-md transition-transform duration-500 group-hover:translate-x-[350%]" />
-            {isBenefitLoading ? "Cargando recomendación..." : benefitData.cta}
-          </Button>
-        </motion.div>
-
-        {!formSubmitted && (
-          <motion.div
-            ref={formSectionRef}
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.14 }}
-          >
-            <QuizForm onSuccess={handleFormSuccess} />
+            </div>
           </motion.div>
-        )}
 
-        {formSubmitted && (
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="space-y-4"
-          >
-            <div
-              className="space-y-3 rounded-[1.35rem] border bg-[linear-gradient(180deg,#FFF8F2_0%,#FFF2E8_100%)] p-4 shadow-[0_18px_34px_rgba(89,53,17,0.06)] sm:p-5"
-              style={{
-                borderColor: `${result.accentColor || "#EADDCF"}7a`,
-                background: `linear-gradient(180deg, #FFF8F2 0%, ${
-                  result.accentColor || "#FFF2E8"
-                }22 100%)`,
-              }}
+          <div ref={formSectionRef} className="scroll-mt-6 lg:scroll-mt-10">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.36, delay: 0.08 }}
             >
-              <div className="space-y-1.5">
-                <h3 className="text-[1.05rem] font-black tracking-[-0.03em] text-[#4A281B] sm:text-[1.25rem]">
-                  Compártelo con tu parche
-                </h3>
-                <p className="max-w-[620px] text-[0.84rem] leading-6 text-[#6B5B4F] sm:text-[0.96rem]">
-                  Ya tienes tu match Dunkin. Compártelo y mira qué le sale a tu parche.
-                </p>
-              </div>
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <Button
-                  size="lg"
-                  onClick={handleShare}
-                  className="group relative w-full overflow-hidden rounded-full border border-[#D95816] bg-[linear-gradient(180deg,#FFB064_0%,#FF671F_50%,#DE4F0D_100%)] py-4 text-base text-white shadow-[0_18px_30px_rgba(255,122,0,0.22)] ring-1 ring-[#FFF1E4]/80 sm:text-lg"
-                >
-                  <span className="pointer-events-none absolute inset-y-[12%] left-[-24%] w-[34%] rounded-full bg-[linear-gradient(115deg,rgba(255,255,255,0)_0%,rgba(255,255,255,0.16)_28%,rgba(255,255,255,0.34)_48%,rgba(255,255,255,0)_72%)] blur-md transition-transform duration-500 group-hover:translate-x-[350%]" />
-                  Compartir mi resultado
-                </Button>
-                <Button
-                  variant="secondary"
-                  size="lg"
-                  onClick={handleCopyLink}
-                  className="w-full rounded-full border-[#E8DCCF] bg-[linear-gradient(180deg,#FFFFFF_0%,#FFF6ED_100%)] py-4 text-base text-[#4A281B] shadow-[0_10px_20px_rgba(89,53,17,0.06)] sm:text-lg"
-                >
-                  {copySuccess ? "Enlace copiado" : "Copiar enlace"}
-                </Button>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <Button
-                variant="secondary"
-                size="lg"
-                onClick={() => {
-                  resetQuiz();
-                  router.push("/quiz");
-                }}
-                className="rounded-full border-[#E8DCCF] bg-[linear-gradient(180deg,#FFFFFF_0%,#FFF6ED_100%)] py-4 text-lg text-[#4A281B] shadow-[0_10px_20px_rgba(89,53,17,0.06)]"
-              >
-                Volver al inicio
-              </Button>
-
-              <Button
-                variant="secondary"
-                size="lg"
-                onClick={resetQuiz}
-                className="rounded-full border-[#E8DCCF] bg-[linear-gradient(180deg,#FFFFFF_0%,#FFF6ED_100%)] py-4 text-lg text-[#4A281B] shadow-[0_10px_20px_rgba(89,53,17,0.06)]"
-              >
-                Volver a intentar
-              </Button>
-            </div>
-          </motion.div>
-        )}
-        <div className="hidden lg:flex lg:justify-end">
-          <button
-            type="button"
-            onClick={handleBackToTop}
-            className="inline-flex items-center rounded-full border border-[#E6C8B3] bg-[#FFF3E8]/95 px-4 py-2.5 text-[0.92rem] font-semibold text-[#4A281B] shadow-[0_12px_28px_rgba(102,66,30,0.08)] transition-colors hover:bg-[#FFF7F0]"
-          >
-            Volver arriba
-          </button>
-        </div>
+              <QuizForm onSuccess={handleFormSuccess} />
+            </motion.div>
+          </div>
         </div>
       </div>
-      <button
-        type="button"
-        onClick={handleBackToTop}
-        className={`fixed right-[calc(1rem+26px)] top-1/2 z-[120] flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-[#E6C8B3] bg-[#FFF7F0]/95 text-[#4A281B] shadow-[0_14px_34px_rgba(116,75,33,0.18)] transition-all duration-200 active:scale-[0.97] md:hidden ${
-          showBackToTop
-            ? "translate-y-0 opacity-100"
-            : "pointer-events-none translate-y-4 opacity-0"
-        }`}
-        aria-label="Subir al inicio del resultado"
-      >
-        <ArrowUp className="h-4 w-4" />
-      </button>
     </div>
   );
 }

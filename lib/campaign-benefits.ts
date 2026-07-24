@@ -80,9 +80,58 @@ const GENERIC_DRINK_KEYWORDS = [
 
 const RESULT_KEYWORDS: Record<string, string[]> = {
   creative: ["iced latte", "latte", "cappuccino", "chai", "cafe", "café"],
-  balanced: ["iced tea", "tea", "iced", "te", "té", "cafe", "café", "coffee"],
+  balanced: [
+    "cold brew",
+    "brew",
+    "cafe",
+    "café",
+    "coffee",
+    "cold",
+    "americano",
+  ],
   energetic: ["refresher", "mango", "piña", "pina", "dragonfruit", "limonada"],
   passionate: ["frutibatido", "batido", "frozen", "dulce", "shake"],
+};
+
+const RESULT_FAMILY_KEYWORDS: Record<string, string[]> = {
+  creative: [
+    "iced latte",
+    "latte",
+    "cappuccino",
+    "capuccino",
+    "espresso",
+    "chai",
+    "iced",
+  ],
+  balanced: [
+    "cold brew",
+    "brew",
+    "americano",
+    "espresso",
+    "coffee",
+    "cafe",
+    "café",
+    "tinto",
+  ],
+  energetic: [
+    "refresher",
+    "mango",
+    "piña",
+    "pina",
+    "dragonfruit",
+    "limonada",
+    "iced tea",
+    "tea",
+    "té",
+  ],
+  passionate: [
+    "frutibatido",
+    "batido",
+    "frozen",
+    "shake",
+    "smoothie",
+    "frappe",
+  ],
 };
 
 const NON_DRINK_ONLY_KEYWORDS = [
@@ -205,7 +254,7 @@ export function getFallbackBenefit(
     title: result.benefitTitle || "Beneficio vigente en Dunkin'",
     description:
       result.benefitDescription ||
-      "Consulta los beneficios y combos vigentes en el canal oficial de Dunkin.",
+      "Consulta opciones oficiales vigentes para tu bebida.",
     cta: result.benefitCta || "Ver beneficio",
     url: DUNKIN_ORDER_URL,
     imageUrl: result.benefitIcon,
@@ -254,6 +303,15 @@ function buildSearchHaystack(
   categoryNames: string[]
 ) {
   return normalizeText(`${title} ${description} ${categoryNames.join(" ")}`);
+}
+
+function hasActiveDiscount(record: CampaignBenefitRecord) {
+  return Boolean(
+    record.discount_label ||
+    (record.original_price &&
+      record.price &&
+      record.original_price > record.price)
+  );
 }
 
 function hasDrinkSignals(haystack: string) {
@@ -504,6 +562,10 @@ function getResultMatchScore(record: CampaignBenefitRecord, resultId: string) {
 }
 
 function isExactDrinkMatch(record: CampaignBenefitRecord, resultId: string) {
+  if (record.benefit_type !== "drink") {
+    return false;
+  }
+
   const result = getResultById(resultId);
   const haystack = buildSearchHaystack(
     record.title,
@@ -514,47 +576,125 @@ function isExactDrinkMatch(record: CampaignBenefitRecord, resultId: string) {
   return haystack.includes(normalizeText(result.recommendedDrink));
 }
 
+function isExactComboMatch(record: CampaignBenefitRecord, resultId: string) {
+  if (record.benefit_type !== "combo") {
+    return false;
+  }
+
+  const result = getResultById(resultId);
+  const haystack = buildSearchHaystack(
+    record.title,
+    record.description || "",
+    record.category_names
+  );
+
+  return haystack.includes(normalizeText(result.recommendedDrink));
+}
+
+function isFamilyDrinkMatch(record: CampaignBenefitRecord, resultId: string) {
+  if (record.benefit_type !== "drink") {
+    return false;
+  }
+
+  const haystack = buildSearchHaystack(
+    record.title,
+    record.description || "",
+    record.category_names
+  );
+
+  return (RESULT_FAMILY_KEYWORDS[resultId] || []).some((keyword) =>
+    haystack.includes(normalizeText(keyword))
+  );
+}
+
+function isRelatedDrinkMatch(record: CampaignBenefitRecord, resultId: string) {
+  if (record.benefit_type !== "drink") {
+    return false;
+  }
+
+  return record.target_results.includes(resultId);
+}
+
+function pickRecordWithinTier(
+  records: CampaignBenefitRecord[],
+  resultId: string,
+  limit = 4
+) {
+  if (records.length === 0) {
+    return null;
+  }
+
+  const ranked = [...records].sort((left, right) => {
+    const discountDelta =
+      Number(hasActiveDiscount(right)) - Number(hasActiveDiscount(left));
+
+    if (discountDelta !== 0) {
+      return discountDelta;
+    }
+
+    const scoreDelta =
+      getResultMatchScore(right, resultId) -
+      getResultMatchScore(left, resultId);
+
+    if (scoreDelta !== 0) {
+      return scoreDelta;
+    }
+
+    return left.title.localeCompare(right.title);
+  });
+
+  return pickRandomRecord(ranked.slice(0, limit));
+}
+
+function getPriorityPool(
+  records: CampaignBenefitRecord[],
+  resultId: string
+): CampaignBenefitRecord[] {
+  const exactDrinkPool = records.filter((record) =>
+    isExactDrinkMatch(record, resultId)
+  );
+
+  if (exactDrinkPool.length > 0) {
+    return exactDrinkPool;
+  }
+
+  const exactComboPool = records.filter((record) =>
+    isExactComboMatch(record, resultId)
+  );
+
+  if (exactComboPool.length > 0) {
+    return exactComboPool;
+  }
+
+  const familyDrinkPool = records.filter((record) =>
+    isFamilyDrinkMatch(record, resultId)
+  );
+
+  if (familyDrinkPool.length > 0) {
+    return familyDrinkPool;
+  }
+
+  const relatedDrinkPool = records.filter((record) =>
+    isRelatedDrinkMatch(record, resultId)
+  );
+
+  if (relatedDrinkPool.length > 0) {
+    return relatedDrinkPool;
+  }
+
+  return records.filter((record) => record.benefit_type === "drink");
+}
+
 function pickPriorityRecord(
   records: CampaignBenefitRecord[],
   resultId: string
 ) {
-  const result = getResultById(resultId);
-  const normalizedRecommendedDrink = normalizeText(result.recommendedDrink);
-  const scoredRecords = records
-    .map((record) => ({
-      record,
-      score: getResultMatchScore(record, resultId),
-    }))
-    .filter((item) => item.score > 0)
-    .sort((left, right) => right.score - left.score);
+  const scoredRecords = records.filter(
+    (record) => getResultMatchScore(record, resultId) > 0
+  );
+  const priorityPool = getPriorityPool(scoredRecords, resultId);
 
-  if (scoredRecords.length === 0) {
-    return null;
-  }
-
-  const exactPriorityPool = scoredRecords
-    .filter((item) => isExactDrinkMatch(item.record, resultId))
-    .slice(0, 4)
-    .map((item) => item.record);
-  const relatedPortfolioPool = scoredRecords
-    .filter(
-      (item) =>
-        item.record.target_results.includes(resultId) &&
-        !normalizeText(item.record.title).includes(normalizedRecommendedDrink)
-    )
-    .slice(0, 6)
-    .map((item) => item.record);
-  const generalPool = scoredRecords.slice(0, 8).map((item) => item.record);
-
-  if (relatedPortfolioPool.length > 0 && Math.random() < 0.46) {
-    return pickRandomRecord(relatedPortfolioPool);
-  }
-
-  if (exactPriorityPool.length > 0 && Math.random() < 0.58) {
-    return pickRandomRecord(exactPriorityPool);
-  }
-
-  return pickRandomRecord(generalPool);
+  return pickRecordWithinTier(priorityPool, resultId);
 }
 
 export function resolveBenefitForResult(
@@ -565,7 +705,7 @@ export function resolveBenefitForResult(
     (record) => record.is_active && isDrinkRelatedRecord(record)
   );
   const prioritizedRecord = pickPriorityRecord(activeRecords, resultId);
-  const record = prioritizedRecord || pickRandomRecord(activeRecords);
+  const record = prioritizedRecord;
 
   if (!record) {
     return null;

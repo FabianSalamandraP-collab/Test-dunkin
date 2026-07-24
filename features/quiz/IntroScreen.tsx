@@ -13,6 +13,10 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui";
 import { useQuizStore } from "@/store/quizStore";
+import { QuizIconButton } from "./components/QuizIconButton";
+import { QuizIconLink } from "./components/QuizIconLink";
+import { HowItWorksPanel } from "./components/HowItWorksPanel";
+import { SocialLinks } from "./components/SocialLinks";
 
 interface IntroDrink {
   id: string;
@@ -35,7 +39,7 @@ interface IntroDrink {
 const INTRO_DRINKS: IntroDrink[] = [
   {
     id: "cold-brew",
-    name: "Ice Té",
+    name: "Cold Brew",
     accent: "#5A361F",
     textColor: "#4C2B18",
     cup: "cold-brew",
@@ -97,75 +101,6 @@ const INTRO_DRINKS: IntroDrink[] = [
   },
 ];
 
-interface IntroPersonalityCard {
-  id: string;
-  title: string;
-  description: string;
-  extendedDescription: string;
-  accent: string;
-  border: string;
-  drink: string;
-  matchDrinks: string[];
-  imageSrc?: string;
-}
-
-const INTRO_PERSONALITIES: IntroPersonalityCard[] = [
-  {
-    id: "creative",
-    title: "El Curioso",
-    description: "Te mueves por curiosidad y siempre buscas algo nuevo.",
-    extendedDescription:
-      "Disfrutas descubrir planes distintos, sabores inesperados y momentos que se sienten frescos desde el primer sorbo.",
-    accent: "#D98A36",
-    border: "#E7C08D",
-    drink: "Iced Latte",
-    matchDrinks: ["Iced Latte", "Ice Té", "Soda Dunkin Manzana Verde"],
-    imageSrc: "/assets/quiz-intro/personalities/creative.webp",
-  },
-  {
-    id: "balanced",
-    title: "El Mentor",
-    description: "Tu mejor plan tiene calma, buena conversación y balance.",
-    extendedDescription:
-      "Disfrutas las conversaciones profundas, valoras la calma y prefieres planes que dejen algo bueno en la mente.",
-    accent: "#D87093",
-    border: "#E8BDD0",
-    drink: "Ice Té",
-    matchDrinks: ["Ice Té", "Iced Latte", "Soda Dunkin Manzana Verde"],
-    imageSrc: "/assets/quiz-intro/personalities/balanced.webp",
-  },
-  {
-    id: "energetic",
-    title: "El Aventurero",
-    description: "Vives el momento y conviertes cualquier idea en plan.",
-    extendedDescription:
-      "Te mueves rápido, te gusta probar lo nuevo y eres de quienes encienden el parche sin pensarlo demasiado.",
-    accent: "#F2A91D",
-    border: "#F0CB82",
-    drink: "Refresher Mango Piña",
-    matchDrinks: ["Refresher Mango Piña", "Frutibatido de Mora", "Iced Latte"],
-    imageSrc: "/assets/quiz-intro/personalities/energetic.webp",
-  },
-  {
-    id: "passionate",
-    title: "La Influencer",
-    description: "Ves lo bueno con fuerza y contagias energía al instante.",
-    extendedDescription:
-      "Te gustan los sabores con carácter, los planes memorables y las experiencias que se sienten vivas desde el primer momento.",
-    accent: "#E9539A",
-    border: "#E8B8CC",
-    drink: "Frutibatido de Mora",
-    matchDrinks: ["Frutibatido de Mora", "Refresher Mango Piña", "Ice Té"],
-    imageSrc: "/assets/quiz-intro/personalities/passionate.webp",
-  },
-];
-
-const INTRO_FOOTER_ITEMS = [
-  "Test oficial de Dunkin Colombia",
-  "Participa y descubre tu match",
-  "Recomendaciones para ti",
-];
-
 const HOW_IT_WORKS_STEPS = [
   "Responde 4 preguntas rápidas sobre tu forma de ser y cómo disfrutas tus planes.",
   "Descubre la bebida Dunkin que mejor representa tu personalidad.",
@@ -177,6 +112,12 @@ const HOW_IT_WORKS_INFO = [
   "Las recomendaciones mostradas provienen del sitio oficial de Dunkin Colombia y corresponden a información publicada por la marca.",
   "Nuestro objetivo es ayudarte a descubrir la bebida que mejor conecta con tu personalidad y mostrarte opciones oficiales para disfrutarla.",
   "Los productos, promociones, precios, disponibilidad y condiciones pueden cambiar sin previo aviso y son responsabilidad de Dunkin Colombia.",
+];
+
+const INTRO_FOOTER_ITEMS = [
+  "Test oficial de Dunkin Colombia",
+  "Participa y descubre tu match",
+  "Recomendaciones para ti",
 ];
 
 const DUNKIN_SOCIAL_LINKS = [
@@ -512,175 +453,15 @@ function SideRibbon({
   );
 }
 
-function PersonalityPlaceholder({
-  accent,
-}: {
-  accent: IntroPersonalityCard["accent"];
-}) {
-  return (
-    <div className="relative flex h-[138px] w-[92px] items-end justify-center overflow-hidden rounded-[1.3rem] bg-[linear-gradient(180deg,#f8efe5_0%,#f2e6d7_100%)]">
-      <div
-        className="absolute bottom-3 h-[56px] w-[56px] rounded-full opacity-25 blur-xl"
-        style={{ backgroundColor: accent }}
-      />
-      <div className="absolute inset-x-5 top-5 h-8 rounded-full bg-white/75 blur-sm" />
-      <div className="absolute top-7 h-12 w-12 rounded-full bg-[#f0d9c6]" />
-      <div className="absolute top-[4.6rem] h-[54px] w-[62px] rounded-t-[1.3rem] bg-[#edd8c4]" />
-      <div className="absolute bottom-4 text-[0.5rem] font-semibold uppercase tracking-[0.18em] text-[#a98a76]">
-        Personaje Dunkin
-      </div>
-    </div>
-  );
-}
-
-function PersonalityCard({ card }: { card: IntroPersonalityCard }) {
-  const [imageHidden, setImageHidden] = useState(false);
-  return (
-    <div
-      className="w-[282px] shrink-0 rounded-[1.4rem] border bg-[linear-gradient(180deg,rgba(255,248,240,0.9)_0%,rgba(251,244,236,0.98)_100%)] p-3 shadow-[0_14px_34px_rgba(102,66,30,0.08)] md:w-auto md:shrink"
-      style={{ borderColor: card.border }}
-    >
-      <div className="flex gap-3">
-        <div className="shrink-0 overflow-hidden rounded-[1.2rem]">
-          {!imageHidden && card.imageSrc ? (
-            <img
-              src={card.imageSrc}
-              alt={card.title}
-              className="h-[138px] w-[92px] object-cover"
-              onError={() => setImageHidden(true)}
-            />
-          ) : (
-            <PersonalityPlaceholder accent={card.accent} />
-          )}
-        </div>
-
-        <div className="flex min-w-0 flex-1 flex-col justify-between py-1">
-          <div className="space-y-2">
-            <div
-              className="inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[0.7rem] font-black"
-              style={{
-                color: card.accent,
-                backgroundColor: `${card.accent}14`,
-              }}
-            >
-              <Heart className="h-3.5 w-3.5 fill-current" />
-              {card.title}
-            </div>
-            <p className="text-[0.82rem] leading-5 text-[#5E483B]">
-              {card.description}
-            </p>
-          </div>
-
-          <div className="flex items-center justify-between pt-3">
-            <span className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#8E705D]">
-              {card.drink}
-            </span>
-            <div
-              className="flex h-10 w-7 items-end justify-center rounded-b-[0.8rem] rounded-t-[0.5rem] border border-white/70 shadow-[0_10px_18px_rgba(120,74,30,0.1)]"
-              style={{
-                background: `linear-gradient(180deg,#fff4e6 0%, ${card.accent}55 100%)`,
-              }}
-            >
-              <div className="mb-2 h-5 w-[2px] rounded-full bg-[#FF7A00]" />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function PersonalityDetailPanel({
-  card,
-  compact = false,
-}: {
-  card: IntroPersonalityCard;
-  compact?: boolean;
-}) {
-  const [imageHidden, setImageHidden] = useState(false);
-  return (
-    <div
-      className={`rounded-[1.45rem] border bg-[linear-gradient(180deg,rgba(255,250,245,0.96)_0%,rgba(252,245,238,0.98)_100%)] shadow-[0_18px_40px_rgba(102,66,30,0.1)] ${
-        compact ? "p-3.5" : "p-4 md:p-5"
-      }`}
-      style={{ borderColor: card.border }}
-    >
-      <div className={`grid gap-3 ${compact ? "grid-cols-1" : "md:grid-cols-[112px_minmax(0,1fr)] md:items-start"}`}>
-        <div className={`overflow-hidden rounded-[1.2rem] ${compact ? "hidden" : "md:block"}`}>
-          {!imageHidden && card.imageSrc ? (
-            <img
-              src={card.imageSrc}
-              alt={card.title}
-              className="h-[132px] w-[112px] object-cover"
-              onError={() => setImageHidden(true)}
-            />
-          ) : (
-            <div className="hidden md:block">
-              <PersonalityPlaceholder accent={card.accent} />
-            </div>
-          )}
-        </div>
-        <div className="space-y-3">
-          <div className="space-y-2">
-            <div
-              className="inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[0.72rem] font-black"
-              style={{
-                color: card.accent,
-                backgroundColor: `${card.accent}14`,
-              }}
-            >
-              <Heart className="h-3.5 w-3.5 fill-current" />
-              {card.title}
-            </div>
-            <p className="text-[0.95rem] font-semibold leading-6 text-[#4F2B1B]">
-              {card.extendedDescription}
-            </p>
-          </div>
-          <div
-            className="rounded-[1.1rem] px-3.5 py-3"
-            style={{ backgroundColor: `${card.accent}10` }}
-          >
-            <p
-              className="text-[0.68rem] font-black uppercase tracking-[0.16em]"
-              style={{ color: card.accent }}
-            >
-              Bebidas que van contigo
-            </p>
-            <div className="mt-2.5 flex flex-wrap gap-2">
-              {card.matchDrinks.map((drink) => (
-                <span
-                  key={`${card.id}-${drink}`}
-                  className="inline-flex items-center gap-2 rounded-full border bg-white/86 px-2.5 py-1.5 text-[0.78rem] font-semibold text-[#4A281B] shadow-[0_6px_14px_rgba(102,66,30,0.06)]"
-                  style={{ borderColor: `${card.accent}24` }}
-                >
-                  <span
-                    className="h-2.5 w-2.5 rounded-full"
-                    style={{ backgroundColor: card.accent }}
-                  />
-                  {drink}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export function IntroScreen() {
   const { startQuiz, questions } = useQuizStore();
   const [activeIndex, setActiveIndex] = useState(0);
   const [showLogoFallback, setShowLogoFallback] = useState(false);
   const [showHeadlineFallback, setShowHeadlineFallback] = useState(false);
   const [showHowItWorks, setShowHowItWorks] = useState(false);
-  const [showPersonalities, setShowPersonalities] = useState(false);
-  const [showPersonalityDetails, setShowPersonalityDetails] = useState(false);
-  const [activePersonalityIndex, setActivePersonalityIndex] = useState(0);
   const [viewportWidth, setViewportWidth] = useState(1280);
   const [showBackToTop, setShowBackToTop] = useState(false);
   const activeDrink = INTRO_DRINKS[activeIndex];
-  const activePersonality = INTRO_PERSONALITIES[activePersonalityIndex];
   const lastPointerDownAtRef = useRef<number>(0);
   const [bumpKey, setBumpKey] = useState(0);
   const isMobile = viewportWidth < 640;
@@ -759,32 +540,6 @@ export function IntroScreen() {
     setDrinkByIndex(index);
   };
 
-  const handlePrevPersonality = () => {
-    setActivePersonalityIndex((current) =>
-      current === 0 ? INTRO_PERSONALITIES.length - 1 : current - 1
-    );
-  };
-
-  const handleNextPersonality = () => {
-    setActivePersonalityIndex((current) =>
-      current === INTRO_PERSONALITIES.length - 1 ? 0 : current + 1
-    );
-  };
-
-  const handleTogglePersonalityDetails = (index?: number) => {
-    if (typeof index === "number") {
-      if (index === activePersonalityIndex) {
-        setShowPersonalityDetails((current) => !current);
-      } else {
-        setActivePersonalityIndex(index);
-        setShowPersonalityDetails(true);
-      }
-      return;
-    }
-
-    setShowPersonalityDetails((current) => !current);
-  };
-
   const handleStartQuiz = () => {
     startQuiz();
   };
@@ -809,53 +564,58 @@ export function IntroScreen() {
 
         <div className="relative mx-[26px] rounded-[2rem] border border-[#f0ded0] bg-[linear-gradient(180deg,#fbf6f0_0%,#f7efe5_100%)] px-4 py-5 sm:mx-[34px] sm:px-6 sm:py-6 md:mx-[42px] md:px-7 md:py-6 lg:mx-[72px] lg:my-0 lg:px-8 lg:py-7 xl:mx-[78px]">
           <div
-            className="pointer-events-none absolute inset-0 rounded-[2rem] bg-no-repeat opacity-90"
+            className={`pointer-events-none absolute inset-0 rounded-[2rem] bg-no-repeat ${
+              isMobile ? "opacity-[0.86]" : "opacity-90"
+            }`}
             style={{
               backgroundImage:
                 isMobile
-                  ? "url('/assets/quiz-intro/backgrounds/hero-main-bg.png')"
-                  : "url('/assets/quiz-intro/backgrounds/hero-desktop-pop-texture.webp')",
+                  ? "url('/assets/quiz-intro/backgrounds/mobile/hero-stage-background.jpg')"
+                  : "url('/assets/quiz-intro/backgrounds/desktop/hero-stage-background.jpg')",
               backgroundPosition: isMobile ? "50% 50%" : "50% 34%",
               backgroundSize: isMobile ? "cover" : "cover",
+              backgroundRepeat: "no-repeat",
             }}
           />
-          {isMobile ? (
-            <div
-              className="pointer-events-none absolute inset-0 rounded-[2rem] bg-cover bg-center opacity-[0.36] mix-blend-multiply"
-              style={{
-                backgroundImage:
-                  "url('/assets/quiz-intro/backgrounds/hero-desktop-pop-texture.webp')",
-                backgroundPosition: "50% 42%",
-              }}
-            />
-          ) : null}
           <div
             className={`pointer-events-none absolute inset-0 rounded-[2rem] ${
               isMobile
-                ? "bg-[linear-gradient(180deg,rgba(251,246,240,0.28)_0%,rgba(251,246,240,0.14)_18%,rgba(251,246,240,0.22)_42%,rgba(251,246,240,0.58)_72%,rgba(251,246,240,0.88)_90%,rgba(251,246,240,0.95)_100%)]"
+                ? "bg-[linear-gradient(180deg,rgba(251,246,240,0.24)_0%,rgba(251,246,240,0.14)_14%,rgba(251,246,240,0.03)_34%,rgba(251,246,240,0.08)_56%,rgba(251,246,240,0.3)_78%,rgba(251,246,240,0.64)_100%)]"
                 : "bg-[linear-gradient(90deg,rgba(251,246,240,0.88)_0%,rgba(251,246,240,0.72)_30%,rgba(251,246,240,0.2)_52%,rgba(251,246,240,0.04)_74%)]"
             }`}
           />
           <div
             className={`pointer-events-none absolute inset-0 rounded-[2rem] ${
               isMobile
-                ? "bg-[radial-gradient(circle_at_50%_22%,rgba(255,247,239,0.24)_0%,rgba(255,247,239,0.14)_24%,rgba(255,247,239,0.04)_46%,rgba(255,247,239,0)_68%),radial-gradient(circle_at_50%_78%,rgba(255,247,239,0.18)_0%,rgba(255,247,239,0.08)_20%,rgba(255,247,239,0)_50%)] opacity-100"
+                ? "bg-[radial-gradient(circle_at_50%_10%,rgba(255,247,239,0.13)_0%,rgba(255,247,239,0.06)_18%,rgba(255,247,239,0)_42%),radial-gradient(circle_at_50%_84%,rgba(255,247,239,0.1)_0%,rgba(255,247,239,0.04)_18%,rgba(255,247,239,0)_42%)] opacity-100"
                 : "bg-[radial-gradient(circle_at_12%_24%,rgba(251,246,240,0.72)_0%,rgba(251,246,240,0.44)_32%,rgba(251,246,240,0)_60%)] opacity-90"
             }`}
           />
           <div
             className={`pointer-events-none absolute inset-0 rounded-[2rem] ${
               isMobile
-                ? "bg-[radial-gradient(circle_at_50%_28%,rgba(255,138,0,0.16)_0%,rgba(247,84,166,0.14)_18%,rgba(255,138,0,0.08)_34%,rgba(255,255,255,0)_52%),radial-gradient(circle_at_50%_64%,rgba(255,173,102,0.12)_0%,rgba(247,84,166,0.08)_24%,rgba(255,255,255,0)_52%)] opacity-80"
+                ? "bg-[radial-gradient(circle_at_50%_30%,rgba(255,138,0,0.08)_0%,rgba(247,84,166,0.06)_18%,rgba(255,138,0,0.03)_32%,rgba(255,255,255,0)_48%),radial-gradient(circle_at_50%_64%,rgba(255,173,102,0.05)_0%,rgba(247,84,166,0.03)_20%,rgba(255,255,255,0)_44%)] opacity-24"
                 : "bg-[radial-gradient(circle_at_64%_20%,rgba(255,138,0,0.16)_0%,rgba(247,84,166,0.12)_22%,rgba(255,138,0,0.08)_38%,rgba(255,255,255,0)_58%)] opacity-56"
             }`}
           />
-          <div className="pointer-events-none absolute inset-0 rounded-[2rem] bg-[radial-gradient(circle,rgba(255,255,255,0)_0%,rgba(255,255,255,0)_62%,rgba(255,255,255,0.18)_100%)]" />
-          <div className="pointer-events-none absolute inset-[2%] rounded-[1.8rem] bg-[radial-gradient(circle_at_62%_24%,rgba(255,255,255,0)_0_40px,rgba(255,255,255,0.28)_41px_42px,rgba(255,255,255,0)_43px),radial-gradient(circle_at_62%_24%,rgba(255,255,255,0)_0_56px,rgba(255,255,255,0.22)_57px_58px,rgba(255,255,255,0)_59px)] opacity-60 mix-blend-screen" />
+          <div
+            className={`pointer-events-none absolute inset-0 rounded-[2rem] ${
+              isMobile
+                ? "bg-[radial-gradient(circle,rgba(255,255,255,0)_0%,rgba(255,255,255,0)_78%,rgba(255,255,255,0.06)_100%)]"
+                : "bg-[radial-gradient(circle,rgba(255,255,255,0)_0%,rgba(255,255,255,0)_62%,rgba(255,255,255,0.18)_100%)]"
+            }`}
+          />
+          <div
+            className={`pointer-events-none absolute inset-[2%] rounded-[1.8rem] ${
+              isMobile
+                ? "opacity-0"
+                : "bg-[radial-gradient(circle_at_62%_24%,rgba(255,255,255,0)_0_40px,rgba(255,255,255,0.28)_41px_42px,rgba(255,255,255,0)_43px),radial-gradient(circle_at_62%_24%,rgba(255,255,255,0)_0_56px,rgba(255,255,255,0.22)_57px_58px,rgba(255,255,255,0)_59px)] opacity-60 mix-blend-screen"
+            }`}
+          />
           <div
             className={`pointer-events-none absolute rounded-[999px] blur-3xl ${
               isMobile
-                ? "inset-x-[10%] top-[8%] h-[62%] bg-[radial-gradient(circle_at_50%_36%,rgba(255,236,219,0.28)_0%,rgba(255,236,219,0.14)_38%,rgba(255,236,219,0)_76%)]"
+                ? "inset-x-[10%] top-[8%] h-[62%] bg-[radial-gradient(circle_at_50%_36%,rgba(255,236,219,0.14)_0%,rgba(255,236,219,0.06)_38%,rgba(255,236,219,0)_76%)]"
                 : "inset-x-[37%] top-[8%] h-[48%] bg-[radial-gradient(circle_at_50%_30%,rgba(255,236,219,0.28)_0%,rgba(255,236,219,0.12)_40%,rgba(255,236,219,0)_74%)]"
             }`}
           />
@@ -902,69 +662,25 @@ export function IntroScreen() {
                 </div>
               </motion.div>
 
-              <button
-                type="button"
+              <Button
+                variant="quizPill"
+                size="quizPill"
                 onClick={() => setShowHowItWorks((current) => !current)}
                 aria-expanded={showHowItWorks}
                 aria-controls="how-it-works-panel"
-                className="inline-flex items-center gap-2 rounded-full border border-[#E6C8B3] bg-[#FFF3E8]/90 px-4 py-2 text-[0.9rem] font-semibold text-[#4A281B] shadow-[0_10px_26px_rgba(102,66,30,0.12)] transition-colors hover:bg-[#FFF7F0] lg:-mt-8 lg:justify-self-end"
+                className="items-center gap-2 font-sans font-medium lg:-mt-8 lg:justify-self-end"
               >
                 <CircleHelp className="h-4 w-4 text-[#C9833A]" />
                 <span className="hidden sm:inline">¿Cómo funciona el test?</span>
                 <span className="sm:hidden">Ayuda</span>
-              </button>
+              </Button>
             </div>
 
-            {showHowItWorks ? (
-              <motion.div
-                id="how-it-works-panel"
-                initial={{ opacity: 0, y: -8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.25 }}
-                className="relative z-10 mt-4 rounded-[1.5rem] border border-[#EDD6C4] bg-[linear-gradient(180deg,rgba(255,248,240,0.94)_0%,rgba(255,244,236,0.98)_100%)] p-4 shadow-[0_18px_42px_rgba(102,66,30,0.08)] sm:p-5 lg:max-w-[940px]"
-              >
-                <div className="flex items-start gap-3">
-                  <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#FFF0E0] text-[#C9833A]">
-                    <CircleHelp className="h-4.5 w-4.5" />
-                  </div>
-                  <div className="space-y-3">
-                    <div className="space-y-1">
-                      <p className="text-[0.76rem] font-semibold uppercase tracking-[0.14em] text-[#B86B2C]">
-                        ¿Cómo funciona?
-                      </p>
-                      <h2 className="text-[1.05rem] font-semibold leading-6 text-[#4A281B] sm:text-[1.12rem]">
-                        Descubre tu bebida Dunkin en solo 4 pasos.
-                      </h2>
-                    </div>
-                    <div className="space-y-3 text-[0.9rem] leading-6 text-[#6B5448] sm:text-[0.95rem]">
-                      <ol className="space-y-2.5">
-                        {HOW_IT_WORKS_STEPS.map((step, index) => (
-                          <li
-                            key={step}
-                            className="flex items-start gap-2.5 rounded-[1rem] bg-white/55 px-3 py-2.5"
-                          >
-                            <span className="mt-0.5 inline-flex h-5.5 w-5.5 shrink-0 items-center justify-center rounded-full bg-[#FFE7D2] text-[0.74rem] font-black text-[#B86B2C]">
-                              {index + 1}
-                            </span>
-                            <span>{step}</span>
-                          </li>
-                        ))}
-                      </ol>
-                      <div className="space-y-2 rounded-[1rem] border border-[#F0DDCF] bg-white/52 px-3.5 py-3">
-                        <h3 className="text-[0.82rem] font-bold uppercase tracking-[0.12em] text-[#8E5A31]">
-                          Información importante
-                        </h3>
-                        <div className="space-y-2.5">
-                          {HOW_IT_WORKS_INFO.map((paragraph) => (
-                            <p key={paragraph}>{paragraph}</p>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ) : null}
+            <HowItWorksPanel
+              open={showHowItWorks}
+              steps={HOW_IT_WORKS_STEPS}
+              info={HOW_IT_WORKS_INFO}
+            />
 
             <div className="relative z-10 mt-4 grid grid-cols-1 gap-3 px-[1.35rem] sm:mt-5 sm:gap-5 sm:px-0 lg:grid-cols-[0.88fr_1.12fr] lg:items-start lg:gap-7">
             <motion.div
@@ -975,9 +691,6 @@ export function IntroScreen() {
             >
               <div className="space-y-2.5">
                 <div className="space-y-2 lg:hidden">
-                  <div className="inline-flex items-center rounded-full border border-[#F0DFD0] bg-white/80 px-3 py-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.11em] text-[#B86B2C] shadow-[0_8px_18px_rgba(102,66,30,0.08)]">
-                    Desliza y descubre tu match
-                  </div>
                   <div className="pt-1">
                     <div
                       className={`mx-auto w-full max-w-[248px] overflow-hidden rounded-[1.65rem] border border-[#F0DFD0] bg-white/55 p-2.5 shadow-[0_18px_40px_rgba(89,53,17,0.12)] ${
@@ -995,7 +708,7 @@ export function IntroScreen() {
                       />
                     </div>
                     {showHeadlineFallback ? (
-                      <h1 className="font-display text-[1.26rem] uppercase leading-[0.9] tracking-[-0.05em] text-[#442214]">
+                      <h1 className="font-display text-[1.26rem] font-extrabold uppercase leading-[0.9] tracking-[-0.05em] text-[#442214]">
                         Dime qué tomas
                         <br />y te diré quién eres
                       </h1>
@@ -1023,7 +736,7 @@ export function IntroScreen() {
                     />
                   </div>
                   {showHeadlineFallback ? (
-                    <h1 className="font-display max-w-[520px] text-[2.05rem] uppercase leading-[0.9] tracking-[-0.06em] text-[#442214] sm:text-[2.95rem] lg:text-[3.6rem]">
+                    <h1 className="font-display max-w-[520px] text-[2.05rem] font-extrabold uppercase leading-[0.9] tracking-[-0.06em] text-[#442214] sm:text-[2.95rem] lg:text-[3.6rem]">
                       DIME QUÉ
                       <br />
                       TOMAS
@@ -1056,46 +769,36 @@ export function IntroScreen() {
                     <Button
                       size="lg"
                       onClick={handleStartQuiz}
-                      className="group relative mx-auto w-full max-w-[20.5rem] overflow-hidden border border-[#D95816] bg-[linear-gradient(180deg,#FFB064_0%,#FF671F_50%,#DE4F0D_100%)] px-9 py-4 text-white shadow-[0_18px_34px_rgba(255,103,31,0.3)] ring-1 ring-[#FFF1E4]/90 [border-radius:999px_999px_920px_999px] before:absolute before:inset-x-[14%] before:top-[7%] before:h-[38%] before:rounded-full before:bg-white/22 before:blur-xl before:content-[''] hover:-translate-y-0.5 hover:border-[#C94B0B] hover:shadow-[0_24px_42px_rgba(255,103,31,0.36)]"
+                      className="group relative mx-auto w-full max-w-[20.5rem] overflow-hidden border border-[#DD6500] bg-[#EF6A00] px-9 py-4 text-[#F8F4F1] shadow-[0_8px_18px_rgba(239,106,0,0.16)] ring-1 ring-white/35 [border-radius:999px] hover:border-[#EF6A00] hover:bg-[#FFF8F1] hover:text-[#EF6A00] hover:shadow-[0_10px_22px_rgba(239,106,0,0.12)] active:border-[#EF6A00] active:bg-[#FFF8F1] active:text-[#EF6A00] active:shadow-[0_10px_22px_rgba(239,106,0,0.12)]"
                     >
-                      <motion.span
-                        aria-hidden="true"
-                        className="pointer-events-none absolute inset-y-[12%] left-[-24%] w-[34%] rounded-full bg-[linear-gradient(115deg,rgba(255,255,255,0)_0%,rgba(255,255,255,0.16)_28%,rgba(255,255,255,0.34)_48%,rgba(255,255,255,0)_72%)] blur-md"
-                        animate={{ x: ["0%", "360%"] }}
-                        transition={{
-                          duration: 2.9,
-                          repeat: Number.POSITIVE_INFINITY,
-                          repeatDelay: 1.8,
-                          ease: "easeInOut",
-                        }}
-                      />
-                      <span className="relative z-10 flex items-center justify-center gap-2.5 font-display uppercase tracking-[-0.04em]">
+                      <span className="relative z-10 flex items-center justify-center gap-2.5 font-display font-extrabold uppercase tracking-[-0.04em]">
                         <span className="text-[1.16rem]">
                           Descubre tu bebida ideal
                         </span>
                         <span
-                          className="flex h-10 w-10 items-center justify-center rounded-full bg-white/22 shadow-[inset_0_1px_0_rgba(255,255,255,0.28),0_8px_16px_rgba(170,61,10,0.14)] transition-transform duration-300 group-hover:scale-105"
+                          className="flex h-9 w-9 items-center justify-center rounded-full bg-white/18 shadow-[inset_0_1px_0_rgba(255,255,255,0.18)] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:bg-[#EF6A00]/12 group-active:translate-x-0.5 group-active:bg-[#EF6A00]/12"
                         >
-                          <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1.5" />
+                          <ArrowRight className="h-4.5 w-4.5 transition-transform duration-300 group-hover:translate-x-0.5" />
                         </span>
                       </span>
                     </Button>
                     </div>
-                    <div className="inline-flex items-center rounded-full border border-[#F2DFC9] bg-white/88 px-3.5 py-1.5 text-[0.72rem] font-semibold text-[#7A5134] shadow-[0_10px_22px_rgba(102,66,30,0.08)]">
+                    <div className="inline-flex items-center rounded-full border border-[#F2DFC9] bg-white/88 px-3.5 py-1.5 font-sans text-[0.72rem] font-medium text-[#7A5134] shadow-[0_10px_22px_rgba(102,66,30,0.08)]">
                       <span>4 preguntas • 1 minuto</span>
                     </div>
                   </motion.div>
-                  <p className="max-w-[430px] rounded-[1.1rem] border border-[#EFDCCB] bg-white/86 px-4 py-3 text-[0.95rem] font-semibold leading-7 text-[#4E3325] shadow-[0_10px_26px_rgba(102,66,30,0.08)] backdrop-blur-[3px]">
+                  <p className="max-w-[430px] rounded-[1.1rem] border border-[#EFDCCB] bg-white/86 px-4 py-3 font-sans text-[0.95rem] font-medium leading-7 text-[#4E3325] shadow-[0_10px_26px_rgba(102,66,30,0.08)] backdrop-blur-[3px]">
                     Responde 4 preguntas y descubre la bebida Dunkin que mejor
                     va con tu mood.
                   </p>
-                  <div className="mx-auto rounded-[1.2rem] border border-[#EFDCCB] bg-white/84 p-3 shadow-[0_10px_26px_rgba(102,66,30,0.08)] backdrop-blur-[3px]">
-                    <p className="text-[0.9rem] font-black leading-6 text-[#432418]">
-                      {questions.length} preguntas rápidas y resultado al instante
-                    </p>
-                    <p className="mt-1 text-[0.82rem] font-medium leading-5 text-[#6C5041]">
-                      Hazlo en un minuto y mira qué bebida va contigo.
-                    </p>
+                  <div className="relative mx-auto w-full max-w-[26rem] overflow-hidden rounded-[1.2rem] border border-[#EFDCCB] bg-[linear-gradient(180deg,rgba(255,249,242,0.9)_0%,rgba(255,244,237,0.86)_100%)] px-4 py-3 shadow-[0_10px_26px_rgba(102,66,30,0.08)] backdrop-blur-[3px] lg:max-w-[28.5rem] lg:px-5 lg:py-3.5">
+                    <div className="pointer-events-none absolute inset-y-0 left-0 w-14 bg-[linear-gradient(90deg,rgba(255,247,239,0.94)_0%,rgba(255,247,239,0)_100%)]" />
+                    <div className="pointer-events-none absolute inset-y-0 right-0 w-14 bg-[linear-gradient(270deg,rgba(255,247,239,0.94)_0%,rgba(255,247,239,0)_100%)]" />
+                    <div className="flex min-h-[4.1rem] items-center justify-center lg:min-h-[4.35rem]">
+                      <span className="font-sans text-[0.76rem] font-medium uppercase tracking-[0.18em] text-[#8E5F43] lg:text-[0.8rem]">
+                        Espacio reservado para banner lateral
+                      </span>
+                    </div>
                   </div>
                 </div>
 
@@ -1103,26 +806,32 @@ export function IntroScreen() {
                   <Button
                     size="lg"
                     onClick={handleStartQuiz}
-                    className="group relative w-full max-w-[18.2rem] overflow-hidden border border-[#D95816] bg-[linear-gradient(180deg,#FFB064_0%,#FF671F_50%,#DE4F0D_100%)] px-7 py-3.5 text-white shadow-[0_18px_34px_rgba(255,103,31,0.3)] ring-1 ring-[#FFF1E4]/90 [border-radius:999px_999px_920px_999px] before:absolute before:inset-x-[14%] before:top-[7%] before:h-[38%] before:rounded-full before:bg-white/22 before:blur-xl before:content-[''] hover:-translate-y-0.5 hover:border-[#C94B0B] hover:shadow-[0_24px_42px_rgba(255,103,31,0.36)] sm:min-w-[272px] sm:w-auto sm:px-11 sm:py-5 lg:hidden"
+                    className="group relative w-full max-w-[18.2rem] overflow-hidden border border-[#DD6500] bg-[#EF6A00] px-7 py-3.5 text-[#F8F4F1] shadow-[0_8px_18px_rgba(239,106,0,0.15)] ring-1 ring-white/30 [border-radius:999px] hover:border-[#EF6A00] hover:bg-[#FFF8F1] hover:text-[#EF6A00] hover:shadow-[0_10px_20px_rgba(239,106,0,0.12)] active:border-[#EF6A00] active:bg-[#FFF8F1] active:text-[#EF6A00] active:shadow-[0_10px_20px_rgba(239,106,0,0.12)] sm:min-w-[272px] sm:w-auto sm:px-11 sm:py-5 lg:hidden"
                   >
-                    <span className="relative z-10 flex items-center justify-center gap-2 font-display uppercase tracking-[-0.04em]">
+                    <span className="relative z-10 flex items-center justify-center gap-2 font-display font-extrabold uppercase tracking-[-0.04em]">
                       <span className="text-[1rem] sm:text-[1.12rem] lg:hidden">
                         Haz el test
                       </span>
                       <span className="hidden text-[1.12rem] sm:text-[1.16rem] lg:inline">
                         Descubre tu bebida ideal
                       </span>
-                      <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/22 shadow-[inset_0_1px_0_rgba(255,255,255,0.28),0_8px_16px_rgba(170,61,10,0.14)] transition-transform duration-300 group-hover:scale-105">
-                        <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1.5" />
+                      <span className="flex h-8.5 w-8.5 items-center justify-center rounded-full bg-white/18 shadow-[inset_0_1px_0_rgba(255,255,255,0.18)] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:bg-[#EF6A00]/12 group-active:translate-x-0.5 group-active:bg-[#EF6A00]/12">
+                        <ArrowRight className="h-4.5 w-4.5 transition-transform duration-300 group-hover:translate-x-0.5" />
                       </span>
                     </span>
                   </Button>
-                  <div className="inline-flex items-center rounded-full border border-[#F2DFC9] bg-white/86 px-3.5 py-1.5 text-[0.7rem] font-semibold text-[#7A5134] shadow-[0_10px_22px_rgba(102,66,30,0.08)] lg:hidden">
+                  <div className="inline-flex items-center rounded-full border border-[#F2DFC9] bg-white/86 px-3.5 py-1.5 font-sans text-[0.7rem] font-medium text-[#3E342F] shadow-[0_10px_22px_rgba(102,66,30,0.08)] lg:hidden">
                     <span className="lg:hidden">4 preguntas • 1 minuto</span>
                     <span className="hidden lg:inline">4 preguntas • 1 minuto</span>
                   </div>
-                  <div className="inline-flex items-center rounded-full border border-[#F0DFD0] bg-white/92 px-3 py-1.5 text-[0.72rem] font-semibold text-[#6B4733] shadow-[0_10px_22px_rgba(102,66,30,0.08)] lg:hidden">
-                    <span>Responde rápido y descubre tu recomendación.</span>
+                  <div className="relative w-full max-w-[21.5rem] overflow-hidden rounded-[1.15rem] border border-[#F0DFD0] bg-[linear-gradient(180deg,rgba(255,249,242,0.92)_0%,rgba(255,244,237,0.88)_100%)] px-4 py-3 shadow-[0_10px_22px_rgba(102,66,30,0.08)] lg:hidden">
+                    <div className="pointer-events-none absolute inset-y-0 left-0 w-12 bg-[linear-gradient(90deg,rgba(255,247,239,0.94)_0%,rgba(255,247,239,0)_100%)]" />
+                    <div className="pointer-events-none absolute inset-y-0 right-0 w-12 bg-[linear-gradient(270deg,rgba(255,247,239,0.94)_0%,rgba(255,247,239,0)_100%)]" />
+                    <div className="flex min-h-[3.35rem] items-center justify-center">
+                      <span className="font-sans text-[0.76rem] font-medium uppercase tracking-[0.18em] text-[#8E5F43]">
+                        Espacio reservado para banner lateral
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1162,25 +871,27 @@ export function IntroScreen() {
                   }`}
                 />
 
-                <button
-                  type="button"
+                <QuizIconButton
                   onPointerDown={isMobile ? undefined : handlePrevPointerDown}
                   onClick={isMobile ? goPrev : handlePrevClick}
-                  className="absolute left-3 top-[14%] z-[80] flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/70 bg-[linear-gradient(180deg,#FFF9F3_0%,#FFF1E7_100%)] text-[#4A281B] shadow-[0_18px_40px_rgba(116,75,33,0.2)] ring-1 ring-[#E6C8B3]/70 backdrop-blur-sm transition-transform active:scale-[0.97] sm:left-5 sm:top-[42%] sm:h-12 sm:w-12 lg:left-4 xl:left-0 lg:h-12 lg:w-12 lg:hover:scale-105"
+                  tone="cream"
+                  size="md"
+                  className="absolute left-3 top-[14%] z-[80] -translate-y-1/2 sm:left-5 sm:top-[42%] lg:left-4 lg:h-12 lg:w-12 xl:left-0"
                   aria-label="Ver bebida anterior"
                 >
                   <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5" />
-                </button>
+                </QuizIconButton>
 
-                <button
-                  type="button"
+                <QuizIconButton
                   onPointerDown={isMobile ? undefined : handleNextPointerDown}
                   onClick={isMobile ? goNext : handleNextClick}
-                  className="absolute right-3 top-[14%] z-[80] flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/70 bg-[linear-gradient(180deg,#FFF9F3_0%,#FFF1E7_100%)] text-[#4A281B] shadow-[0_18px_40px_rgba(116,75,33,0.2)] ring-1 ring-[#E6C8B3]/70 backdrop-blur-sm transition-transform active:scale-[0.97] sm:right-5 sm:top-[42%] sm:h-12 sm:w-12 lg:right-4 xl:right-0 lg:h-12 lg:w-12 lg:hover:scale-105"
+                  tone="cream"
+                  size="md"
+                  className="absolute right-3 top-[14%] z-[80] -translate-y-1/2 sm:right-5 sm:top-[42%] lg:right-4 lg:h-12 lg:w-12 xl:right-0"
                   aria-label="Ver siguiente bebida"
                 >
                   <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />
-                </button>
+                </QuizIconButton>
 
                 <div className="relative -mt-3 flex h-[292px] w-full items-end justify-center overflow-visible sm:-mt-4 sm:h-[560px] lg:-mt-6 lg:h-[730px]">
                   {INTRO_DRINKS.map((drink, index) => {
@@ -1252,24 +963,24 @@ export function IntroScreen() {
                             </div>
                           </motion.div>
                           <span
-                            className={`font-display mt-1 items-center justify-center overflow-hidden border border-[#eadccd] px-2 text-center leading-[0.95] shadow-[0_8px_20px_rgba(102,66,30,0.08)] backdrop-blur-[3px] sm:mt-2 sm:inline-flex sm:min-h-[44px] sm:w-[148px] sm:px-3.5 sm:py-1.5 sm:text-[11px] lg:min-h-[40px] lg:w-[136px] lg:px-3 lg:py-1.5 lg:text-[10.8px] xl:min-h-[42px] xl:w-[142px] xl:text-[11px] ${
+                            className={`mt-1 items-center justify-center overflow-hidden border text-center font-display font-extrabold uppercase leading-[0.96] tracking-[0.06em] shadow-[0_8px_18px_rgba(102,66,30,0.06)] backdrop-blur-[6px] sm:mt-2 sm:inline-flex sm:min-h-[42px] sm:max-w-[156px] sm:px-4 sm:py-1.5 sm:text-[10.8px] lg:min-h-[40px] lg:max-w-[152px] lg:px-4 lg:py-1.5 lg:text-[10.6px] xl:min-h-[42px] xl:max-w-[164px] xl:text-[10.9px] ${
                               isMobile
                                 ? state.slot === "hidden"
                                   ? "hidden"
                                   : isActive
-                                    ? "inline-flex min-h-[34px] w-[132px] px-2.5 py-1 text-[8.1px]"
-                                    : "inline-flex min-h-[28px] w-[92px] px-2 py-0.5 text-[6.9px]"
+                                    ? "inline-flex min-h-[34px] max-w-[136px] px-3 py-1 text-[8px]"
+                                    : "inline-flex min-h-[28px] max-w-[102px] px-2.5 py-0.5 text-[6.8px]"
                                 : "inline-flex sm:max-w-none"
                             } ${
-                              isActive ? "opacity-100" : "opacity-98"
-                            } rotate-0`}
+                              isActive ? "opacity-100" : "opacity-[0.96]"
+                            } rounded-full rotate-0`}
                             style={{
-                              color:
-                                isActive && !isMobile ? "#4A281B" : drink.textColor,
-                              background: `linear-gradient(180deg, #FFF8EF 0%, ${drink.textColor}14 100%)`,
+                              color: drink.textColor,
+                              background: isActive
+                                ? "linear-gradient(180deg, rgba(255,248,239,0.82) 0%, rgba(255,240,228,0.72) 100%)"
+                                : "linear-gradient(180deg, rgba(255,248,239,0.68) 0%, rgba(255,242,233,0.56) 100%)",
                               borderColor:
-                                `${drink.textColor}${isActive && !isMobile ? "38" : "30"}`,
-                              borderRadius: "14px 10px 15px 11px",
+                                `${drink.textColor}${isActive ? "32" : "1E"}`,
                             }}
                           >
                             <span className="line-clamp-2 block w-full break-words text-center">
@@ -1283,13 +994,13 @@ export function IntroScreen() {
                 </div>
 
                 <div className="relative z-20 -mt-3 space-y-1.5 text-center sm:-mt-5 sm:space-y-1">
-                  <span className="inline-flex rounded-full border border-[#F6CCAF] bg-[linear-gradient(180deg,#FFE7D7_0%,#FFD7BF_100%)] px-3.5 py-1 text-[0.62rem] font-black uppercase tracking-[0.16em] text-[#E8711B] shadow-[0_10px_20px_rgba(102,66,30,0.08)] sm:text-[0.68rem]">
+                  <span className="inline-flex rounded-full border border-[#F2DFC9] bg-[linear-gradient(180deg,rgba(255,248,239,0.96)_0%,rgba(255,241,230,0.92)_100%)] px-3.5 py-1 font-sans text-[0.62rem] font-medium uppercase tracking-[0.16em] text-[#E8711B] shadow-[0_10px_20px_rgba(102,66,30,0.06)] sm:text-[0.68rem]">
                     Tu match puede ser
                   </span>
-                  <h2 className="font-display mx-auto flex min-h-[4.5rem] max-w-[16.5rem] items-center justify-center px-2 text-[1.64rem] font-black leading-[0.92] tracking-[-0.04em] text-[#3A1F15] [text-shadow:0_1px_0_rgba(255,255,255,0.24)] sm:min-h-[5rem] sm:max-w-[20rem] sm:px-0 sm:text-[2.1rem] lg:h-[5.6rem] lg:w-[24rem] lg:max-w-[24rem] lg:text-[2.28rem] xl:w-[26rem] xl:max-w-[26rem] xl:text-[2.4rem]">
+                  <h2 className="font-display mx-auto flex min-h-[4.5rem] max-w-[16.5rem] items-center justify-center px-2 text-[1.64rem] font-extrabold leading-[0.92] tracking-[-0.04em] text-[#3A1F15] [text-shadow:0_1px_0_rgba(255,255,255,0.24)] sm:min-h-[5rem] sm:max-w-[20rem] sm:px-0 sm:text-[2.1rem] lg:h-[5.6rem] lg:w-[24rem] lg:max-w-[24rem] lg:text-[2.28rem] xl:w-[26rem] xl:max-w-[26rem] xl:text-[2.4rem]">
                     {activeDrink.name}
                   </h2>
-                  <p className="mx-auto min-h-[6.9rem] max-w-[14.75rem] rounded-[1.3rem] border border-[#EFD9CC] bg-[linear-gradient(180deg,rgba(255,250,246,0.92)_0%,rgba(255,244,238,0.84)_100%)] px-4 py-3 text-[0.82rem] font-medium leading-6 text-[#5A3D30] shadow-[0_12px_26px_rgba(102,66,30,0.06)] backdrop-blur-[4px] sm:max-w-[22rem] sm:min-h-[4.9rem] sm:rounded-[1rem] sm:border-0 sm:bg-white/64 sm:px-3 sm:py-2 sm:text-[0.95rem] sm:leading-5 sm:shadow-[0_8px_18px_rgba(102,66,30,0.05)] sm:backdrop-blur-[2px]">
+                  <p className="mx-auto min-h-[6.9rem] max-w-[14.75rem] rounded-[1.3rem] border border-[#EFD9CC] bg-[linear-gradient(180deg,rgba(255,250,246,0.92)_0%,rgba(255,244,238,0.84)_100%)] px-4 py-3 font-sans text-[0.82rem] font-medium leading-6 text-[#3E342F] shadow-[0_12px_26px_rgba(102,66,30,0.06)] backdrop-blur-[4px] sm:max-w-[22rem] sm:min-h-[4.9rem] sm:rounded-[1rem] sm:border-0 sm:bg-white/64 sm:px-3 sm:py-2 sm:text-[0.95rem] sm:leading-5 sm:shadow-[0_8px_18px_rgba(102,66,30,0.05)] sm:backdrop-blur-[2px]">
                     Una bebida con personalidad que va con tu mood.
                   </p>
                 </div>
@@ -1318,170 +1029,25 @@ export function IntroScreen() {
           </div>
 
           <div className="relative z-10 mt-7 border-t border-[#EEDFD2] pt-6">
-            <div className="flex flex-col items-center gap-2 text-center sm:flex-row sm:items-end sm:justify-between sm:text-left">
-              <div className="flex flex-col items-center rounded-[1.15rem] bg-white/58 px-4 py-3 shadow-[0_10px_22px_rgba(102,66,30,0.05)] backdrop-blur-[2px] sm:items-start">
-                <h3 className="font-display text-[1.75rem] font-black leading-none tracking-[-0.04em] text-[#3E2217]">
-                  Una bebida, una personalidad
-                </h3>
-                <p className="mt-2 text-[0.9rem] font-medium text-[#5E4638] sm:text-[0.95rem]">
-                  Descubre la vibra de cada bebida y cómo conecta con distintos
-                  planes.
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  setShowPersonalities((current) => {
-                    const nextValue = !current;
-
-                    if (nextValue) {
-                      setActivePersonalityIndex(0);
-                      setShowPersonalityDetails(false);
-                    }
-
-                    return nextValue;
-                  });
-                }}
-                className="inline-flex items-center justify-center rounded-full border border-[#E6C8B3] bg-[#FFF3E8]/90 px-4 py-2 text-[0.86rem] font-semibold text-[#4A281B] shadow-[0_10px_26px_rgba(102,66,30,0.12)] transition-colors hover:bg-[#FFF7F0] sm:hidden"
-              >
-                {showPersonalities ? "Ocultar" : "Ver personalidades"}
-              </button>
-              <div className="invisible inline-flex items-center rounded-full bg-white/78 px-3 py-2 text-[0.72rem] font-medium uppercase tracking-[0.14em] text-[#8E705D] ring-1 ring-[#EBDCCE]">
-                Espacios listos para imágenes
-              </div>
-            </div>
-
-            {isMobile && !showPersonalities ? null : isMobile ? (
-              <div className="mt-5 space-y-3">
-                <div className="relative">
-                  <div className="mx-auto flex w-[282px] justify-center">
-                    <PersonalityCard card={activePersonality} />
-                  </div>
-                  <button
-                    type="button"
-                    onClick={handlePrevPersonality}
-                    className="absolute left-0 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-[#E6C8B3] bg-[#FFF7F0]/95 text-[#4A281B] shadow-[0_12px_28px_rgba(116,75,33,0.14)]"
-                    aria-label="Ver personalidad anterior"
-                  >
-                    <ArrowLeft className="h-4 w-4" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleNextPersonality}
-                    className="absolute right-0 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-[#E6C8B3] bg-[#FFF7F0]/95 text-[#4A281B] shadow-[0_12px_28px_rgba(116,75,33,0.14)]"
-                    aria-label="Ver siguiente personalidad"
-                  >
-                    <ArrowRight className="h-4 w-4" />
-                  </button>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => handleTogglePersonalityDetails()}
-                  className="mx-auto inline-flex items-center rounded-full border bg-white/90 px-4 py-2 text-[0.84rem] font-semibold shadow-[0_10px_24px_rgba(102,66,30,0.1)] md:bg-[#FFF8F2]/98 md:shadow-[0_14px_30px_rgba(102,66,30,0.14)] md:ring-1 md:ring-[#F3E4D7] md:backdrop-blur-[8px]"
-                  style={{
-                    color: activePersonality.accent,
-                    borderColor: `${activePersonality.accent}28`,
-                  }}
-                >
-                  {showPersonalityDetails
-                    ? `Ocultar ${activePersonality.title}`
-                    : `Ver más sobre ${activePersonality.title}`}
-                </button>
-                {showPersonalityDetails ? (
-                  <PersonalityDetailPanel card={activePersonality} compact />
-                ) : null}
-                <p className="text-center text-[0.73rem] font-semibold uppercase tracking-[0.14em] text-[#8E705D]">
-                  {activePersonalityIndex + 1} / {INTRO_PERSONALITIES.length}
-                </p>
-                <div className="flex justify-center gap-2">
-                  {INTRO_PERSONALITIES.map((card, index) => (
-                    <button
-                      key={card.id}
-                      type="button"
-                      onClick={() => setActivePersonalityIndex(index)}
-                      className={`h-2.5 rounded-full transition-all ${
-                        index === activePersonalityIndex
-                          ? "w-6 bg-[#FF7A00]"
-                          : "w-2.5 bg-[#CBAE98]"
-                      }`}
-                      aria-label={`Ver ${card.title}`}
-                    />
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <div className="mt-5 space-y-4">
-                <div className="flex gap-3 overflow-x-auto pb-2 md:grid md:grid-cols-2 md:overflow-visible md:pb-0 xl:grid-cols-4">
-                  {INTRO_PERSONALITIES.map((card, index) => (
-                    <div
-                      key={card.id}
-                      className={`rounded-[1.5rem] transition-all ${
-                        index === activePersonalityIndex && showPersonalityDetails
-                          ? "ring-2 ring-[#F0CFB3]"
-                          : ""
-                      }`}
-                    >
-                      <PersonalityCard card={card} />
-                      <button
-                        type="button"
-                        onClick={() => handleTogglePersonalityDetails(index)}
-                        className="mt-2 inline-flex items-center rounded-full border bg-white/90 px-3.5 py-2 text-[0.82rem] font-semibold shadow-[0_8px_18px_rgba(102,66,30,0.08)] md:bg-[#FFF8F2]/98 md:shadow-[0_14px_30px_rgba(102,66,30,0.14)] md:ring-1 md:ring-[#F3E4D7] md:backdrop-blur-[8px]"
-                        style={{
-                          color: card.accent,
-                          borderColor: `${card.accent}26`,
-                        }}
-                      >
-                        {index === activePersonalityIndex && showPersonalityDetails
-                          ? `Ocultar ${card.title}`
-                          : `Ver más sobre ${card.title}`}
-                      </button>
-                    </div>
-                  ))}
-                </div>
-                {showPersonalityDetails ? (
-                  <PersonalityDetailPanel card={activePersonality} />
-                ) : null}
-              </div>
-            )}
-
-            <div className="mt-5 flex flex-col items-center gap-3 border-t border-[#EEDFD2] pt-4 text-center text-[#7A6558] lg:flex-row lg:items-center lg:justify-between lg:text-left">
+            <div className="mt-5 flex flex-col items-center gap-3 text-center text-[#7A6558] lg:flex-row lg:items-center lg:justify-between lg:text-left">
               <div className="flex flex-wrap items-center justify-center gap-4 text-xs sm:text-sm lg:justify-start">
                 {INTRO_FOOTER_ITEMS.map((item) => (
                   <div key={item} className="flex items-center gap-2">
                     <span className="h-2 w-2 rounded-full bg-[#F4A340]" />
-                    <span>{item}</span>
+                    <span className="font-sans font-medium">{item}</span>
                   </div>
                 ))}
               </div>
 
-              <div className="flex items-center gap-3 text-xs sm:text-sm">
-                <span className="font-semibold text-[#4A281B]">Síguenos</span>
-                <div className="flex items-center gap-2">
-                  {DUNKIN_SOCIAL_LINKS.map((social) => {
-                    const Icon = social.icon;
-
-                    return (
-                      <a
-                        key={social.id}
-                        href={social.href}
-                        target="_blank"
-                        rel="noreferrer"
-                        aria-label={`Ir a ${social.label} de Dunkin Colombia`}
-                        className={`flex h-9 w-9 items-center justify-center rounded-full border border-[#E6C8B3]/85 bg-[#FFF8F1]/96 shadow-[0_10px_24px_rgba(102,66,30,0.12)] ring-1 ring-white/60 transition-transform hover:scale-105 lg:h-9 lg:w-9 lg:bg-[#FFF8F1] lg:ring-1 lg:ring-[#E6C8B3] lg:shadow-[0_10px_22px_rgba(102,66,30,0.12)] ${social.accentClass}`}
-                      >
-                        <Icon className="h-[18px] w-[18px] lg:h-[18px] lg:w-[18px]" />
-                      </a>
-                    );
-                  })}
-                </div>
-              </div>
+              <SocialLinks links={DUNKIN_SOCIAL_LINKS} />
             </div>
           </div>
         </div>
-        <button
-          type="button"
+        <QuizIconButton
           onClick={handleBackToTop}
-          className={`fixed bottom-4 right-4 z-[90] flex h-11 w-11 items-center justify-center rounded-full border border-[#E6C8B3] bg-[#FFF7F0]/95 text-[#4A281B] shadow-[0_14px_34px_rgba(116,75,33,0.18)] transition-all duration-200 hover:scale-105 sm:bottom-6 sm:right-6 sm:h-12 sm:w-12 ${
+          tone="soft"
+          size="md"
+          className={`fixed bottom-4 right-4 z-[90] transition-all duration-200 sm:bottom-6 sm:right-6 sm:h-12 sm:w-12 ${
             showBackToTop
               ? "translate-y-0 opacity-100"
               : "pointer-events-none translate-y-4 opacity-0"
@@ -1489,7 +1055,7 @@ export function IntroScreen() {
           aria-label="Volver arriba"
         >
           <ArrowUp className="h-4 w-4 sm:h-5 sm:w-5" />
-        </button>
+        </QuizIconButton>
       </div>
     </div>
   );

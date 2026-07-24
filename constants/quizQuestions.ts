@@ -7,7 +7,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     id: "q1",
     eyebrow: "Pregunta 1 de 4",
     question:
-      'Si hoy tu grupo de amigos escribe: "¿Quién arma el plan?", ¿qué haces?',
+      'Si en el grupo escriben: "¿Quién arma el plan?" tu...',
     questionHighlight: '"¿Quién arma el plan?"',
     supportingText:
       "Elige la respuesta que más se parece a tu forma natural de moverte con tu parche.",
@@ -19,13 +19,14 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       {
         id: "q1a1",
-        label: "Empiezo a buscar opciones y organizo todo para que salga bien.",
+        label:
+          "En cinco minutos mandas opciones, ubicación y hasta horario.",
         icon: "send",
         value: "creative",
       },
       {
         id: "q1a2",
-        label: "Propongo un café para hablar tranquilos y ponernos al día.",
+        label: "Propones ir por un café y una buena conversación.",
         icon: "messages-square",
         value: "balanced",
       },
@@ -37,7 +38,8 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       },
       {
         id: "q1a4",
-        label: "Lo importante es pasarla bien. Donde estén todos, ahí estoy.",
+        label:
+          "Donde vayan todos... allá llegas. Tú solo quieres pasarla bien.",
         icon: "smile",
         value: "passionate",
       },
@@ -46,10 +48,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   {
     id: "q2",
     eyebrow: "Pregunta 2 de 4",
-    question: "Cuando aparece un problema inesperado, normalmente...",
-    questionHighlight: "problema inesperado",
+    question: "El plan se complica a última hora. Tú...",
+    questionHighlight: "se complica a última hora",
     supportingText:
-      "Piensa en cómo reaccionas de verdad cuando toca resolver algo en el momento.",
+      "Piensa en cómo reaccionas de verdad cuando el parche cambia de rumbo sin aviso.",
     image: "/assets/quiz-questions/q2-drink.webp",
     imageAlt: "Bebida para la pregunta 2",
     mobileImageScale: 0.96,
@@ -58,25 +60,25 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       {
         id: "q2a1",
-        label: "Busco la solución sin darle muchas vueltas.",
+        label: "Buscas cómo salvar el día.",
         icon: "sparkles",
         value: "creative",
       },
       {
         id: "q2a2",
-        label: "Escucho primero antes de opinar.",
+        label: "Preguntas qué pasó antes de sacar conclusiones.",
         icon: "users",
         value: "balanced",
       },
       {
         id: "q2a3",
-        label: "Improviso y encuentro otra forma de hacerlo.",
+        label: "Propones otro plan y sigues como si nada.",
         icon: "compass",
         value: "energetic",
       },
       {
         id: "q2a4",
-        label: "Trato de mantener el buen ánimo porque todo tiene solución.",
+        label: "Te ríes de la situación. Al final siempre sale algo bueno.",
         icon: "sun-medium",
         value: "passionate",
       },
@@ -85,10 +87,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   {
     id: "q3",
     eyebrow: "Pregunta 3 de 4",
-    question: "Tus amigos dirían que eres la persona que...",
-    questionHighlight: "la persona que...",
+    question: "Tu “cargo oficial” en tu grupo de amigos es:",
+    questionHighlight: "cargo oficial",
     supportingText:
-      "Escoge la opción que más te describa cuando estás con tu grupo cercano.",
+      "Escoge el rol que más se parece a ti cuando el parche se junta.",
     image: "/assets/quiz-questions/q3-drink.webp",
     imageAlt: "Bebida para la pregunta 3",
     mobileImageScale: 0.98,
@@ -97,25 +99,25 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       {
         id: "q3a1",
-        label: "Siempre encuentra la forma de resolver cualquier situación.",
+        label: "Solucionador de crisis.",
         icon: "star",
         value: "creative",
       },
       {
         id: "q3a2",
-        label: "Da los mejores consejos y sabe escuchar.",
+        label: "Consejero de confianza.",
         icon: "messages-square",
         value: "balanced",
       },
       {
         id: "q3a3",
-        label: "Nunca deja que falten planes o aventuras.",
+        label: "Director de planes.",
         icon: "party-popper",
         value: "energetic",
       },
       {
         id: "q3a4",
-        label: "Hace que cualquier momento sea más divertido.",
+        label: "Embajador de la buena energía.",
         icon: "music-4",
         value: "passionate",
       },
@@ -142,13 +144,13 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       },
       {
         id: "q4a2",
-        label: '"Cuénteme una cosa..."',
+        label: '"Primero cuénteme bien qué pasó."',
         icon: "messages-square",
         value: "balanced",
       },
       {
         id: "q4a3",
-        label: '"Vamos y en el camino resolvemos."',
+        label: '"Vamos y ahí vemos qué pasa."',
         icon: "compass",
         value: "energetic",
       },
@@ -165,14 +167,14 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
 export const QUIZ_RESULTS: QuizResult[] = [
   {
     id: "creative",
-    personalityType: "El Curioso",
+    personalityType: "Curioso Aventurero",
     badge: "Tu personalidad es",
-    title: "EL CURIOSO",
+    title: "CURIOSO AVENTURERO",
     description:
-      "Te mueves con iniciativa, te gusta resolver y casi siempre terminas organizando para que el plan salga bien.",
+      "Tomas la iniciativa, resuelves rápido y casi siempre terminas armando el parche para que todo salga bien.",
     recommendedDrink: "Iced Latte",
     drinkDescription:
-      "Versátil, suave y con actitud. Una bebida que acompaña tu energía práctica sin perder estilo.",
+      "Suave, versátil y con actitud. Va contigo porque mezcla iniciativa, curiosidad y una energía lista para arrancar el plan.",
     benefit: "Productos y promociones oficiales para Iced Latte",
     image: "/assets/quiz-results/iced-latte.webp",
     mobileImageScale: 1.02,
@@ -182,43 +184,43 @@ export const QUIZ_RESULTS: QuizResult[] = [
     accentColor: "#F3C087",
     benefitTitle: "Opciones oficiales para tu bebida",
     benefitDescription:
-      "Al finalizar te mostramos productos, combos y promociones vigentes relacionadas con tu Iced Latte.",
+      "Consulta opciones oficiales vigentes para tu Iced Latte.",
     benefitCta: "Ver opciones oficiales",
     benefitIcon: "/assets/quiz-benefits/gift-icon.png",
   },
   {
     id: "balanced",
-    personalityType: "El Mentor",
+    personalityType: "Cuidador Mentor",
     badge: "Tu personalidad es",
-    title: "EL MENTOR",
+    title: "CUIDADOR MENTOR",
     description:
-      "Tienes esa capacidad de escuchar, acompañar y dar calma. Eres de quienes convierten una conversación en un buen momento.",
-    recommendedDrink: "Ice Té",
+      "Escuchas, acompañas y entiendes antes de reaccionar. Eres esa persona que baja el ruido y le da sentido al momento.",
+    recommendedDrink: "Cold Brew",
     drinkDescription:
-      "Profundo, equilibrado y perfecto para una pausa con buena conversación. Va contigo porque no necesita exagerar para destacar.",
-    benefit: "Productos y promociones oficiales para Ice Té",
-    image: "/assets/quiz-results/iced-tea.webp",
+      "Profundo, equilibrado y con carácter. Una bebida ideal para quienes prefieren la calma, la conversación y las decisiones con cabeza fría.",
+    benefit: "Productos y promociones oficiales para Cold Brew",
+    image: "/assets/quiz-intro/drinks/Cold Brew.webp",
     mobileImageScale: 1,
-    desktopImageScale: 1.02,
+    desktopImageScale: 1.06,
     desktopImageOffsetY: 0,
     color: "#5A361F",
     accentColor: "#D8C1AF",
     benefitTitle: "Opciones oficiales para tu bebida",
     benefitDescription:
-      "Al finalizar te mostramos productos, combos y promociones vigentes relacionadas con tu Ice Té.",
+      "Consulta opciones oficiales vigentes para tu Cold Brew.",
     benefitCta: "Ver opciones oficiales",
     benefitIcon: "/assets/quiz-benefits/gift-icon.png",
   },
   {
     id: "energetic",
-    personalityType: "El Aventurero",
+    personalityType: "Explorador Aventurero",
     badge: "Tu personalidad es",
-    title: "EL AVENTURERO",
+    title: "EXPLORADOR AVENTURERO",
     description:
-      "Siempre aparece una idea contigo. Eres de los que propone, improvisa y encuentra el parche incluso en el camino.",
+      "Siempre traes una idea nueva. Propones, improvisas y encuentras plan incluso cuando todo cambia sobre la marcha.",
     recommendedDrink: "Refresher Mango Piña",
     drinkDescription:
-      "Refrescante, vibrante y con un toque tropical que invita a salir del plan de siempre. Así de aventurero como tú.",
+      "Refrescante, vibrante y tropical. Va con tu forma de lanzarte a lo nuevo sin perder el impulso del parche.",
     benefit: "Productos y promociones oficiales para Refresher Mango Piña",
     image: "/assets/quiz-results/refresher-mango-pina.webp",
     mobileImageScale: 0.98,
@@ -228,21 +230,21 @@ export const QUIZ_RESULTS: QuizResult[] = [
     accentColor: "#FFD8A8",
     benefitTitle: "Opciones oficiales para tu bebida",
     benefitDescription:
-      "Al finalizar te mostramos productos, combos y promociones vigentes relacionadas con tu Refresher Mango Piña.",
+      "Consulta opciones oficiales vigentes para tu Refresher Mango Piña.",
     benefitCta: "Ver opciones oficiales",
     benefitIcon: "/assets/quiz-benefits/gift-icon.png",
   },
   {
     id: "passionate",
-    personalityType: "La Influencer",
+    personalityType: "Optimista",
     badge: "Tu personalidad es",
-    title: "LA INFLUENCER",
+    title: "OPTIMISTA",
     description:
-      "Tienes la capacidad de levantar el ánimo del grupo y hacer que cualquier plan se sienta más liviano y divertido.",
-    recommendedDrink: "Frutibatido de Mora",
+      "Le ves el lado bueno a todo y contagias una energía que hace que el grupo se relaje y disfrute más.",
+    recommendedDrink: "Frutibatido",
     drinkDescription:
-      "Fresco, alegre y con mucha vibra. Una bebida que encaja con tu forma de contagiar buena energía.",
-    benefit: "Productos y promociones oficiales para Frutibatido de Mora",
+      "Fresco, alegre y lleno de buena vibra. Encaja contigo porque siempre llegas con actitud ligera y ganas de pasarla bien.",
+    benefit: "Productos y promociones oficiales para Frutibatido",
     image: "/assets/quiz-results/frutibatido.webp",
     mobileImageScale: 1,
     desktopImageScale: 1.05,
@@ -251,7 +253,7 @@ export const QUIZ_RESULTS: QuizResult[] = [
     accentColor: "#FFC27A",
     benefitTitle: "Opciones oficiales para tu bebida",
     benefitDescription:
-      "Al finalizar te mostramos productos, combos y promociones vigentes relacionadas con tu Frutibatido de Mora.",
+      "Consulta opciones oficiales vigentes para tu Frutibatido.",
     benefitCta: "Ver opciones oficiales",
     benefitIcon: "/assets/quiz-benefits/gift-icon.png",
   },

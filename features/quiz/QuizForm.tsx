@@ -9,13 +9,15 @@ import {
   CheckCircle2,
   AlertCircle,
   Info,
-  ChevronDown,
-  ChevronUp,
 } from "lucide-react";
 import { Button, Input, Checkbox, Loader } from "@/components/ui";
 import { useQuizStore } from "@/store/quizStore";
 import { FormData, QuizParticipant } from "@/types/quiz";
 import { getSupabaseClient } from "@/lib/supabase";
+import { QuizPanel } from "./components/QuizPanel";
+import { QuizBadge } from "./components/QuizBadge";
+import { quizTypography } from "./quizVisualSystem";
+import { ConsentBlock } from "./components/ConsentBlock";
 
 interface QuizFormProps {
   onSuccess: () => void;
@@ -99,15 +101,21 @@ export function QuizForm({ onSuccess }: QuizFormProps) {
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="rounded-[1.35rem] border border-[#EADDCF] bg-[linear-gradient(180deg,#FFF8F2_0%,#FFF2E8_100%)] p-6 text-center shadow-[0_18px_34px_rgba(89,53,17,0.06)] sm:p-8"
+        className="relative overflow-hidden"
       >
-        <CheckCircle2 className="mx-auto mb-4 h-16 w-16 text-[#2BAA6A]" />
-        <h3 className="mb-2 text-xl font-black tracking-[-0.03em] text-[#4A281B] sm:text-2xl">
-          ¡Gracias por participar!
-        </h3>
-        <p className="text-[0.95rem] leading-6 text-[#6B5B4F] sm:text-lg">
-          Tu registro quedó guardado correctamente.
-        </p>
+        <QuizPanel className="relative flex min-h-[420px] items-center justify-center overflow-hidden p-6 text-center sm:min-h-[460px] sm:p-8 lg:min-h-[500px]">
+          <div className="pointer-events-none absolute -left-20 top-10 h-56 w-56 rounded-full bg-[#FF671F]/12 blur-[90px]" />
+          <div className="pointer-events-none absolute bottom-[-5rem] right-[-5rem] h-64 w-64 rounded-full bg-[#E9539A]/12 blur-[110px]" />
+          <div className="relative mx-auto max-w-[32rem]">
+            <CheckCircle2 className="mx-auto mb-4 h-16 w-16 text-[#2BAA6A]" />
+            <h3 className="mb-2 font-display text-xl font-extrabold tracking-[-0.03em] text-[#4A281B] sm:text-2xl">
+              ¡Gracias por participar!
+            </h3>
+            <p className="font-sans text-[0.95rem] font-medium leading-6 text-[#6B5B4F] sm:text-lg">
+              Tu registro quedó guardado correctamente.
+            </p>
+          </div>
+        </QuizPanel>
       </motion.div>
     );
   }
@@ -116,112 +124,111 @@ export function QuizForm({ onSuccess }: QuizFormProps) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="rounded-[1.35rem] border border-[#EADDCF] bg-[linear-gradient(180deg,#FFF8F2_0%,#FFF2E8_100%)] p-5 shadow-[0_18px_34px_rgba(89,53,17,0.06)] sm:p-8"
+      className="relative overflow-hidden"
     >
-      <div className="mb-6 flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#FFE7D2] text-[#FF7A00]">
-          <Info className="h-5 w-5" />
-        </div>
-        <h3 className="text-[1.05rem] font-black tracking-[-0.03em] text-[#4A281B] sm:text-xl">
-          Completa tu registro para guardar y compartir tu resultado.
-        </h3>
-      </div>
+      <QuizPanel className="relative overflow-hidden border-transparent bg-white/58 p-5 shadow-[0_24px_48px_rgba(89,53,17,0.06)] sm:p-8 lg:bg-white/50">
+        <div
+          className="pointer-events-none absolute inset-0 opacity-90"
+          style={{
+            background: `radial-gradient(circle_at_18%_26%, ${
+              result?.color || "#FF671F"
+            }1a 0%, rgba(255,255,255,0) 62%), radial-gradient(circle_at_84%_78%, ${
+              result?.accentColor || "#FFD9B8"
+            }38 0%, rgba(255,255,255,0) 58%)`,
+          }}
+        />
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <div className="space-y-2">
-          <Input
-            label="Nombre completo"
-            placeholder="Escribe tu nombre completo"
-            error={errors.name?.message}
-            {...register("name", {
-              required: "Por favor, ingresa tu nombre completo",
-              minLength: {
-                value: 2,
-                message: "Tu nombre debe tener al menos 2 caracteres",
-              },
-            })}
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Input
-            label="Correo electrónico"
-            type="email"
-            placeholder="tu@email.com"
-            error={errors.email?.message}
-            {...register("email", {
-              required: "Por favor, ingresa tu correo electrónico",
-              pattern: {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: "Por favor, ingresa un correo electrónico válido",
-              },
-            })}
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Input
-            label="Número de celular (opcional)"
-            type="tel"
-            placeholder="+57 300 123 4567"
-            error={errors.phone?.message}
-            {...register("phone", {
-              pattern: {
-                value: /^(\+[0-9]{1,4}[-\s]?)?([0-9]{2,4}[-\s]?)?[0-9]{3,4}[-\s]?[0-9]{3,4}$/,
-                message: "Por favor, ingresa un número de celular válido",
-              },
-            })}
-          />
-        </div>
-
-        <div className="space-y-4 rounded-[1.15rem] border border-[#EADDCF] bg-white/75 p-4 shadow-[0_12px_24px_rgba(89,53,17,0.04)] sm:p-6">
+        <div className="relative mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="space-y-3">
-            <Checkbox
-              label={
-                <span className="text-sm font-medium leading-6 text-[#4A281B]">
-                  Autorizo de manera previa, expresa e informada a DONUCOL
-                  S.A., responsable de la marca Dunkin Colombia, para
-                  recolectar, almacenar, usar y tratar mis datos personales con
-                  la finalidad de gestionar mi participación en este test y
-                  generar mi resultado.
-                </span>
-              }
-              error={errors.acceptDataProcessing?.message}
-              {...register("acceptDataProcessing", {
-                required:
-                  "Debes aceptar el tratamiento de datos para continuar",
+            <QuizBadge
+              style={{
+                borderColor: `${result?.accentColor || "#FFD9B8"}88`,
+                backgroundColor: `${result?.accentColor || "#FFD9B8"}1F`,
+                color: result?.color || "#B86B2C",
+              }}
+            >
+              <span className={quizTypography.chip}>Último paso</span>
+            </QuizBadge>
+            <div className="space-y-1">
+              <h3 className="font-display text-[1.35rem] font-extrabold tracking-[-0.04em] text-[#201711] sm:text-[1.6rem]">
+                Guarda tu match Dunkin'
+              </h3>
+              <p className={quizTypography.supportingCompact}>
+                Te toma menos de un minuto.
+              </p>
+            </div>
+          </div>
+          <div className="flex h-11 w-11 items-center justify-center rounded-full border border-[rgba(245,130,32,0.08)] bg-white/62 text-[#FF7A00] shadow-[0_14px_28px_rgba(89,53,17,0.06)]">
+            <Info className="h-5 w-5" />
+          </div>
+        </div>
+
+        <form onSubmit={handleSubmit(onSubmit)} className="relative space-y-6">
+          <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
+            <Input
+              label="Nombre completo"
+              placeholder="Escribe tu nombre completo"
+              error={errors.name?.message}
+              className="rounded-[1.25rem] border-[rgba(245,130,32,0.08)] bg-white/72 shadow-[0_10px_22px_rgba(89,53,17,0.05)] backdrop-blur-[10px]"
+              {...register("name", {
+                required: "Por favor, ingresa tu nombre completo",
+                minLength: {
+                  value: 2,
+                  message: "Tu nombre debe tener al menos 2 caracteres",
+                },
               })}
             />
-            <div className="ml-9 flex flex-wrap items-center gap-x-4 gap-y-2">
-              <a
-                href="https://www.dunkincolombia.com/documentos-legales/privacy"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm font-semibold text-[#FF671F] underline underline-offset-4 transition-opacity hover:opacity-80"
-              >
-                Política de Tratamiento de Datos Personales
-              </a>
-              <button
-                type="button"
-                onClick={() => setShowDataInfo((current) => !current)}
-                aria-expanded={showDataInfo}
-                aria-controls="data-processing-info"
-                className="inline-flex items-center gap-1 text-sm font-semibold text-[#7A5B46] transition-colors hover:text-[#4A281B]"
-              >
-                {showDataInfo ? "Ver menos detalle" : "Ver más en detalle"}
-                {showDataInfo ? (
-                  <ChevronUp className="h-4 w-4" />
-                ) : (
-                  <ChevronDown className="h-4 w-4" />
-                )}
-              </button>
+
+            <Input
+              label="Correo electrónico"
+              type="email"
+              placeholder="tu@email.com"
+              error={errors.email?.message}
+              className="rounded-[1.25rem] border-[rgba(245,130,32,0.08)] bg-white/72 shadow-[0_10px_22px_rgba(89,53,17,0.05)] backdrop-blur-[10px]"
+              {...register("email", {
+                required: "Por favor, ingresa tu correo electrónico",
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: "Por favor, ingresa un correo electrónico válido",
+                },
+              })}
+            />
+
+            <div className="sm:col-span-2">
+              <Input
+                label="Número de celular (opcional)"
+                type="tel"
+                placeholder="+57 300 123 4567"
+                error={errors.phone?.message}
+                className="rounded-[1.25rem] border-[rgba(245,130,32,0.08)] bg-white/72 shadow-[0_10px_22px_rgba(89,53,17,0.05)] backdrop-blur-[10px]"
+                {...register("phone", {
+                  pattern: {
+                    value: /^(\+[0-9]{1,4}[-\s]?)?([0-9]{2,4}[-\s]?)?[0-9]{3,4}[-\s]?[0-9]{3,4}$/,
+                    message: "Por favor, ingresa un número de celular válido",
+                  },
+                })}
+              />
             </div>
-            {showDataInfo ? (
-              <div
-                id="data-processing-info"
-                className="ml-9 rounded-[1rem] border border-[#EADDCF] bg-[#FFF8F2] p-3.5 sm:p-4"
-              >
-                <p className="text-sm leading-relaxed text-[#6B5B4F]">
+          </div>
+
+          <ConsentBlock
+            className="border-transparent bg-white/54 shadow-[0_16px_34px_rgba(89,53,17,0.05)]"
+            required={{
+              label: (
+                <span className="font-sans text-sm font-medium leading-6 text-[#4A281B]">
+                  Autorizo de manera previa, expresa e informada a DONUCOL S.A.,
+                  responsable de la marca Dunkin Colombia, para recolectar,
+                  almacenar, usar y tratar mis datos personales con la finalidad
+                  de gestionar mi participación en este test y generar mi
+                  resultado.
+                </span>
+              ),
+              error: errors.acceptDataProcessing,
+              register: register("acceptDataProcessing", {
+                required: "Debes aceptar el tratamiento de datos para continuar",
+              }),
+              details: (
+                <p>
                   Declaro que he leído y acepto la Política de Tratamiento de
                   Datos Personales. Esta autorización incluye las demás
                   finalidades descritas en dicha política. El consentimiento
@@ -230,51 +237,51 @@ export function QuizForm({ onSuccess }: QuizFormProps) {
                   servicios y campañas de Dunkin Colombia a través de los medios
                   de contacto suministrados.
                 </p>
-              </div>
-            ) : null}
-          </div>
-
-          <div className="border-t border-[#EADDCF] pt-4">
-            <Checkbox
-              label={
-                <span className="text-sm font-medium leading-6 text-[#4A281B]">
+              ),
+              expanded: showDataInfo,
+              onToggleExpanded: () => setShowDataInfo((current) => !current),
+            }}
+            policyHref="https://www.dunkincolombia.com/documentos-legales/privacy"
+            optional={{
+              label: (
+                <span className="font-sans text-sm font-medium leading-6 text-[#4A281B]">
                   Autorizo recibir información sobre promociones, novedades,
-                  productos, servicios y campañas de Dunkin Colombia a través
-                  de los medios de contacto suministrados.
+                  productos, servicios y campañas de Dunkin Colombia a través de
+                  los medios de contacto suministrados.
                 </span>
-              }
-              {...register("acceptPromotions")}
-            />
-          </div>
-        </div>
+              ),
+              register: register("acceptPromotions"),
+            }}
+          />
 
-        {submitError && (
-          <div className="flex items-start gap-3 rounded-[1.15rem] border border-[#F3C1C1] bg-[#FFF3F3] p-4">
-            <AlertCircle className="mt-0.5 h-6 w-6 shrink-0 text-[#D44B4B]" />
-            <p className="text-[#8F2F2F]">{submitError}</p>
-          </div>
-        )}
-
-        <Button
-          type="submit"
-          size="lg"
-          disabled={isSubmitting}
-          className="group relative w-full overflow-hidden rounded-full border border-[#D95816] bg-[linear-gradient(180deg,#FFB064_0%,#FF671F_50%,#DE4F0D_100%)] py-5 text-lg text-white shadow-[0_18px_30px_rgba(255,122,0,0.22)] ring-1 ring-[#FFF1E4]/80"
-        >
-          <span className="pointer-events-none absolute inset-y-[12%] left-[-24%] w-[34%] rounded-full bg-[linear-gradient(115deg,rgba(255,255,255,0)_0%,rgba(255,255,255,0.16)_28%,rgba(255,255,255,0.34)_48%,rgba(255,255,255,0)_72%)] blur-md transition-transform duration-500 group-hover:translate-x-[350%]" />
-          {isSubmitting ? (
-            <>
-              <Loader className="mr-2 h-5 w-5" />
-              Guardando...
-            </>
-          ) : (
-            <>
-              <Send className="mr-2 h-5 w-5" />
-              Guardar mi información
-            </>
+          {submitError && (
+            <div className="flex items-start gap-3 rounded-[1.15rem] border border-[#F3C1C1] bg-[#FFF3F3] p-4">
+              <AlertCircle className="mt-0.5 h-6 w-6 shrink-0 text-[#D44B4B]" />
+              <p className="font-sans text-[#8F2F2F]">{submitError}</p>
+            </div>
           )}
-        </Button>
-      </form>
+
+          <Button
+            type="submit"
+            variant="quizCta"
+            size="quizLg"
+            disabled={isSubmitting}
+            className="w-full shadow-[0_18px_30px_rgba(255,122,0,0.22)]"
+          >
+            {isSubmitting ? (
+              <>
+                <Loader className="mr-2 h-5 w-5" />
+                Guardando...
+              </>
+            ) : (
+              <>
+                <Send className="mr-2 h-5 w-5" />
+                Guardar mi información
+              </>
+            )}
+          </Button>
+        </form>
+      </QuizPanel>
     </motion.div>
   );
 }

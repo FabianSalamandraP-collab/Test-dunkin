@@ -57,10 +57,10 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
             <motion.div
               initial={false}
               animate={{
-                backgroundColor: checked ? "#FF671F" : "#FFFFFF",
-                borderColor: checked ? "#FF671F" : "#D4D4D4",
+                backgroundColor: checked ? "#FF671F" : "rgba(255,255,255,0.78)",
+                borderColor: checked ? "#FF671F" : "rgba(245,130,32,0.14)",
               }}
-              className="flex h-6 w-6 items-center justify-center rounded-lg border-2"
+              className="flex h-6 w-6 items-center justify-center rounded-lg border shadow-[0_8px_18px_rgba(89,53,17,0.05)]"
             >
               {/* Animación de entrada/salida del ícono de check */}
               <AnimatePresence>
@@ -78,10 +78,14 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
           </div>
           {/* Texto de la etiqueta si se proporciona */}
           {label && (
-            <span className="block font-medium text-neutral-700">{label}</span>
+            <span className="block font-sans font-medium leading-6 text-[#4A281B]">
+              {label}
+            </span>
           )}
         </label>
-        {error ? <p className="text-red-600 text-sm">{error}</p> : null}
+        {error ? (
+          <p className="text-red-600 font-sans text-sm font-medium">{error}</p>
+        ) : null}
       </div>
     );
   }

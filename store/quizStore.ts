@@ -35,33 +35,39 @@ const generateResult = (
   answers: QuizAnswer[],
   questions: QuizQuestion[]
 ): QuizResult => {
-  // Obtenemos todas las respuestas y sus valores
-  const allValues = questions
-    .map((q) => {
-      const answer = answers.find((a) => a.questionId === q.id);
-      if (!answer) return null;
-      const option = q.options.find((o) => o.id === answer.selectedOptionId);
-      return option?.value as string;
+  const answerValues = answers
+    .map((answer) => {
+      const question = questions.find((q) => q.id === answer.questionId);
+      const option = question?.options.find(
+        (candidate) => candidate.id === answer.selectedOptionId
+      );
+      return typeof option?.value === "string" ? option.value : null;
     })
     .filter(Boolean) as string[];
 
-  // Contamos las ocurrencias de cada valor
+  // Cada respuesta suma un punto al resultado asociado.
   const valueCount: Record<string, number> = {};
-  allValues.forEach((value) => {
+  answerValues.forEach((value) => {
     valueCount[value] = (valueCount[value] || 0) + 1;
   });
 
-  // Obtenemos el valor con más ocurrencias
-  let maxCount = 0;
-  let topValue = "energetic";
-  for (const [value, count] of Object.entries(valueCount)) {
-    if (count > maxCount) {
-      maxCount = count;
-      topValue = value;
+  const maxCount = Math.max(...Object.values(valueCount), 0);
+  const tiedValues = Object.entries(valueCount)
+    .filter(([, count]) => count === maxCount)
+    .map(([value]) => value);
+
+  let topValue = tiedValues[0] || QUIZ_RESULTS[0]?.id;
+
+  if (tiedValues.length > 1) {
+    const firstChosenTiedValue = answerValues.find((value) =>
+      tiedValues.includes(value)
+    );
+
+    if (firstChosenTiedValue) {
+      topValue = firstChosenTiedValue;
     }
   }
 
-  // Buscamos el resultado correspondiente
   const result = QUIZ_RESULTS.find((r) => r.id === topValue) || QUIZ_RESULTS[0];
   return result;
 };
