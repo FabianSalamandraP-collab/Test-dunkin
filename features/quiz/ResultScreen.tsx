@@ -107,6 +107,67 @@ function getResultTraitIcon(trait: string) {
   return resultTraitIconMap[trait] ?? Heart;
 }
 
+function getScrollableParent(element: HTMLElement | null) {
+  let currentElement = element?.parentElement ?? null;
+
+  while (currentElement) {
+    const computedStyles = window.getComputedStyle(currentElement);
+    const overflowY = computedStyles.overflowY;
+    const isScrollable =
+      (overflowY === "auto" || overflowY === "scroll") &&
+      currentElement.scrollHeight > currentElement.clientHeight + 1;
+
+    if (isScrollable) {
+      return currentElement;
+    }
+
+    currentElement = currentElement.parentElement;
+  }
+
+  return null;
+}
+
+function scrollElementIntoView(
+  element: HTMLElement,
+  options?: {
+    desktopOffset?: number;
+    mobileOffset?: number;
+    preferredContainer?: HTMLElement | null;
+    behavior?: ScrollBehavior;
+  }
+) {
+  const isDesktop = window.innerWidth >= 1024;
+  const offset = isDesktop
+    ? (options?.desktopOffset ?? 88)
+    : (options?.mobileOffset ?? 28);
+  const preferredContainer =
+    options?.preferredContainer &&
+    options.preferredContainer.scrollHeight >
+      options.preferredContainer.clientHeight + 1
+      ? options.preferredContainer
+      : null;
+  const scrollContainer = preferredContainer || getScrollableParent(element);
+
+  if (scrollContainer) {
+    const containerRect = scrollContainer.getBoundingClientRect();
+    const elementRect = element.getBoundingClientRect();
+    const nextTop =
+      elementRect.top - containerRect.top + scrollContainer.scrollTop - offset;
+
+    scrollContainer.scrollTo({
+      top: Math.max(nextTop, 0),
+      behavior: options?.behavior ?? "smooth",
+    });
+    return;
+  }
+
+  const nextTop = element.getBoundingClientRect().top + window.scrollY - offset;
+  window.scrollTo({
+    top: Math.max(nextTop, 0),
+    behavior: options?.behavior ?? "smooth",
+  });
+}
+
 type ShimmerTextProps = {
   children: ReactNode;
   className?: string;
@@ -212,6 +273,7 @@ const resultFeatureRailMap: Record<
 export function ResultScreen() {
   const isPermissiveMode = isQuizPermissiveMode();
   const router = useRouter();
+  const resultScrollContainerRef = useRef<HTMLDivElement | null>(null);
   const formSectionRef = useRef<HTMLDivElement | null>(null);
   const confettiRef = useRef<JSConfetti | null>(null);
   const mobileBenefitButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -450,6 +512,13 @@ export function ResultScreen() {
 
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => {
+      const scrollContainer = resultScrollContainerRef.current;
+
+      if (scrollContainer && scrollContainer.scrollHeight > scrollContainer.clientHeight + 1) {
+        scrollContainer.scrollTo({ top: 0, behavior: "auto" });
+        return;
+      }
+
       window.scrollTo({ top: 0, behavior: "auto" });
     });
 
@@ -518,15 +587,10 @@ export function ResultScreen() {
         return;
       }
 
-      const topOffset = window.innerWidth >= 1024 ? 88 : 28;
-      const nextTop =
-        activeBenefitButton.getBoundingClientRect().top +
-        window.scrollY -
-        topOffset;
-
-      window.scrollTo({
-        top: Math.max(nextTop, 0),
-        behavior: "smooth",
+      scrollElementIntoView(activeBenefitButton, {
+        desktopOffset: 88,
+        mobileOffset: 28,
+        preferredContainer: resultScrollContainerRef.current,
       });
 
       setIsBenefitHighlighted(true);
@@ -610,15 +674,10 @@ export function ResultScreen() {
 
     if (!formSubmitted) {
       if (formSectionRef.current) {
-        const topOffset = window.innerWidth >= 1024 ? 72 : 32;
-        const nextTop =
-          formSectionRef.current.getBoundingClientRect().top +
-          window.scrollY -
-          topOffset;
-
-        window.scrollTo({
-          top: Math.max(nextTop, 0),
-          behavior: "smooth",
+        scrollElementIntoView(formSectionRef.current, {
+          desktopOffset: 72,
+          mobileOffset: 32,
+          preferredContainer: resultScrollContainerRef.current,
         });
       }
       return;
@@ -679,7 +738,10 @@ export function ResultScreen() {
   };
 
   return (
-    <div className="result-desktop-stage h-full overflow-y-auto overflow-x-hidden overscroll-y-contain px-5 py-5 [-webkit-overflow-scrolling:touch] sm:px-6 sm:py-6 lg:min-h-screen lg:h-auto lg:overflow-visible lg:px-8 lg:py-8">
+    <div
+      ref={resultScrollContainerRef}
+      className="result-desktop-stage h-full overflow-y-auto overflow-x-hidden overscroll-y-contain px-5 py-5 [-webkit-overflow-scrolling:touch] sm:px-6 sm:py-6 lg:min-h-screen lg:h-auto lg:overflow-visible lg:px-8 lg:py-8"
+    >
       <div className="pointer-events-none absolute inset-0 overflow-hidden lg:hidden">
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(247,241,234,0.18)_0%,rgba(247,241,234,0.1)_24%,rgba(247,241,234,0.06)_52%,rgba(247,241,234,0.12)_76%,rgba(247,241,234,0.22)_100%)]" />
       </div>
