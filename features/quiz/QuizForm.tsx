@@ -118,7 +118,7 @@ export function QuizForm({ onSuccess }: QuizFormProps) {
         animate={{ opacity: 1, scale: 1 }}
         className="relative overflow-hidden"
       >
-        <QuizPanel className="relative flex min-h-[420px] items-center justify-center overflow-hidden p-6 text-center sm:min-h-[460px] sm:p-8 lg:min-h-[500px]">
+        <QuizPanel className="relative flex min-h-[420px] items-center justify-center overflow-hidden bg-[linear-gradient(180deg,rgba(255,248,241,0.96)_0%,rgba(247,236,226,0.96)_100%)] p-6 text-center sm:min-h-[460px] sm:p-8 lg:min-h-[500px] lg:bg-transparent">
           <div className="bg-[#FF671F]/12 pointer-events-none absolute -left-20 top-10 h-56 w-56 rounded-full blur-[90px]" />
           <div className="bg-[#E9539A]/12 pointer-events-none absolute bottom-[-5rem] right-[-5rem] h-64 w-64 rounded-full blur-[110px]" />
           <div className="relative mx-auto max-w-[32rem]">
@@ -143,7 +143,7 @@ export function QuizForm({ onSuccess }: QuizFormProps) {
       animate={{ opacity: 1, y: 0 }}
       className="relative overflow-hidden"
     >
-      <QuizPanel className="relative overflow-hidden border-[rgba(234,221,207,0.52)] bg-white/58 p-5 shadow-[0_24px_48px_rgba(89,53,17,0.06)] lg:border-transparent lg:bg-white/50 sm:p-8">
+      <QuizPanel className="relative overflow-hidden border-[rgba(234,221,207,0.52)] bg-[linear-gradient(180deg,rgba(255,248,241,0.94)_0%,rgba(247,236,226,0.92)_100%)] p-5 shadow-[0_24px_48px_rgba(89,53,17,0.06)] lg:border-transparent lg:bg-white/50 sm:p-8">
         <div
           className="pointer-events-none absolute inset-0 opacity-90"
           style={{
@@ -247,7 +247,7 @@ export function QuizForm({ onSuccess }: QuizFormProps) {
           </div>
 
           {isPreviewMode ? (
-            <div className="rounded-[1.25rem] border border-[rgba(234,221,207,0.62)] bg-white/68 p-4 shadow-[0_14px_28px_rgba(89,53,17,0.05)]">
+            <div className="rounded-[1.25rem] border border-[rgba(234,221,207,0.62)] bg-[linear-gradient(180deg,rgba(255,248,241,0.92)_0%,rgba(247,236,226,0.9)_100%)] p-4 shadow-[0_14px_28px_rgba(89,53,17,0.05)]">
               <p className="font-sans text-sm font-medium leading-6 text-[#6B5B4F]">
                 Deploy de prueba activo. Puedes continuar dejando solo tu correo.
                 Este entorno no guarda participantes, respuestas ni eventos en la

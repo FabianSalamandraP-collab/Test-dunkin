@@ -259,7 +259,7 @@ export function ResultScreen() {
   const mobileResultImageTransform = `translate(${result.mobileImageOffsetX || 0}px, ${
     result.mobileImageOffsetY || 0
   }px) scale(${result.mobileImageScale || 1})`;
-  const mobileHeroImageTransform = `translate(calc(${result.mobileImageOffsetX || 0}px - 8.5%), ${
+  const mobileHeroImageTransform = `translate(calc(${result.mobileImageOffsetX || 0}px - 12%), ${
     result.mobileImageOffsetY || 0
   }px) scale(${result.mobileImageScale || 1})`;
   const resultTraits = resultTraitMap[result.id] || [];
@@ -457,23 +457,42 @@ export function ResultScreen() {
   }, [result.id]);
 
   useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
     if (shouldReduceMotion) {
       return;
     }
 
-    confettiRef.current ??= new JSConfetti();
+    const isMobileCelebrationTarget =
+      window.innerWidth < 1024 || window.matchMedia("(pointer: coarse)").matches;
 
-    void confettiRef.current.addConfetti({
-      confettiNumber: 90,
-      confettiRadius: 5,
-      confettiColors: [
-        result.color || "#FF671F",
-        result.accentColor || "#FFD9B8",
-        "#E9539A",
-        "#F2B11B",
-        "#FFF4EA",
-      ],
-    });
+    if (isMobileCelebrationTarget) {
+      return;
+    }
+
+    try {
+      confettiRef.current ??= new JSConfetti();
+
+      const timeoutId = window.setTimeout(() => {
+        void confettiRef.current?.addConfetti({
+          confettiNumber: 90,
+          confettiRadius: 5,
+          confettiColors: [
+            result.color || "#FF671F",
+            result.accentColor || "#FFD9B8",
+            "#E9539A",
+            "#F2B11B",
+            "#FFF4EA",
+          ],
+        });
+      }, 0);
+
+      return () => window.clearTimeout(timeoutId);
+    } catch {
+      // Some mobile browsers choke on the confetti canvas; fail silently.
+    }
   }, [result.id, result.color, result.accentColor, shouldReduceMotion]);
 
   useEffect(() => {
@@ -660,61 +679,14 @@ export function ResultScreen() {
   };
 
   return (
-    <div className="result-desktop-stage min-h-screen px-5 py-5 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
+    <div className="result-desktop-stage h-full overflow-y-auto overflow-x-hidden overscroll-y-contain px-5 py-5 [-webkit-overflow-scrolling:touch] sm:px-6 sm:py-6 lg:min-h-screen lg:h-auto lg:overflow-visible lg:px-8 lg:py-8">
       <div className="pointer-events-none absolute inset-0 overflow-hidden lg:hidden">
-        <div
-          className="absolute inset-0 opacity-[0.44]"
-          style={{
-            backgroundImage:
-              "url('/assets/quiz-results/backgrounds/result-stage-background.webp')",
-            backgroundPosition: "center center",
-            backgroundRepeat: "no-repeat",
-            backgroundSize: "cover",
-          }}
-        />
-        <div
-          className="absolute inset-x-[-10%] top-[-6%] h-[34%] bg-cover bg-top bg-no-repeat opacity-[0.88]"
-          style={{
-            backgroundImage:
-              "url('/assets/quiz-results/backgrounds/result-stage-background.webp')",
-            backgroundPosition: "center top",
-            backgroundSize: "cover",
-          }}
-        />
-        <div
-          className="absolute inset-x-[-10%] top-[22%] h-[34%] bg-cover bg-center bg-no-repeat opacity-[0.8]"
-          style={{
-            backgroundImage:
-              "url('/assets/quiz-results/backgrounds/result-stage-background.webp')",
-            backgroundPosition: "center center",
-            backgroundSize: "cover",
-            transform: "rotate(180deg) scale(1.02)",
-            transformOrigin: "center center",
-          }}
-        />
-        <div
-          className="absolute inset-x-[-10%] top-[50%] h-[34%] bg-cover bg-center bg-no-repeat opacity-[0.82]"
-          style={{
-            backgroundImage:
-              "url('/assets/quiz-results/backgrounds/result-stage-background.webp')",
-            backgroundPosition: "center center",
-            backgroundSize: "cover",
-          }}
-        />
-        <div
-          className="absolute inset-x-[-10%] bottom-[-6%] h-[34%] bg-cover bg-bottom bg-no-repeat opacity-[0.78]"
-          style={{
-            backgroundImage:
-              "url('/assets/quiz-results/backgrounds/result-stage-background.webp')",
-            backgroundPosition: "center bottom",
-            backgroundSize: "cover",
-            transform: "rotate(180deg) scale(1.02)",
-            transformOrigin: "center center",
-          }}
-        />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(247,241,234,0.12)_0%,rgba(247,241,234,0.04)_22%,rgba(247,241,234,0.02)_48%,rgba(247,241,234,0.08)_78%,rgba(247,241,234,0.18)_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(247,241,234,0.18)_0%,rgba(247,241,234,0.1)_24%,rgba(247,241,234,0.06)_52%,rgba(247,241,234,0.12)_76%,rgba(247,241,234,0.22)_100%)]" />
       </div>
-      <div className="result-desktop-shell relative mx-auto max-w-[1320px]">
+      <div className="result-desktop-shell relative mx-auto max-w-[1320px] bg-[linear-gradient(180deg,rgba(255,248,241,0.96)_0%,rgba(248,236,226,0.96)_100%)] lg:bg-transparent">
+        <div className="pointer-events-none absolute inset-0 overflow-hidden lg:hidden">
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,251,246,0.74)_0%,rgba(255,248,242,0.62)_18%,rgba(255,246,239,0.54)_42%,rgba(255,246,239,0.58)_68%,rgba(255,248,242,0.72)_100%)]" />
+        </div>
         <div className="pointer-events-none absolute -left-20 top-12 h-56 w-56 rounded-full bg-[#FF671F]/10 blur-[90px]" />
         <div
           className="pointer-events-none absolute right-[-5rem] top-[18%] h-80 w-80 rounded-full blur-[120px]"
@@ -734,7 +706,7 @@ export function ResultScreen() {
             initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
-            className="relative overflow-hidden rounded-[1.85rem] border border-[rgba(234,221,207,0.48)] bg-[linear-gradient(180deg,rgba(255,252,248,0.92)_0%,rgba(252,244,236,0.94)_100%)] px-4 py-5 shadow-[0_20px_48px_rgba(89,53,17,0.08)] sm:px-7 sm:py-7 lg:border-0 lg:bg-transparent lg:px-0 lg:py-0 lg:shadow-none"
+            className="relative overflow-hidden rounded-[1.85rem] border border-[rgba(234,221,207,0.48)] bg-[linear-gradient(180deg,rgba(255,248,241,0.96)_0%,rgba(247,236,226,0.96)_100%)] px-4 py-5 shadow-[0_20px_48px_rgba(89,53,17,0.08)] sm:px-7 sm:py-7 lg:border-0 lg:bg-transparent lg:px-0 lg:py-0 lg:shadow-none"
           >
             <div
               className="pointer-events-none absolute inset-0 opacity-90 lg:hidden"
@@ -816,6 +788,17 @@ export function ResultScreen() {
                       "linear-gradient(180deg, rgba(244,236,229,0.96) 0%, rgba(234,223,213,0.98) 100%)",
                   }}
                 >
+                  <div className="pointer-events-none absolute left-[0.75rem] top-[1.45rem] text-[#FF7A00] lg:hidden">
+                    <div className="mb-1 h-[2px] w-6 rounded-full bg-current" />
+                    <div className="mb-1 ml-2 h-[2px] w-3.5 rounded-full bg-current" />
+                    <div className="ml-1 h-[2px] w-5 rounded-full bg-current" />
+                  </div>
+                  <div className="pointer-events-none absolute left-[1.15rem] top-[48%] text-[#EE5F77] lg:hidden">
+                    <div className="h-4.5 w-4.5 rounded-full border-2 border-current border-r-transparent border-t-transparent" />
+                  </div>
+                  <div className="pointer-events-none absolute right-[1.15rem] top-[45%] text-white lg:hidden">
+                    <div className="h-5 w-5 rounded-full border-2 border-current border-b-transparent border-l-transparent" />
+                  </div>
                   <div
                     className="relative aspect-[4/5] min-h-[26rem] overflow-hidden rounded-[1.42rem]"
                     style={{
@@ -987,7 +970,7 @@ export function ResultScreen() {
                 </div>
 
                 <div className="lg:hidden">
-                  <div className="overflow-hidden rounded-[1.65rem] border border-[#EFD9C8] bg-[linear-gradient(180deg,rgba(255,255,255,0.84)_0%,rgba(255,248,242,0.82)_100%)] px-4 py-4 shadow-[0_16px_34px_rgba(89,53,17,0.06)] backdrop-blur-[10px]">
+                <div className="overflow-hidden rounded-[1.65rem] border border-[#EFD9C8] bg-[linear-gradient(180deg,rgba(255,248,241,0.94)_0%,rgba(247,236,226,0.92)_100%)] px-4 py-4 shadow-[0_16px_34px_rgba(89,53,17,0.06)] backdrop-blur-[10px]">
                     <div className="grid grid-cols-[82px_minmax(0,1fr)] items-start gap-4">
                       <div className="relative flex h-[82px] w-[82px] shrink-0 items-center justify-center overflow-visible">
                         <img
@@ -1067,7 +1050,7 @@ export function ResultScreen() {
                 </div>
 
                 <div className="lg:hidden">
-                  <div className="relative min-h-[23rem] overflow-hidden rounded-[1.95rem] border border-[rgba(228,210,194,0.72)] bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(251,244,238,0.94)_100%)] px-4 py-4 shadow-[0_22px_46px_rgba(89,53,17,0.1)] backdrop-blur-[10px]">
+                  <div className="relative min-h-[23rem] overflow-hidden rounded-[1.95rem] border border-[rgba(228,210,194,0.72)] bg-[linear-gradient(180deg,rgba(255,248,241,0.96)_0%,rgba(246,235,225,0.95)_100%)] px-4 py-4 shadow-[0_22px_46px_rgba(89,53,17,0.1)] backdrop-blur-[10px]">
                     <div
                       className="pointer-events-none absolute inset-0 opacity-90"
                       style={{

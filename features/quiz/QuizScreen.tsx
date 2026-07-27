@@ -7,12 +7,12 @@ import { QuestionScreen } from "./QuestionScreen";
 import { ResultScreen } from "./ResultScreen";
 
 export default function QuizScreen() {
-  const { hasStarted, isCompleted, questions } = useQuizStore();
+  const { hasStarted, isCompleted, questions, result } = useQuizStore();
 
   // Si no hay preguntas disponibles, mostrar un error
   if (questions.length === 0) {
     return (
-      <div className="bg-white flex min-h-screen items-center justify-center p-8">
+      <div className="bg-white flex min-h-[100svh] items-center justify-center p-8">
         <div className="text-center">
           <h2 className="mb-4 text-2xl font-bold text-neutral-800">
             ¡No hay preguntas disponibles!
@@ -24,8 +24,23 @@ export default function QuizScreen() {
   }
 
   // Si el quiz está completado, mostrar la pantalla de resultados
-  if (isCompleted) {
+  if (isCompleted && result) {
     return <ResultScreen />;
+  }
+
+  if (isCompleted && !result) {
+    return (
+      <div className="flex min-h-[100svh] items-center justify-center bg-[#FBF6F0] p-8">
+        <div className="text-center">
+          <h2 className="font-display text-2xl font-extrabold tracking-[-0.03em] text-[#4A281B]">
+            Estamos preparando tu resultado
+          </h2>
+          <p className="mt-3 font-sans text-sm font-medium text-[#7A5A46]">
+            Espera un momento mientras cargamos tu match Dunkin'.
+          </p>
+        </div>
+      </div>
+    );
   }
 
   // Si el usuario aún no inicia, mostrar una introducción visual al test

@@ -5,3 +5,8 @@ dist
 .trae
 .log
 .figma
+.vercel_global
+.vercel_home
+tmp_*.json
+scripts/*.ps1
+tmp_*
