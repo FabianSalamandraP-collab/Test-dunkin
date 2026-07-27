@@ -682,7 +682,7 @@ export function IntroScreen() {
         <div className="relative z-10 mx-0 rounded-[1.85rem] border border-transparent bg-[linear-gradient(180deg,rgba(255,248,241,0.96)_0%,rgba(247,236,226,0.95)_100%)] px-4 py-5 shadow-[0_18px_42px_rgba(89,53,17,0.08)] sm:mx-[34px] sm:px-6 sm:py-6 md:mx-[42px] md:px-7 md:py-6 lg:mx-[72px] lg:my-0 lg:rounded-[2rem] lg:border lg:border-[#f0ded0] lg:bg-[linear-gradient(180deg,#fbf6f0_0%,#f7efe5_100%)] lg:px-8 lg:py-7 lg:shadow-[0_18px_42px_rgba(89,53,17,0.08)] xl:mx-[78px]">
           <div
             className={`pointer-events-none absolute inset-0 rounded-[1.85rem] bg-no-repeat lg:rounded-[2rem] ${
-              isMobile ? "opacity-[0.86]" : "opacity-90"
+              isMobile ? "opacity-[0.72]" : "opacity-90"
             }`}
             style={{
               backgroundImage: isMobile
@@ -696,21 +696,21 @@ export function IntroScreen() {
           <div
             className={`pointer-events-none absolute inset-0 rounded-[1.85rem] lg:rounded-[2rem] ${
               isMobile
-                ? "bg-[linear-gradient(180deg,rgba(251,246,240,0.24)_0%,rgba(251,246,240,0.14)_14%,rgba(251,246,240,0.03)_34%,rgba(251,246,240,0.08)_56%,rgba(251,246,240,0.3)_78%,rgba(251,246,240,0.64)_100%)]"
+                ? "bg-[linear-gradient(180deg,rgba(251,246,240,0.16)_0%,rgba(251,246,240,0.09)_14%,rgba(251,246,240,0.02)_34%,rgba(251,246,240,0.05)_56%,rgba(251,246,240,0.18)_78%,rgba(251,246,240,0.42)_100%)]"
                 : "bg-[linear-gradient(90deg,rgba(251,246,240,0.88)_0%,rgba(251,246,240,0.72)_30%,rgba(251,246,240,0.2)_52%,rgba(251,246,240,0.04)_74%)]"
             }`}
           />
           <div
             className={`pointer-events-none absolute inset-0 rounded-[1.85rem] lg:rounded-[2rem] ${
               isMobile
-                ? "bg-[radial-gradient(circle_at_50%_10%,rgba(255,247,239,0.13)_0%,rgba(255,247,239,0.06)_18%,rgba(255,247,239,0)_42%),radial-gradient(circle_at_50%_84%,rgba(255,247,239,0.1)_0%,rgba(255,247,239,0.04)_18%,rgba(255,247,239,0)_42%)] opacity-100"
+                ? "bg-[radial-gradient(circle_at_50%_10%,rgba(255,247,239,0.08)_0%,rgba(255,247,239,0.04)_18%,rgba(255,247,239,0)_42%),radial-gradient(circle_at_50%_84%,rgba(255,247,239,0.06)_0%,rgba(255,247,239,0.03)_18%,rgba(255,247,239,0)_42%)] opacity-75"
                 : "bg-[radial-gradient(circle_at_12%_24%,rgba(251,246,240,0.72)_0%,rgba(251,246,240,0.44)_32%,rgba(251,246,240,0)_60%)] opacity-90"
             }`}
           />
           <div
             className={`pointer-events-none absolute inset-0 rounded-[1.85rem] lg:rounded-[2rem] ${
               isMobile
-                ? "opacity-24 bg-[radial-gradient(circle_at_50%_30%,rgba(255,138,0,0.08)_0%,rgba(247,84,166,0.06)_18%,rgba(255,138,0,0.03)_32%,rgba(255,255,255,0)_48%),radial-gradient(circle_at_50%_64%,rgba(255,173,102,0.05)_0%,rgba(247,84,166,0.03)_20%,rgba(255,255,255,0)_44%)]"
+                ? "opacity-16 bg-[radial-gradient(circle_at_50%_30%,rgba(255,138,0,0.06)_0%,rgba(247,84,166,0.04)_18%,rgba(255,138,0,0.02)_32%,rgba(255,255,255,0)_48%),radial-gradient(circle_at_50%_64%,rgba(255,173,102,0.04)_0%,rgba(247,84,166,0.02)_20%,rgba(255,255,255,0)_44%)]"
                 : "opacity-56 bg-[radial-gradient(circle_at_64%_20%,rgba(255,138,0,0.16)_0%,rgba(247,84,166,0.12)_22%,rgba(255,138,0,0.08)_38%,rgba(255,255,255,0)_58%)]"
             }`}
           />
@@ -731,7 +731,7 @@ export function IntroScreen() {
           <div
             className={`pointer-events-none absolute rounded-[999px] blur-3xl ${
               isMobile
-                ? "inset-x-[10%] top-[8%] h-[62%] bg-[radial-gradient(circle_at_50%_36%,rgba(255,236,219,0.14)_0%,rgba(255,236,219,0.06)_38%,rgba(255,236,219,0)_76%)]"
+                ? "inset-x-[10%] top-[8%] h-[62%] bg-[radial-gradient(circle_at_50%_36%,rgba(255,236,219,0.1)_0%,rgba(255,236,219,0.04)_38%,rgba(255,236,219,0)_76%)]"
                 : "inset-x-[37%] top-[8%] h-[48%] bg-[radial-gradient(circle_at_50%_30%,rgba(255,236,219,0.28)_0%,rgba(255,236,219,0.12)_40%,rgba(255,236,219,0)_74%)]"
             }`}
           />
