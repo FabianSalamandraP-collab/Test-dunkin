@@ -939,20 +939,11 @@ export function IntroScreen() {
                         4 preguntas • 1 minuto
                       </span>
                     </div>
-                    <div className="relative w-full max-w-[21.5rem] overflow-hidden rounded-[1.2rem] border border-[#E5D3C4] bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(250,243,237,0.94)_100%)] px-4 py-3.5 shadow-[0_14px_26px_rgba(102,66,30,0.1)] lg:hidden">
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="min-w-0 space-y-1">
-                          <p
-                            className="line-clamp-1 min-h-[1.05rem] font-sans text-[0.68rem] font-bold uppercase tracking-[0.16em]"
-                            style={{ color: activeDrink.textColor }}
-                          >
-                            {activeDrink.collectionLabel}
-                          </p>
-                          <p className="line-clamp-2 min-h-[2.6rem] max-w-[13rem] font-sans text-[0.8rem] font-medium leading-5 text-[#5F483A]">
-                            {activeDrink.teaser}
-                          </p>
-                        </div>
-                      </div>
+                    <div className="relative w-full max-w-[21.5rem] overflow-hidden rounded-[1.2rem] border border-[#E5D3C4] bg-[linear-gradient(180deg,rgba(255,248,241,0.96)_0%,rgba(247,236,226,0.94)_100%)] px-4 py-3.5 shadow-[0_14px_26px_rgba(102,66,30,0.1)] lg:hidden">
+                      <p className="text-center font-sans text-[0.84rem] font-medium leading-6 text-[#5F483A]">
+                        Responde 4 preguntas y descubre la bebida Dunkin' que va con tu
+                        mood, tu forma de ser y la energía con la que llegas a tu parche.
+                      </p>
                     </div>
                   </div>
                 </div>
