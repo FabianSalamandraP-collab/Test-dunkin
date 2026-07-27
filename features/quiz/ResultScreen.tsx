@@ -107,6 +107,7 @@ function getResultTraitIcon(trait: string) {
   return resultTraitIconMap[trait] ?? Heart;
 }
 
+// Mobile results scroll inside the stage container instead of the window.
 function getScrollableParent(element: HTMLElement | null) {
   let currentElement = element?.parentElement ?? null;
 
