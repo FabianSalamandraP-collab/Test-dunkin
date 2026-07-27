@@ -29,10 +29,24 @@ Crear `.env.local` para local o cargar estas mismas variables en el hosting:
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
 NEXT_PUBLIC_SITE_URL=https://tu-dominio-final.com
+NEXT_PUBLIC_QUIZ_RUNTIME_MODE=preview
 GOOGLE_SITE_VERIFICATION=
 BENEFITS_SYNC_SECRET=
 SUPABASE_SERVICE_ROLE_KEY=
 ```
+
+### Deploy de prueba recomendado
+
+Para un preview funcional sin escrituras en base de datos:
+
+- Definir `NEXT_PUBLIC_QUIZ_RUNTIME_MODE=preview`
+- No cargar `SUPABASE_SERVICE_ROLE_KEY`
+- No cargar `BENEFITS_SYNC_SECRET`
+- `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` pueden quedar vacias si el objetivo es un QA aislado
+
+Si `NEXT_PUBLIC_QUIZ_RUNTIME_MODE` no se define, el proyecto ahora entra en
+`preview` por seguridad. Para un despliegue real, el equipo que recibe la
+entrega debe cambiarla explicitamente a `live`.
 
 ### Despliegue sin Supabase
 
@@ -49,6 +63,8 @@ El proyecto ya puede desplegarse sin conectar Supabase. En ese caso:
 - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`: clave publica usada por el cliente. Opcional si no se usara base de datos en ese entorno.
 - `NEXT_PUBLIC_SITE_URL`: dominio final exacto para SEO, `robots.txt`,
   `sitemap.xml`, canonical y Open Graph.
+- `NEXT_PUBLIC_QUIZ_RUNTIME_MODE`: controla si el quiz corre en `preview`
+  (sin escrituras) o `live` (tracking y persistencia reales si el backend esta listo).
 - `GOOGLE_SITE_VERIFICATION`: codigo opcional para Search Console.
 - `BENEFITS_SYNC_SECRET`: secreto privado para ejecutar la sincronizacion
   inicial o futuras sincronizaciones de beneficios. Opcional si no se hara sync con Supabase.

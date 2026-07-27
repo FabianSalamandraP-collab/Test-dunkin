@@ -174,9 +174,9 @@
   --question-stage-bg-desktop-image:
     url("/assets/quiz-questions/backgrounds/desktop/question-stage-background.jpg");
   --result-stage-bg-mobile-image:
-    url("/assets/quiz-results/backgrounds/mobile/result-stage-background.jpg");
+    url("/assets/quiz-results/backgrounds/result-stage-background.webp");
   --result-stage-bg-desktop-image:
-    url("/assets/quiz-results/backgrounds/desktop/result-stage-background.jpg");
+    url("/assets/quiz-results/backgrounds/result-stage-background.webp");
   --result-surface: #fcfaf7;
   --result-surface-soft: rgba(255, 248, 241, 0.74);
   --result-surface-muted: rgba(252, 245, 238, 0.92);

@@ -7,6 +7,7 @@ import {
   normalizeOptionalText,
   requireTextField,
 } from "@/lib/quiz-tracking";
+import { isQuizPreviewMode } from "@/lib/quiz-runtime-mode";
 import { protectPublicRoute } from "@/lib/request-security";
 
 export const dynamic = "force-dynamic";
@@ -20,6 +21,23 @@ export async function POST(request: Request) {
 
   if (protection) {
     return protection;
+  }
+
+  if (isQuizPreviewMode()) {
+    const payload = (await request.json()) as Record<string, unknown>;
+    const sessionId = requireTextField(payload, "sessionId");
+    const targetUrl = sanitizeDunkinOfficialUrl(
+      normalizeOptionalText(payload.targetUrl)
+    );
+
+    return NextResponse.json({
+      ready: true,
+      preview: true,
+      sessionId,
+      tracked: true,
+      targetUrl,
+      trackedAt: new Date().toISOString(),
+    });
   }
 
   const context = getQuizTrackingAdminContext();

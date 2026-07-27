@@ -28,10 +28,18 @@ Crear `.env.local` con:
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
 NEXT_PUBLIC_SITE_URL=https://tu-dominio-final.com
+NEXT_PUBLIC_QUIZ_RUNTIME_MODE=preview
 GOOGLE_SITE_VERIFICATION=
 BENEFITS_SYNC_SECRET=
 SUPABASE_SERVICE_ROLE_KEY=
 ```
+
+Para un deploy de prueba que no toque base de datos:
+
+- Mantener `NEXT_PUBLIC_QUIZ_RUNTIME_MODE=preview`
+- No cargar `SUPABASE_SERVICE_ROLE_KEY`
+- No cargar `BENEFITS_SYNC_SECRET`
+- Si solo quieren validar UX y flujo, pueden dejar vacias las variables publicas de Supabase
 
 ## Base de datos
 

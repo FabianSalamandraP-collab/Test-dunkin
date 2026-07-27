@@ -9,6 +9,7 @@ import {
   requireHumanNameField,
   requireTextField,
 } from "@/lib/quiz-tracking";
+import { isQuizPreviewMode } from "@/lib/quiz-runtime-mode";
 import { protectPublicRoute } from "@/lib/request-security";
 
 export const dynamic = "force-dynamic";
@@ -22,6 +23,32 @@ export async function POST(request: Request) {
 
   if (protection) {
     return protection;
+  }
+
+  if (isQuizPreviewMode()) {
+    const payload = (await request.json()) as Record<string, unknown>;
+    const sessionId = requireTextField(payload, "sessionId", { maxLength: 80 });
+    const email = requireEmailField(payload, "email");
+    const companyWebsite =
+      typeof payload.companyWebsite === "string"
+        ? payload.companyWebsite.trim()
+        : "";
+
+    if (companyWebsite) {
+      return NextResponse.json({
+        ready: true,
+        preview: true,
+        sessionId,
+        participantId: "screened-by-honeypot",
+      });
+    }
+
+    return NextResponse.json({
+      ready: true,
+      preview: true,
+      sessionId,
+      participantId: `preview-${email.toLowerCase()}`,
+    });
   }
 
   const context = getQuizTrackingAdminContext();

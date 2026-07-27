@@ -10,6 +10,7 @@ import {
   getQuizTrackingClientContext,
   postQuizTracking,
 } from "@/lib/quiz-tracking-client";
+import { isQuizPreviewMode } from "@/lib/quiz-runtime-mode";
 import { useQuizStore } from "@/store/quizStore";
 import { FormData } from "@/types/quiz";
 import { QuizPanel } from "./components/QuizPanel";
@@ -23,6 +24,7 @@ interface QuizFormProps {
 
 export function QuizForm({ onSuccess }: QuizFormProps) {
   const { answers, result, sessionId, setFormSubmitted } = useQuizStore();
+  const isPreviewMode = isQuizPreviewMode();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState(false);
@@ -47,7 +49,7 @@ export function QuizForm({ onSuccess }: QuizFormProps) {
   const onSubmit = async (data: FormData) => {
     if (!result) return;
 
-    if (!sessionId) {
+    if (!sessionId && !isPreviewMode) {
       setSubmitError(
         "Necesitamos reiniciar el test para guardar tu registro de forma segura. Vuelve a empezar e inténtalo de nuevo."
       );
@@ -59,6 +61,17 @@ export function QuizForm({ onSuccess }: QuizFormProps) {
     setSubmitSuccess(false);
 
     try {
+      if (isPreviewMode) {
+        await new Promise((resolve) => window.setTimeout(resolve, 240));
+        setSubmitSuccess(true);
+        setFormSubmitted(true);
+
+        window.requestAnimationFrame(() => {
+          onSuccess();
+        });
+        return;
+      }
+
       const trackingContext = getQuizTrackingClientContext();
       const response = await postQuizTracking<{ participantId?: string }>(
         "/api/quiz/form/submit",
@@ -114,7 +127,9 @@ export function QuizForm({ onSuccess }: QuizFormProps) {
               ¡Gracias por participar!
             </h3>
             <p className="font-sans text-[0.95rem] font-medium leading-6 text-[#6B5B4F] sm:text-lg">
-              Tu registro quedó guardado correctamente.
+              {isPreviewMode
+                ? "Tu correo quedó listo para la prueba. Este deploy no guarda datos reales."
+                : "Tu registro quedó guardado correctamente."}
             </p>
           </div>
         </QuizPanel>
@@ -128,7 +143,7 @@ export function QuizForm({ onSuccess }: QuizFormProps) {
       animate={{ opacity: 1, y: 0 }}
       className="relative overflow-hidden"
     >
-      <QuizPanel className="border-transparent bg-white/58 lg:bg-white/50 relative overflow-hidden p-5 shadow-[0_24px_48px_rgba(89,53,17,0.06)] sm:p-8">
+      <QuizPanel className="relative overflow-hidden border-[rgba(234,221,207,0.52)] bg-white/58 p-5 shadow-[0_24px_48px_rgba(89,53,17,0.06)] lg:border-transparent lg:bg-white/50 sm:p-8">
         <div
           className="pointer-events-none absolute inset-0 opacity-90"
           style={{
@@ -153,10 +168,14 @@ export function QuizForm({ onSuccess }: QuizFormProps) {
             </QuizBadge>
             <div className="space-y-1">
               <h3 className="font-display text-[1.35rem] font-extrabold tracking-[-0.04em] text-[#201711] sm:text-[1.6rem]">
-                Guarda tu match Dunkin'
+                {isPreviewMode
+                  ? "Deja tu correo para la prueba"
+                  : "Guarda tu match Dunkin'"}
               </h3>
               <p className={quizTypography.supportingCompact}>
-                Te toma menos de un minuto.
+                {isPreviewMode
+                  ? "Este deploy de prueba no guarda datos reales en la base."
+                  : "Te toma menos de un minuto."}
               </p>
             </div>
           </div>
@@ -175,26 +194,29 @@ export function QuizForm({ onSuccess }: QuizFormProps) {
             {...register("companyWebsite")}
           />
           <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
-            <Input
-              label="Nombre completo"
-              placeholder="Escribe tu nombre completo"
-              error={errors.name?.message}
-              className="bg-white/72 rounded-[1.25rem] border-[rgba(245,130,32,0.08)] shadow-[0_10px_22px_rgba(89,53,17,0.05)] backdrop-blur-[10px]"
-              {...register("name", {
-                required: "Por favor, ingresa tu nombre completo",
-                minLength: {
-                  value: 2,
-                  message: "Tu nombre debe tener al menos 2 caracteres",
-                },
-              })}
-            />
-
+            {!isPreviewMode ? (
+              <Input
+                label="Nombre completo"
+                placeholder="Escribe tu nombre completo"
+                error={errors.name?.message}
+                className="bg-white/72 rounded-[1.25rem] border-[rgba(245,130,32,0.08)] shadow-[0_10px_22px_rgba(89,53,17,0.05)] backdrop-blur-[10px]"
+                {...register("name", {
+                  required: "Por favor, ingresa tu nombre completo",
+                  minLength: {
+                    value: 2,
+                    message: "Tu nombre debe tener al menos 2 caracteres",
+                  },
+                })}
+              />
+            ) : null}
             <Input
               label="Correo electrónico"
               type="email"
               placeholder="tu@email.com"
               error={errors.email?.message}
-              className="bg-white/72 rounded-[1.25rem] border-[rgba(245,130,32,0.08)] shadow-[0_10px_22px_rgba(89,53,17,0.05)] backdrop-blur-[10px]"
+              className={`bg-white/72 rounded-[1.25rem] border-[rgba(245,130,32,0.08)] shadow-[0_10px_22px_rgba(89,53,17,0.05)] backdrop-blur-[10px] ${
+                isPreviewMode ? "sm:col-span-2" : ""
+              }`}
               {...register("email", {
                 required: "Por favor, ingresa tu correo electrónico",
                 pattern: {
@@ -204,67 +226,79 @@ export function QuizForm({ onSuccess }: QuizFormProps) {
               })}
             />
 
-            <div className="sm:col-span-2">
-              <Input
-                label="Número de celular (opcional)"
-                type="tel"
-                placeholder="+57 300 123 4567"
-                error={errors.phone?.message}
-                className="bg-white/72 rounded-[1.25rem] border-[rgba(245,130,32,0.08)] shadow-[0_10px_22px_rgba(89,53,17,0.05)] backdrop-blur-[10px]"
-                {...register("phone", {
-                  pattern: {
-                    value:
-                      /^(\+[0-9]{1,4}[-\s]?)?([0-9]{2,4}[-\s]?)?[0-9]{3,4}[-\s]?[0-9]{3,4}$/,
-                    message: "Por favor, ingresa un número de celular válido",
-                  },
-                })}
-              />
-            </div>
+            {!isPreviewMode ? (
+              <div className="sm:col-span-2">
+                <Input
+                  label="Número de celular (opcional)"
+                  type="tel"
+                  placeholder="+57 300 123 4567"
+                  error={errors.phone?.message}
+                  className="bg-white/72 rounded-[1.25rem] border-[rgba(245,130,32,0.08)] shadow-[0_10px_22px_rgba(89,53,17,0.05)] backdrop-blur-[10px]"
+                  {...register("phone", {
+                    pattern: {
+                      value:
+                        /^(\+[0-9]{1,4}[-\s]?)?([0-9]{2,4}[-\s]?)?[0-9]{3,4}[-\s]?[0-9]{3,4}$/,
+                      message: "Por favor, ingresa un número de celular válido",
+                    },
+                  })}
+                />
+              </div>
+            ) : null}
           </div>
 
-          <ConsentBlock
-            className="border-transparent bg-white/54 shadow-[0_16px_34px_rgba(89,53,17,0.05)]"
-            required={{
-              label: (
-                <span className="font-sans text-sm font-medium leading-6 text-[#4A281B]">
-                  Autorizo de manera previa, expresa e informada a DONUCOL S.A.,
-                  responsable de la marca Dunkin' Colombia, para recolectar,
-                  almacenar, usar y tratar mis datos personales con la finalidad
-                  de gestionar mi participación en este test y generar mi
-                  resultado.
-                </span>
-              ),
-              error: errors.acceptDataProcessing,
-              register: register("acceptDataProcessing", {
-                required:
-                  "Debes aceptar el tratamiento de datos para continuar",
-              }),
-              details: (
-                <p>
-                  Declaro que he leído y acepto la Política de Tratamiento de
-                  Datos Personales. Esta autorización incluye las demás
-                  finalidades descritas en dicha política. El consentimiento
-                  para participar en el test es independiente del consentimiento
-                  opcional para recibir promociones, novedades, productos,
-                  servicios y campañas de Dunkin' Colombia a través de los medios
-                  de contacto suministrados.
-                </p>
-              ),
-              expanded: showDataInfo,
-              onToggleExpanded: () => setShowDataInfo((current) => !current),
-            }}
-            policyHref="https://www.dunkincolombia.com/documentos-legales/privacy"
-            optional={{
-              label: (
-                <span className="font-sans text-sm font-medium leading-6 text-[#4A281B]">
-                  Autorizo recibir información sobre promociones, novedades,
-                  productos, servicios y campañas de Dunkin' Colombia a través de
-                  los medios de contacto suministrados.
-                </span>
-              ),
-              register: register("acceptPromotions"),
-            }}
-          />
+          {isPreviewMode ? (
+            <div className="rounded-[1.25rem] border border-[rgba(234,221,207,0.62)] bg-white/68 p-4 shadow-[0_14px_28px_rgba(89,53,17,0.05)]">
+              <p className="font-sans text-sm font-medium leading-6 text-[#6B5B4F]">
+                Deploy de prueba activo. Puedes continuar dejando solo tu correo.
+                Este entorno no guarda participantes, respuestas ni eventos en la
+                base de datos.
+              </p>
+            </div>
+          ) : (
+            <ConsentBlock
+              className="border-[rgba(234,221,207,0.52)] bg-white/54 shadow-[0_16px_34px_rgba(89,53,17,0.04)]"
+              required={{
+                label: (
+                  <span className="font-sans text-sm font-medium leading-6 text-[#4A281B]">
+                    Autorizo de manera previa, expresa e informada a DONUCOL S.A.,
+                    responsable de la marca Dunkin' Colombia, para recolectar,
+                    almacenar, usar y tratar mis datos personales con la finalidad
+                    de gestionar mi participación en este test y generar mi
+                    resultado.
+                  </span>
+                ),
+                error: errors.acceptDataProcessing,
+                register: register("acceptDataProcessing", {
+                  required:
+                    "Debes aceptar el tratamiento de datos para continuar",
+                }),
+                details: (
+                  <p>
+                    Declaro que he leído y acepto la Política de Tratamiento de
+                    Datos Personales. Esta autorización incluye las demás
+                    finalidades descritas en dicha política. El consentimiento
+                    para participar en el test es independiente del consentimiento
+                    opcional para recibir promociones, novedades, productos,
+                    servicios y campañas de Dunkin' Colombia a través de los medios
+                    de contacto suministrados.
+                  </p>
+                ),
+                expanded: showDataInfo,
+                onToggleExpanded: () => setShowDataInfo((current) => !current),
+              }}
+              policyHref="https://www.dunkincolombia.com/documentos-legales/privacy"
+              optional={{
+                label: (
+                  <span className="font-sans text-sm font-medium leading-6 text-[#4A281B]">
+                    Autorizo recibir información sobre promociones, novedades,
+                    productos, servicios y campañas de Dunkin' Colombia a través de
+                    los medios de contacto suministrados.
+                  </span>
+                ),
+                register: register("acceptPromotions"),
+              }}
+            />
+          )}
 
           {submitError && (
             <div className="flex items-start gap-3 rounded-[1.15rem] border border-[#F3C1C1] bg-[#FFF3F3] p-4">
@@ -283,12 +317,14 @@ export function QuizForm({ onSuccess }: QuizFormProps) {
             {isSubmitting ? (
               <>
                 <Loader className="mr-2 h-5 w-5" />
-                Guardando...
+                {isPreviewMode ? "Preparando prueba..." : "Guardando..."}
               </>
             ) : (
               <>
                 <Send className="mr-2 h-5 w-5" />
-                Guardar mi información
+                {isPreviewMode
+                  ? "Continuar con correo de prueba"
+                  : "Guardar mi información"}
               </>
             )}
           </Button>

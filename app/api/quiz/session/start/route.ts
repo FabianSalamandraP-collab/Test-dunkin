@@ -5,6 +5,7 @@ import {
   normalizeOptionalInteger,
   normalizeOptionalText,
 } from "@/lib/quiz-tracking";
+import { isQuizPreviewMode } from "@/lib/quiz-runtime-mode";
 import { protectPublicRoute } from "@/lib/request-security";
 
 export const dynamic = "force-dynamic";
@@ -18,6 +19,16 @@ export async function POST(request: Request) {
 
   if (protection) {
     return protection;
+  }
+
+  if (isQuizPreviewMode()) {
+    return NextResponse.json({
+      ready: true,
+      preview: true,
+      sessionId: `preview-${crypto.randomUUID()}`,
+      status: "preview",
+      startedAt: new Date().toISOString(),
+    });
   }
 
   const context = getQuizTrackingAdminContext();

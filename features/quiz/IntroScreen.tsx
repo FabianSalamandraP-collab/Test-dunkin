@@ -16,6 +16,7 @@ import {
   getQuizTrackingClientContext,
   postQuizTracking,
 } from "@/lib/quiz-tracking-client";
+import { isQuizPermissiveMode, isQuizPreviewMode } from "@/lib/quiz-runtime-mode";
 import { useQuizStore } from "@/store/quizStore";
 import { QuizIconButton } from "./components/QuizIconButton";
 import { QuizIconLink } from "./components/QuizIconLink";
@@ -27,6 +28,8 @@ interface IntroDrink {
   name: string;
   accent: string;
   textColor: string;
+  collectionLabel: string;
+  teaser: string;
   cup: "cold-brew" | "iced-latte" | "frozen" | "americano";
   imageSrc?: string;
   imageOffsetMobile?: number;
@@ -46,6 +49,8 @@ const INTRO_DRINKS: IntroDrink[] = [
     name: "Ice Té",
     accent: "#5A361F",
     textColor: "#4C2B18",
+    collectionLabel: "TEAS & FRIO",
+    teaser: "Ligero, fresco y listo para acompanar cualquier parche.",
     cup: "cold-brew",
     imageSrc: "/assets/quiz-intro/drinks/intro-drink-carousel-cold-brew.webp",
     imageOffsetMobile: 8,
@@ -60,6 +65,8 @@ const INTRO_DRINKS: IntroDrink[] = [
     name: "Frutibatido",
     accent: "#FF4FBF",
     textColor: "#C83E99",
+    collectionLabel: "FROZEN & FRUTALES",
+    teaser: "Color, buena vibra y una energia que se comparte facil.",
     cup: "frozen",
     imageSrc: "/assets/quiz-intro/drinks/intro-drink-carousel-frutibatido.webp",
     imageActiveScaleMobile: 1.08,
@@ -71,6 +78,8 @@ const INTRO_DRINKS: IntroDrink[] = [
     name: "Iced Latte",
     accent: "#D5A064",
     textColor: "#8A5B36",
+    collectionLabel: "CAFES & FRIOS",
+    teaser: "Cremosito, versatil y con actitud para prender el plan.",
     cup: "iced-latte",
     imageSrc: "/assets/quiz-intro/drinks/intro-drink-carousel-iced-latte.webp",
     imageOffsetMobile: 6,
@@ -85,6 +94,8 @@ const INTRO_DRINKS: IntroDrink[] = [
     name: "Mango Piña Refresher",
     accent: "#FF9A1F",
     textColor: "#7A4D2C",
+    collectionLabel: "REFRESHERS DUNKIN'",
+    teaser: "Tropical, vibrante y hecho para moods que no se quedan quietos.",
     cup: "americano",
     imageSrc:
       "/assets/quiz-intro/drinks/intro-drink-carousel-mango-pina-refresher.webp",
@@ -97,6 +108,8 @@ const INTRO_DRINKS: IntroDrink[] = [
     name: "Soda Dunkin' Manzana Verde",
     accent: "#9BAF6B",
     textColor: "#6E7E46",
+    collectionLabel: "SODAS DUNKIN'",
+    teaser: "Refrescante, chispeante y perfecta para caer diferente.",
     cup: "americano",
     imageSrc:
       "/assets/quiz-intro/drinks/intro-drink-carousel-soda-dunkin-manzana-verde.webp",
@@ -108,22 +121,21 @@ const INTRO_DRINKS: IntroDrink[] = [
 ];
 
 const HOW_IT_WORKS_STEPS = [
-  "Responde 4 preguntas rápidas sobre tu forma de ser y cómo disfrutas tus planes.",
-  "Descubre la bebida Dunkin' que mejor representa tu personalidad.",
-  "Conoce tu personalidad Dunkin' y la bebida que la refleja.",
-  "Recibe recomendaciones de productos Dunkin' que van con tu bebida match.",
+  "Responde 4 preguntas rápidas sobre tu forma de ser, tu mood y cómo te mueves con tu parche.",
+  "Descubre la bebida Dunkin' que mejor acompaña tu energía y tu manera de caer.",
+  "Conoce tu personalidad Dunkin' y por qué ese match sí va contigo.",
+  "Explora opciones oficiales para seguir ese mood o compartir el plan con tu parche.",
 ];
 
 const HOW_IT_WORKS_INFO = [
   "Las recomendaciones mostradas provienen del sitio oficial de Dunkin' Colombia y corresponden a información publicada por la marca.",
-  "Nuestro objetivo es ayudarte a descubrir la bebida que mejor conecta con tu personalidad y mostrarte opciones oficiales para disfrutarla.",
+  "Este test busca ayudarte a descubrir la bebida que mejor conecta con tu mood, tu forma de ser y esos planes que se disfrutan más cuando llegas con tu parche.",
   "Los productos, promociones, precios, disponibilidad y condiciones pueden cambiar sin previo aviso y son responsabilidad de Dunkin' Colombia.",
 ];
 
 const INTRO_FOOTER_ITEMS = [
   "Test oficial de Dunkin' Colombia",
-  "Participa y descubre tu match",
-  "Recomendaciones para ti",
+  "Hecho por DisTintos 2026",
 ];
 
 const DUNKIN_SOCIAL_LINKS = [
@@ -462,6 +474,8 @@ function SideRibbon({
 export function IntroScreen() {
   const { addToast } = useToast();
   const { startQuiz, questions } = useQuizStore();
+  const isPreviewMode = isQuizPreviewMode();
+  const isPermissiveMode = isQuizPermissiveMode();
   const [activeIndex, setActiveIndex] = useState(0);
   const [showLogoFallback, setShowLogoFallback] = useState(false);
   const [showHeadlineFallback, setShowHeadlineFallback] = useState(false);
@@ -472,11 +486,16 @@ export function IntroScreen() {
   const activeDrink = INTRO_DRINKS[activeIndex];
   const lastPointerDownAtRef = useRef<number>(0);
   const [bumpKey, setBumpKey] = useState(0);
+  const desktopTeaserRef = useRef<HTMLParagraphElement | null>(null);
+  const [shouldShowDesktopTeaserToggle, setShouldShowDesktopTeaserToggle] =
+    useState(false);
+  const [isDesktopTeaserExpanded, setIsDesktopTeaserExpanded] = useState(false);
   const isMobile = viewportWidth < 640;
   const isDesktop = viewportWidth >= 1024;
 
   useEffect(() => {
     setBumpKey((current) => current + 1);
+    setIsDesktopTeaserExpanded(false);
   }, [activeIndex]);
 
   useEffect(() => {
@@ -496,6 +515,47 @@ export function IntroScreen() {
 
     return () => window.removeEventListener("scroll", updateScrollState);
   }, []);
+
+  useEffect(() => {
+    if (!isDesktop) {
+      setShouldShowDesktopTeaserToggle(false);
+      return;
+    }
+
+    const measureTeaserOverflow = () => {
+      const textElement = desktopTeaserRef.current;
+
+      if (!textElement) {
+        setShouldShowDesktopTeaserToggle(false);
+        return;
+      }
+
+      const computedStyles = window.getComputedStyle(textElement);
+      const lineHeight = Number.parseFloat(computedStyles.lineHeight);
+
+      if (!Number.isFinite(lineHeight)) {
+        setShouldShowDesktopTeaserToggle(activeDrink.teaser.trim().length > 60);
+        return;
+      }
+
+      const collapsedHeight = lineHeight * 2;
+      setShouldShowDesktopTeaserToggle(
+        textElement.scrollHeight > collapsedHeight + 2
+      );
+    };
+
+    const frame = window.requestAnimationFrame(measureTeaserOverflow);
+    window.addEventListener("resize", measureTeaserOverflow);
+
+    void document.fonts?.ready.then(() => {
+      measureTeaserOverflow();
+    });
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("resize", measureTeaserOverflow);
+    };
+  }, [activeDrink.teaser, isDesktop]);
 
   const goPrev = () => {
     setActiveIndex((current) =>
@@ -569,6 +629,22 @@ export function IntroScreen() {
       );
 
       if (!response?.sessionId) {
+        if (isPermissiveMode) {
+          addToast({
+            type: "info",
+            message:
+              isPreviewMode
+                ? "Deploy de prueba activo. El test continuará sin guardar datos reales."
+                : "Tracking no disponible en local. El test continuará en modo visual.",
+          });
+
+          startQuiz({
+            sessionId: null,
+            sessionStartedAt: new Date().toISOString(),
+          });
+          return;
+        }
+
         addToast({
           type: "error",
           message:
@@ -610,7 +686,7 @@ export function IntroScreen() {
             }`}
             style={{
               backgroundImage: isMobile
-                ? "url('/assets/quiz-intro/backgrounds/mobile/hero-stage-background.jpg')"
+                ? "url('/assets/quiz-intro/backgrounds/mobile/hero-stage-background.webp')"
                 : "url('/assets/quiz-intro/backgrounds/desktop/hero-stage-background.jpg')",
               backgroundPosition: isMobile ? "50% 50%" : "50% 34%",
               backgroundSize: isMobile ? "cover" : "cover",
@@ -740,7 +816,7 @@ export function IntroScreen() {
                         } flex aspect-square items-center justify-center`}
                       >
                         <img
-                          src="/assets/quiz-intro/headlines/dime-que-tomas.png"
+                          src="/assets/quiz-intro/headlines/dime-que-tomas.webp"
                           alt="Dime qué tomas y te diré quién eres"
                           className="h-full w-full select-none object-contain"
                           onError={(event) => {
@@ -768,7 +844,7 @@ export function IntroScreen() {
                       } flex aspect-square items-center justify-center`}
                     >
                       <img
-                        src="/assets/quiz-intro/headlines/dime-que-tomas.png"
+                        src="/assets/quiz-intro/headlines/dime-que-tomas.webp"
                         alt="Dime qué tomas y te diré quién eres"
                         className="h-full w-full select-none object-contain"
                         onError={(event) => {
@@ -815,13 +891,13 @@ export function IntroScreen() {
                           size="lg"
                           onClick={handleStartQuiz}
                           disabled={isStartingQuiz}
-                          className="ring-white/35 group relative mx-auto w-full max-w-[20.5rem] overflow-hidden border border-[#DD6500] bg-[#EF6A00] px-9 py-4 text-[#F8F4F1] shadow-[0_8px_18px_rgba(239,106,0,0.16)] ring-1 [border-radius:999px] hover:border-[#EF6A00] hover:bg-[#FFF8F1] hover:text-[#EF6A00] hover:shadow-[0_10px_22px_rgba(239,106,0,0.12)] active:border-[#EF6A00] active:bg-[#FFF8F1] active:text-[#EF6A00] active:shadow-[0_10px_22px_rgba(239,106,0,0.12)] disabled:opacity-70"
+                          className="ring-white/35 group relative mx-auto w-full max-w-[20.5rem] overflow-hidden border border-[#BE2F62] bg-[#CF3F73] px-9 py-4 text-[#FFF8F3] shadow-[0_12px_26px_rgba(207,63,115,0.22)] ring-1 [border-radius:999px] hover:border-[#CF3F73] hover:bg-[#FFF8F1] hover:text-[#CF3F73] hover:shadow-[0_12px_24px_rgba(207,63,115,0.16)] active:border-[#CF3F73] active:bg-[#FFF8F1] active:text-[#CF3F73] active:shadow-[0_12px_24px_rgba(207,63,115,0.16)] disabled:opacity-70"
                         >
                           <span className="relative z-10 flex items-center justify-center gap-2.5 font-display font-extrabold uppercase tracking-[-0.04em]">
                             <span className="text-[1.16rem]">
-                              Descubre tu bebida ideal
+                              Haz el test
                             </span>
-                            <span className="bg-white/18 group-hover:bg-[#EF6A00]/12 group-active:bg-[#EF6A00]/12 flex h-9 w-9 items-center justify-center rounded-full shadow-[inset_0_1px_0_rgba(255,255,255,0.18)] transition-transform duration-300 group-hover:translate-x-0.5 group-active:translate-x-0.5">
+                            <span className="bg-white/18 group-hover:bg-[#CF3F73]/12 group-active:bg-[#CF3F73]/12 flex h-9 w-9 items-center justify-center rounded-full shadow-[inset_0_1px_0_rgba(255,255,255,0.18)] transition-transform duration-300 group-hover:translate-x-0.5 group-active:translate-x-0.5">
                               <ArrowRight className="h-4.5 w-4.5 transition-transform duration-300 group-hover:translate-x-0.5" />
                             </span>
                           </span>
@@ -832,17 +908,9 @@ export function IntroScreen() {
                       </div>
                       <p className="bg-white/86 max-w-[430px] rounded-[1.1rem] border border-[#EFDCCB] px-4 py-3 font-sans text-[0.95rem] font-medium leading-7 text-[#4E3325] shadow-[0_10px_26px_rgba(102,66,30,0.08)] backdrop-blur-[3px]">
                         Responde 4 preguntas y descubre la bebida Dunkin' que
-                        mejor va con tu mood.
+                        va con tu mood, tu forma de ser y la energía con la que
+                        llegas a tu parche.
                       </p>
-                      <div className="relative mx-auto w-full max-w-[26rem] overflow-hidden rounded-[1.2rem] border border-[#EFDCCB] bg-[linear-gradient(180deg,rgba(255,249,242,0.9)_0%,rgba(255,244,237,0.86)_100%)] px-4 py-3 shadow-[0_10px_26px_rgba(102,66,30,0.08)] backdrop-blur-[3px] lg:max-w-[28.5rem] lg:px-5 lg:py-3.5">
-                        <div className="pointer-events-none absolute inset-y-0 left-0 w-14 bg-[linear-gradient(90deg,rgba(255,247,239,0.94)_0%,rgba(255,247,239,0)_100%)]" />
-                        <div className="pointer-events-none absolute inset-y-0 right-0 w-14 bg-[linear-gradient(270deg,rgba(255,247,239,0.94)_0%,rgba(255,247,239,0)_100%)]" />
-                        <div className="flex min-h-[4.1rem] items-center justify-center lg:min-h-[4.35rem]">
-                          <span className="font-sans text-[0.76rem] font-medium uppercase tracking-[0.18em] text-[#8E5F43] lg:text-[0.8rem]">
-                            Espacio reservado para banner lateral
-                          </span>
-                        </div>
-                      </div>
                     </motion.div>
                   </div>
 
@@ -851,16 +919,16 @@ export function IntroScreen() {
                       size="lg"
                       onClick={handleStartQuiz}
                       disabled={isStartingQuiz}
-                      className="ring-white/30 group relative w-full max-w-[18.2rem] overflow-hidden border border-[#DD6500] bg-[#EF6A00] px-7 py-3.5 text-[#F8F4F1] shadow-[0_8px_18px_rgba(239,106,0,0.15)] ring-1 [border-radius:999px] hover:border-[#EF6A00] hover:bg-[#FFF8F1] hover:text-[#EF6A00] hover:shadow-[0_10px_20px_rgba(239,106,0,0.12)] active:border-[#EF6A00] active:bg-[#FFF8F1] active:text-[#EF6A00] active:shadow-[0_10px_20px_rgba(239,106,0,0.12)] sm:w-auto sm:min-w-[272px] sm:px-11 sm:py-5 lg:hidden"
+                      className="ring-white/30 group relative w-full max-w-[18.2rem] overflow-hidden border border-[#BE2F62] bg-[#CF3F73] px-7 py-3.5 text-[#FFF8F3] shadow-[0_12px_24px_rgba(207,63,115,0.2)] ring-1 [border-radius:999px] hover:border-[#CF3F73] hover:bg-[#FFF8F1] hover:text-[#CF3F73] hover:shadow-[0_12px_24px_rgba(207,63,115,0.14)] active:border-[#CF3F73] active:bg-[#FFF8F1] active:text-[#CF3F73] active:shadow-[0_12px_24px_rgba(207,63,115,0.14)] sm:w-auto sm:min-w-[272px] sm:px-11 sm:py-5 lg:hidden"
                     >
                       <span className="relative z-10 flex items-center justify-center gap-2 font-display font-extrabold uppercase tracking-[-0.04em]">
                         <span className="text-[1rem] sm:text-[1.12rem] lg:hidden">
-                          Haz el test
+                          Descubre tu match
                         </span>
                         <span className="hidden text-[1.12rem] sm:text-[1.16rem] lg:inline">
-                          Descubre tu bebida ideal
+                          Descubre tu match Dunkin'
                         </span>
-                        <span className="h-8.5 w-8.5 bg-white/18 group-hover:bg-[#EF6A00]/12 group-active:bg-[#EF6A00]/12 flex items-center justify-center rounded-full shadow-[inset_0_1px_0_rgba(255,255,255,0.18)] transition-transform duration-300 group-hover:translate-x-0.5 group-active:translate-x-0.5">
+                        <span className="h-8.5 w-8.5 bg-white/18 group-hover:bg-[#CF3F73]/12 group-active:bg-[#CF3F73]/12 flex items-center justify-center rounded-full shadow-[inset_0_1px_0_rgba(255,255,255,0.18)] transition-transform duration-300 group-hover:translate-x-0.5 group-active:translate-x-0.5">
                           <ArrowRight className="h-4.5 w-4.5 transition-transform duration-300 group-hover:translate-x-0.5" />
                         </span>
                       </span>
@@ -871,13 +939,19 @@ export function IntroScreen() {
                         4 preguntas • 1 minuto
                       </span>
                     </div>
-                    <div className="relative w-full max-w-[21.5rem] overflow-hidden rounded-[1.15rem] border border-[#F0DFD0] bg-[linear-gradient(180deg,rgba(255,249,242,0.92)_0%,rgba(255,244,237,0.88)_100%)] px-4 py-3 shadow-[0_10px_22px_rgba(102,66,30,0.08)] lg:hidden">
-                      <div className="pointer-events-none absolute inset-y-0 left-0 w-12 bg-[linear-gradient(90deg,rgba(255,247,239,0.94)_0%,rgba(255,247,239,0)_100%)]" />
-                      <div className="pointer-events-none absolute inset-y-0 right-0 w-12 bg-[linear-gradient(270deg,rgba(255,247,239,0.94)_0%,rgba(255,247,239,0)_100%)]" />
-                      <div className="flex min-h-[3.35rem] items-center justify-center">
-                        <span className="font-sans text-[0.76rem] font-medium uppercase tracking-[0.18em] text-[#8E5F43]">
-                          Espacio reservado para banner lateral
-                        </span>
+                    <div className="relative w-full max-w-[21.5rem] overflow-hidden rounded-[1.2rem] border border-[#E5D3C4] bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(250,243,237,0.94)_100%)] px-4 py-3.5 shadow-[0_14px_26px_rgba(102,66,30,0.1)] lg:hidden">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0 space-y-1">
+                          <p
+                            className="line-clamp-1 min-h-[1.05rem] font-sans text-[0.68rem] font-bold uppercase tracking-[0.16em]"
+                            style={{ color: activeDrink.textColor }}
+                          >
+                            {activeDrink.collectionLabel}
+                          </p>
+                          <p className="line-clamp-2 min-h-[2.6rem] max-w-[13rem] font-sans text-[0.8rem] font-medium leading-5 text-[#5F483A]">
+                            {activeDrink.teaser}
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -917,7 +991,6 @@ export function IntroScreen() {
                         : "hidden"
                     }`}
                   />
-
                   <QuizIconButton
                     onPointerDown={isMobile ? undefined : handlePrevPointerDown}
                     onClick={isMobile ? goPrev : handlePrevClick}
@@ -1046,10 +1119,44 @@ export function IntroScreen() {
                     <span className="inline-flex rounded-full border border-[#F2DFC9] bg-[linear-gradient(180deg,rgba(255,248,239,0.96)_0%,rgba(255,241,230,0.92)_100%)] px-3.5 py-1 font-sans text-[0.62rem] font-medium uppercase tracking-[0.16em] text-[#E8711B] shadow-[0_10px_20px_rgba(102,66,30,0.06)] sm:text-[0.68rem]">
                       Tu match puede ser
                     </span>
-                    <h2 className="mx-auto flex min-h-[4.5rem] max-w-[16.5rem] items-center justify-center px-2 font-display text-[1.64rem] font-extrabold leading-[0.92] tracking-[-0.04em] text-[#3A1F15] [text-shadow:0_1px_0_rgba(255,255,255,0.24)] sm:min-h-[5rem] sm:max-w-[20rem] sm:px-0 sm:text-[2.1rem] lg:h-[5.6rem] lg:w-[24rem] lg:max-w-[24rem] lg:text-[2.28rem] xl:w-[26rem] xl:max-w-[26rem] xl:text-[2.4rem]">
+                    <h2 className="mx-auto flex min-h-[4.5rem] max-w-[16.5rem] items-center justify-center px-2 text-center font-display text-[1.64rem] font-extrabold leading-[0.92] tracking-[-0.04em] text-[#3A1F15] [text-shadow:0_1px_0_rgba(255,255,255,0.24)] sm:min-h-[5rem] sm:max-w-[20rem] sm:px-0 sm:text-[2.1rem] lg:min-h-[7.25rem] lg:w-[25rem] lg:max-w-[25rem] lg:text-[2.28rem] xl:min-h-[7.8rem] xl:w-[27rem] xl:max-w-[27rem] xl:text-[2.4rem]">
                       {activeDrink.name}
                     </h2>
-                    <p className="sm:bg-white/64 mx-auto min-h-[6.9rem] max-w-[14.75rem] rounded-[1.3rem] border border-[#EFD9CC] bg-[linear-gradient(180deg,rgba(255,250,246,0.92)_0%,rgba(255,244,238,0.84)_100%)] px-4 py-3 font-sans text-[0.82rem] font-medium leading-6 text-[#3E342F] shadow-[0_12px_26px_rgba(102,66,30,0.06)] backdrop-blur-[4px] sm:min-h-[4.9rem] sm:max-w-[22rem] sm:rounded-[1rem] sm:border-0 sm:px-3 sm:py-2 sm:text-[0.95rem] sm:leading-5 sm:shadow-[0_8px_18px_rgba(102,66,30,0.05)] sm:backdrop-blur-[2px]">
+                    <div className="relative mx-auto hidden w-full max-w-[26rem] overflow-hidden rounded-[1.35rem] border border-[#E5D3C4] bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(250,243,237,0.94)_100%)] px-4 py-4 text-center shadow-[0_16px_30px_rgba(102,66,30,0.1)] backdrop-blur-[3px] lg:block lg:min-h-[10.95rem] lg:max-w-[28.5rem] lg:px-6 lg:py-4">
+                      <div className="min-w-0">
+                        <div className="flex min-h-[7.45rem] flex-col items-center justify-center space-y-2 px-6">
+                          <p
+                            className="line-clamp-1 min-h-[1.2rem] w-full text-center font-sans text-[0.82rem] font-bold uppercase tracking-[0.2em]"
+                            style={{ color: activeDrink.textColor }}
+                          >
+                            {activeDrink.collectionLabel}
+                          </p>
+                          <p
+                            ref={desktopTeaserRef}
+                            className={`w-full max-w-[20rem] text-center font-sans text-[1rem] font-semibold leading-8 text-[#5F483A] lg:max-w-[22rem] lg:text-[1.06rem] ${
+                              isDesktopTeaserExpanded
+                                ? "line-clamp-none"
+                                : "line-clamp-2 min-h-[4rem]"
+                            }`}
+                          >
+                            {activeDrink.teaser}
+                          </p>
+                        </div>
+                        {shouldShowDesktopTeaserToggle ? (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setIsDesktopTeaserExpanded((current) => !current)
+                            }
+                            aria-expanded={isDesktopTeaserExpanded}
+                            className="absolute right-4 top-4 inline-flex shrink-0 rounded-full bg-[#FF7A00] px-3 py-1 font-sans text-[0.62rem] font-bold uppercase tracking-[0.14em] text-white shadow-[0_8px_18px_rgba(255,122,0,0.24)] transition-opacity hover:opacity-90"
+                          >
+                            {isDesktopTeaserExpanded ? "Ver menos" : "Ver más"}
+                          </button>
+                        ) : null}
+                      </div>
+                    </div>
+                    <p className="sm:bg-white/64 mx-auto min-h-[6.9rem] max-w-[14.75rem] rounded-[1.3rem] border border-[#EFD9CC] bg-[linear-gradient(180deg,rgba(255,250,246,0.92)_0%,rgba(255,244,238,0.84)_100%)] px-4 py-3 font-sans text-[0.82rem] font-medium leading-6 text-[#3E342F] shadow-[0_12px_26px_rgba(102,66,30,0.06)] backdrop-blur-[4px] sm:min-h-[4.9rem] sm:max-w-[22rem] sm:rounded-[1rem] sm:border-0 sm:px-3 sm:py-2 sm:text-[0.95rem] sm:leading-5 sm:shadow-[0_8px_18px_rgba(102,66,30,0.05)] sm:backdrop-blur-[2px] lg:hidden">
                       Una bebida con personalidad que va con tu mood.
                     </p>
                   </div>

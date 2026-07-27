@@ -32,7 +32,7 @@ export function HowItWorksPanel({ open, steps, info }: HowItWorksPanelProps) {
               ¿Cómo funciona?
             </p>
             <h2 className="font-display text-[1.16rem] font-extrabold uppercase leading-[0.96] tracking-[-0.04em] text-[#4A281B] sm:text-[1.24rem]">
-              Descubre tu bebida Dunkin' en solo 4 pasos.
+              Encuentra tu bebida Dunkin' para tu mood y tu parche.
             </h2>
           </div>
           <div className="space-y-3 font-display text-[0.94rem] font-extrabold uppercase leading-[1.45] tracking-[-0.025em] text-[#6B5448] sm:text-[1rem]">

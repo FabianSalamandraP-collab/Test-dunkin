@@ -36,11 +36,12 @@ export function SocialLinks({ links, label = "Síguenos", className }: SocialLin
               tone="soft"
               size="sm"
               className={cn(
+                "h-11 w-11",
                 "lg:h-9 lg:w-9 lg:bg-[#FFF8F1] lg:ring-1 lg:ring-[#E6C8B3] lg:shadow-[0_10px_22px_rgba(102,66,30,0.12)]",
                 social.accentClass
               )}
             >
-              <Icon className="h-[18px] w-[18px] lg:h-[18px] lg:w-[18px]" />
+              <Icon className="h-6 w-6 lg:h-[18px] lg:w-[18px]" />
             </QuizIconLink>
           );
         })}

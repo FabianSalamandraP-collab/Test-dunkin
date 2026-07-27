@@ -6,6 +6,7 @@ import {
   requireIntegerField,
   requireTextField,
 } from "@/lib/quiz-tracking";
+import { isQuizPreviewMode } from "@/lib/quiz-runtime-mode";
 import { protectPublicRoute } from "@/lib/request-security";
 
 export const dynamic = "force-dynamic";
@@ -19,6 +20,21 @@ export async function POST(request: Request) {
 
   if (protection) {
     return protection;
+  }
+
+  if (isQuizPreviewMode()) {
+    const payload = (await request.json()) as Record<string, unknown>;
+    const sessionId = requireTextField(payload, "sessionId");
+    const questionKey = requireTextField(payload, "questionKey");
+    const questionOrder = requireIntegerField(payload, "questionOrder");
+
+    return NextResponse.json({
+      ready: true,
+      preview: true,
+      sessionId,
+      questionKey,
+      answersCount: questionOrder,
+    });
   }
 
   const context = getQuizTrackingAdminContext();

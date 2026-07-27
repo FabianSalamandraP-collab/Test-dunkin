@@ -34,7 +34,7 @@ export function ConsentBlock({
   return (
     <div
       className={cn(
-        "space-y-4 rounded-[1.25rem] border border-white/70 bg-white/62 p-4 shadow-[0_14px_28px_rgba(89,53,17,0.06)] backdrop-blur-[10px] sm:p-6",
+        "space-y-4 rounded-[1.25rem] border border-[rgba(234,221,207,0.58)] bg-white/62 p-4 shadow-[0_14px_28px_rgba(89,53,17,0.05)] backdrop-blur-[10px] sm:p-6",
         className
       )}
     >
@@ -76,7 +76,7 @@ export function ConsentBlock({
         {required.expanded ? (
           <div
             id="data-processing-info"
-            className="ml-9 rounded-[1.1rem] border border-[#EADDCF] bg-[#FFF8F2] p-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.6)] sm:p-4"
+            className="ml-9 rounded-[1.1rem] border border-[rgba(234,221,207,0.58)] bg-[#FFF8F2] p-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.6)] sm:p-4"
           >
             <div className="font-sans text-sm font-medium leading-relaxed text-[#6B5B4F]">
               {required.details}
@@ -85,7 +85,7 @@ export function ConsentBlock({
         ) : null}
       </div>
 
-      <div className="border-t border-[#EADDCF] pt-4">
+      <div className="border-t border-[rgba(234,221,207,0.52)] pt-4">
         <Checkbox label={optional.label} {...optional.register} />
       </div>
     </div>
