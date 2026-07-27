@@ -1597,7 +1597,10 @@ export function ResultScreen() {
             </motion.div>
           </div>
         </div>
-        <div className="pointer-events-none fixed left-[-10000px] top-0 z-[-1] opacity-0">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none fixed left-[-10000px] top-0 z-[-1] opacity-0"
+        >
           <div
             ref={shareCaptureCardRef}
             className="w-[1080px] overflow-hidden rounded-[46px] bg-[linear-gradient(180deg,#FFF9F4_0%,#FFF0E5_100%)] p-10 text-[#3A2418] shadow-[0_30px_70px_rgba(89,53,17,0.14)]"
