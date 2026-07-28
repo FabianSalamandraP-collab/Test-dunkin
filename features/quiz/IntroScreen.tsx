@@ -682,7 +682,7 @@ export function IntroScreen() {
         <div className="relative z-10 mx-0 rounded-[1.85rem] border border-transparent bg-[linear-gradient(180deg,rgba(255,248,241,0.96)_0%,rgba(247,236,226,0.95)_100%)] px-4 py-5 shadow-[0_18px_42px_rgba(89,53,17,0.08)] sm:mx-[34px] sm:px-6 sm:py-6 md:mx-[42px] md:px-7 md:py-6 lg:mx-[72px] lg:my-0 lg:rounded-[2rem] lg:border lg:border-[#f0ded0] lg:bg-[linear-gradient(180deg,#fbf6f0_0%,#f7efe5_100%)] lg:px-8 lg:py-7 lg:shadow-[0_18px_42px_rgba(89,53,17,0.08)] xl:mx-[78px]">
           <div
             className={`pointer-events-none absolute inset-0 rounded-[1.85rem] bg-no-repeat lg:rounded-[2rem] ${
-              isMobile ? "opacity-[0.72]" : "opacity-90"
+              isMobile ? "opacity-[0.6]" : "opacity-90"
             }`}
             style={{
               backgroundImage: isMobile

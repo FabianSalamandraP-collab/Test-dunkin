@@ -107,7 +107,6 @@ function getResultTraitIcon(trait: string) {
   return resultTraitIconMap[trait] ?? Heart;
 }
 
-// Mobile results scroll inside the stage container instead of the window.
 function getScrollableParent(element: HTMLElement | null) {
   let currentElement = element?.parentElement ?? null;
 
@@ -1133,7 +1132,7 @@ export function ResultScreen() {
                           color: result.color || "#FF671F",
                         }}
                       >
-                        Promo oficial
+                        Recomendación oficial
                       </span>
                       <span className="inline-flex rounded-full bg-[#CF3F73] px-3 py-1 font-sans text-[0.58rem] font-bold uppercase tracking-[0.18em] text-white shadow-[0_8px_18px_rgba(207,63,115,0.24)]">
                         Dunkin'
@@ -1302,7 +1301,7 @@ export function ResultScreen() {
                         color: result.color || "#FF671F",
                       }}
                     >
-                      Promo oficial
+                      Recomendación oficial
                     </span>
                     <span className="inline-flex rounded-full bg-[#CF3F73] px-3 py-1 font-sans text-[0.58rem] font-bold uppercase tracking-[0.18em] text-white shadow-[0_8px_18px_rgba(207,63,115,0.24)]">
                       Dunkin'
