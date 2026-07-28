@@ -7,7 +7,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     id: "q1",
     eyebrow: "Pregunta 1 de 4",
     question:
-      'Si en el grupo escriben: "¿Quién arma el plan?" tu...',
+      'Si en el grupo escriben: "¿Quién arma el plan?" tú:',
     questionHighlight: '"¿Quién arma el plan?"',
     supportingText:
       "Elige la respuesta que más se parece a tu forma natural de moverte con tu parche.",
@@ -19,27 +19,25 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       {
         id: "q1a1",
-        label:
-          "En cinco minutos mandas opciones, ubicación y hasta horario.",
+        label: "En cinco minutos mandas opciones.",
         icon: "send",
         value: "creative",
       },
       {
         id: "q1a2",
-        label: "Propones ir por un café y una buena conversación.",
+        label: "Propones ir por un café.",
         icon: "messages-square",
         value: "balanced",
       },
       {
         id: "q1a3",
-        label: 'Respondo: "¡De una! Yo conozco un parche buenísimo."',
+        label: "Respondes: ¡De una!",
         icon: "map-pin",
         value: "energetic",
       },
       {
         id: "q1a4",
-        label:
-          "Donde vayan todos... allá llegas. Tú solo quieres pasarla bien.",
+        label: "Donde vayan todos allá llegas.",
         icon: "smile",
         value: "passionate",
       },
@@ -48,8 +46,8 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   {
     id: "q2",
     eyebrow: "Pregunta 2 de 4",
-    question: "El plan se complica a última hora. Tú...",
-    questionHighlight: "se complica a última hora",
+    question: "Si el plan se complica. Tú:",
+    questionHighlight: "plan se complica",
     supportingText:
       "Piensa en cómo reaccionas de verdad cuando el parche cambia de rumbo sin aviso.",
     image: "/assets/quiz-questions/q2-drink.webp",
@@ -66,19 +64,19 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       },
       {
         id: "q2a2",
-        label: "Preguntas qué pasó antes de sacar conclusiones.",
+        label: "Primero preguntas qué pasó.",
         icon: "users",
         value: "balanced",
       },
       {
         id: "q2a3",
-        label: "Propones otro plan y sigues como si nada.",
+        label: "Propones otro plan.",
         icon: "compass",
         value: "energetic",
       },
       {
         id: "q2a4",
-        label: "Te ríes de la situación. Al final siempre sale algo bueno.",
+        label: "Solo te ríes de la situación.",
         icon: "sun-medium",
         value: "passionate",
       },
@@ -87,7 +85,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   {
     id: "q3",
     eyebrow: "Pregunta 3 de 4",
-    question: "Tu “cargo oficial” en tu grupo de amigos es:",
+    question: "Tu “cargo oficial” es:",
     questionHighlight: "cargo oficial",
     supportingText:
       "Escoge el rol que más se parece a ti cuando el parche se junta.",
@@ -117,7 +115,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       },
       {
         id: "q3a4",
-        label: "Embajador de la buena energía.",
+        label: "Embajador de buena energía.",
         icon: "music-4",
         value: "passionate",
       },
@@ -126,7 +124,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   {
     id: "q4",
     eyebrow: "Pregunta 4 de 4",
-    question: "Elige la frase con la que más te identificas.",
+    question: "La frase con la que más te identificas es:",
     questionHighlight: "más te identificas",
     supportingText:
       "No lo pienses mucho. Marca la frase que más se parece a tu forma de ser.",
@@ -144,7 +142,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       },
       {
         id: "q4a2",
-        label: '"Primero cuénteme bien qué pasó."',
+        label: '"Pero cuénteme bien qué pasó."',
         icon: "messages-square",
         value: "balanced",
       },
@@ -156,7 +154,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       },
       {
         id: "q4a4",
-        label: '"Todo tiene solución."',
+        label: '"Tranqui, todo tiene solución."',
         icon: "smile",
         value: "passionate",
       },
