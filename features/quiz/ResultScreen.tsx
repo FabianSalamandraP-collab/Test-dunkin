@@ -107,6 +107,13 @@ function getResultTraitIcon(trait: string) {
   return resultTraitIconMap[trait] ?? Heart;
 }
 
+const benefitRecommendationAlternatives: Record<string, string[]> = {
+  creative: ["Cappuccino", "Chai", "Americanos"],
+  balanced: ["Ice Té", "Tés calientes", "Iced Tea"],
+  energetic: ["Refreshers", "Limonadas", "Sodas Dunkin'"],
+  passionate: ["Frutibatidos", "Frozen", "Bebidas dulces"],
+};
+
 function getScrollableParent(element: HTMLElement | null) {
   let currentElement = element?.parentElement ?? null;
 
@@ -333,6 +340,7 @@ export function ResultScreen() {
       : result.image;
   const personalityEmoticonSrc = `/assets/quiz-results/personalities/${personalityEmoticonFileMap[result.id] ?? "emoticon3.webp"}`;
   const benefitData = dynamicBenefit || getFallbackBenefit(result);
+  const benefitAlternatives = benefitRecommendationAlternatives[result.id] || [];
   const officialBenefitUrl = resolveDunkinOfficialUrl(result.id, benefitData.url);
   const resultTitleColor = `${result.color || "#FF671F"}D9`;
   const shimmerBaseColor = result.color || "#FF671F";
@@ -1199,6 +1207,11 @@ export function ResultScreen() {
                               >
                                 {benefitData.description}
                               </p>
+                              {benefitAlternatives.length > 0 ? (
+                                <p className="font-sans text-[0.84rem] font-semibold leading-6 text-[#6B5B4F]">
+                                  {`Más opciones para este mood: ${benefitAlternatives.join(" · ")}`}
+                                </p>
+                              ) : null}
                               {shouldShowMobileRecommendationToggle ? (
                                 <button
                                   type="button"
@@ -1384,6 +1397,11 @@ export function ResultScreen() {
                             >
                               {benefitData.description}
                             </p>
+                            {benefitAlternatives.length > 0 ? (
+                              <p className="font-sans text-[0.82rem] font-semibold leading-6 text-[#6B5B4F]">
+                                {`Más opciones para este mood: ${benefitAlternatives.join(" · ")}`}
+                              </p>
+                            ) : null}
                           </div>
 
                           <div className="mt-auto">
