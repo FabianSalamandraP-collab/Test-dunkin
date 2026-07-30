@@ -417,60 +417,6 @@ function DrinkStage({
   return <DrinkVisual cup={drink.cup} isActive={isActive} />;
 }
 
-function SideRibbon({
-  side,
-  className,
-}: {
-  side: "left" | "right";
-  className?: string;
-}) {
-  const items = Array.from({ length: 40 });
-  const [useFallback, setUseFallback] = useState(false);
-  const imageSrc =
-    side === "left"
-      ? "/assets/quiz-intro/borders/side-ribbon-left.webp"
-      : "/assets/quiz-intro/borders/side-ribbon-right.webp";
-
-  return (
-    <div
-      className={`pointer-events-none absolute inset-y-0 hidden overflow-hidden lg:flex ${
-        side === "left" ? "left-0" : "right-0"
-      } w-[26px] sm:w-[34px] md:w-[42px] lg:w-[72px] xl:w-[78px] ${className ?? ""}`}
-    >
-      {!useFallback ? (
-        <div aria-hidden="true" className="flex w-full flex-col">
-          {items.map((_, index) => (
-            <img
-              key={`${side}-ribbon-${index}`}
-              src={imageSrc}
-              alt=""
-              className="-mt-px block h-auto w-full shrink-0 first:mt-0"
-              onError={() => setUseFallback(true)}
-            />
-          ))}
-        </div>
-      ) : (
-        <div
-          className={`flex h-full w-full flex-col items-center justify-around bg-[linear-gradient(180deg,#f34aa7_0%,#ea4f9b_20%,#ef6f6c_50%,#f34aa7_100%)] ${
-            side === "left" ? "pl-0.5" : "pr-0.5"
-          }`}
-        >
-          {items.map((_, index) => (
-            <span
-              key={`${side}-${index}`}
-              className={`text-[0.78rem] font-black uppercase tracking-[0.18em] text-[#FF9A1F] ${
-                side === "left" ? "-rotate-90" : "rotate-90"
-              }`}
-            >
-              DUNKIN'
-            </span>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
 export function IntroScreen() {
   const { addToast } = useToast();
   const { startQuiz, questions } = useQuizStore();
@@ -668,9 +614,7 @@ export function IntroScreen() {
 
   return (
     <div className="h-full overflow-y-auto overflow-x-hidden overscroll-y-contain bg-[linear-gradient(180deg,#f8f1ea_0%,#f6ede6_100%)] px-2 py-2 [-webkit-overflow-scrolling:touch] sm:px-4 sm:py-4 lg:min-h-screen lg:h-auto lg:overflow-visible">
-      <div className="relative mx-auto overflow-hidden rounded-[2rem] bg-[linear-gradient(180deg,#fbf6f0_0%,#f6efe6_100%)] shadow-[0_30px_80px_rgba(89,53,17,0.12)] lg:max-w-[1460px]">
-        <SideRibbon side="left" />
-        <SideRibbon side="right" />
+      <div className="relative mx-auto overflow-hidden rounded-[2rem] bg-[linear-gradient(180deg,#fbf6f0_0%,#f6efe6_100%)] shadow-[0_30px_80px_rgba(89,53,17,0.12)] lg:max-w-[1460px] lg:rounded-[2.55rem]">
         <div className="pointer-events-none absolute left-[26px] top-0 hidden h-[64px] w-[86px] rounded-br-[2rem] bg-[#E90471] shadow-[inset_-6px_-6px_14px_rgba(255,255,255,0.12)] sm:left-[34px] sm:h-[72px] sm:w-[96px] md:left-[42px] md:h-[80px] md:w-[104px] lg:hidden" />
         <div className="pointer-events-none absolute right-[26px] top-0 hidden h-[64px] w-[86px] rounded-bl-[2rem] bg-[#FA192A] shadow-[inset_6px_-6px_14px_rgba(255,255,255,0.12)] sm:right-[34px] sm:h-[72px] sm:w-[96px] md:right-[42px] md:h-[80px] md:w-[104px] lg:hidden" />
         <div className="pointer-events-none absolute bottom-0 left-[26px] hidden h-[64px] w-[86px] rounded-tr-[2rem] bg-[#FA192A] shadow-[inset_-6px_6px_14px_rgba(255,255,255,0.12)] sm:left-[34px] sm:h-[72px] sm:w-[96px] md:left-[42px] md:h-[80px] md:w-[104px] lg:hidden" />
@@ -679,9 +623,9 @@ export function IntroScreen() {
         <div className="pointer-events-none absolute right-[72px] top-0 hidden h-[120px] w-[168px] rounded-bl-[2.9rem] bg-[#FA192A] shadow-[inset_8px_-8px_18px_rgba(255,255,255,0.12)] lg:block xl:right-[78px]" />
         <div className="pointer-events-none absolute bottom-0 left-[72px] hidden h-[120px] w-[168px] rounded-tr-[2.9rem] bg-[#FA192A] shadow-[inset_-8px_8px_18px_rgba(255,255,255,0.12)] lg:block xl:left-[78px]" />
         <div className="pointer-events-none absolute bottom-0 right-[72px] hidden h-[120px] w-[168px] rounded-tl-[2.9rem] bg-[#FA192A] shadow-[inset_8px_8px_18px_rgba(255,255,255,0.12)] lg:block xl:right-[78px]" />
-        <div className="relative z-10 mx-0 rounded-[1.85rem] border border-transparent bg-[linear-gradient(180deg,rgba(255,248,241,0.96)_0%,rgba(247,236,226,0.95)_100%)] px-4 py-5 shadow-[0_18px_42px_rgba(89,53,17,0.08)] sm:mx-[34px] sm:px-6 sm:py-6 md:mx-[42px] md:px-7 md:py-6 lg:mx-[72px] lg:my-0 lg:rounded-[2rem] lg:border lg:border-[#f0ded0] lg:bg-[linear-gradient(180deg,#fbf6f0_0%,#f7efe5_100%)] lg:px-8 lg:py-7 lg:shadow-[0_18px_42px_rgba(89,53,17,0.08)] xl:mx-[78px]">
+        <div className="relative z-10 mx-0 rounded-[2.05rem] border border-transparent bg-[linear-gradient(180deg,rgba(255,248,241,0.96)_0%,rgba(247,236,226,0.95)_100%)] px-4 py-5 shadow-[0_18px_42px_rgba(89,53,17,0.08)] sm:mx-[34px] sm:px-6 sm:py-6 md:mx-[42px] md:px-7 md:py-6 lg:mx-[72px] lg:my-0 lg:rounded-[2.35rem] lg:border lg:border-[#f0ded0] lg:bg-[linear-gradient(180deg,#fbf6f0_0%,#f7efe5_100%)] lg:px-8 lg:py-7 lg:shadow-[0_18px_42px_rgba(89,53,17,0.08)] xl:mx-[78px]">
           <div
-            className={`pointer-events-none absolute inset-0 rounded-[1.85rem] bg-no-repeat lg:rounded-[2rem] ${
+            className={`pointer-events-none absolute inset-0 rounded-[2.05rem] bg-no-repeat lg:rounded-[2.35rem] ${
               isMobile ? "opacity-[0.6]" : "opacity-90"
             }`}
             style={{
@@ -694,35 +638,35 @@ export function IntroScreen() {
             }}
           />
           <div
-            className={`pointer-events-none absolute inset-0 rounded-[1.85rem] lg:rounded-[2rem] ${
+            className={`pointer-events-none absolute inset-0 rounded-[2.05rem] lg:rounded-[2.35rem] ${
               isMobile
                 ? "bg-[linear-gradient(180deg,rgba(251,246,240,0.16)_0%,rgba(251,246,240,0.09)_14%,rgba(251,246,240,0.02)_34%,rgba(251,246,240,0.05)_56%,rgba(251,246,240,0.18)_78%,rgba(251,246,240,0.42)_100%)]"
                 : "bg-[linear-gradient(90deg,rgba(251,246,240,0.88)_0%,rgba(251,246,240,0.72)_30%,rgba(251,246,240,0.2)_52%,rgba(251,246,240,0.04)_74%)]"
             }`}
           />
           <div
-            className={`pointer-events-none absolute inset-0 rounded-[1.85rem] lg:rounded-[2rem] ${
+            className={`pointer-events-none absolute inset-0 rounded-[2.05rem] lg:rounded-[2.35rem] ${
               isMobile
                 ? "bg-[radial-gradient(circle_at_50%_10%,rgba(255,247,239,0.08)_0%,rgba(255,247,239,0.04)_18%,rgba(255,247,239,0)_42%),radial-gradient(circle_at_50%_84%,rgba(255,247,239,0.06)_0%,rgba(255,247,239,0.03)_18%,rgba(255,247,239,0)_42%)] opacity-75"
                 : "bg-[radial-gradient(circle_at_12%_24%,rgba(251,246,240,0.72)_0%,rgba(251,246,240,0.44)_32%,rgba(251,246,240,0)_60%)] opacity-90"
             }`}
           />
           <div
-            className={`pointer-events-none absolute inset-0 rounded-[1.85rem] lg:rounded-[2rem] ${
+            className={`pointer-events-none absolute inset-0 rounded-[2.05rem] lg:rounded-[2.35rem] ${
               isMobile
                 ? "opacity-16 bg-[radial-gradient(circle_at_50%_30%,rgba(255,138,0,0.06)_0%,rgba(247,84,166,0.04)_18%,rgba(255,138,0,0.02)_32%,rgba(255,255,255,0)_48%),radial-gradient(circle_at_50%_64%,rgba(255,173,102,0.04)_0%,rgba(247,84,166,0.02)_20%,rgba(255,255,255,0)_44%)]"
                 : "opacity-56 bg-[radial-gradient(circle_at_64%_20%,rgba(255,138,0,0.16)_0%,rgba(247,84,166,0.12)_22%,rgba(255,138,0,0.08)_38%,rgba(255,255,255,0)_58%)]"
             }`}
           />
           <div
-            className={`pointer-events-none absolute inset-0 rounded-[1.85rem] lg:rounded-[2rem] ${
+            className={`pointer-events-none absolute inset-0 rounded-[2.05rem] lg:rounded-[2.35rem] ${
               isMobile
                 ? "bg-[radial-gradient(circle,rgba(255,255,255,0)_0%,rgba(255,255,255,0)_78%,rgba(255,255,255,0.06)_100%)]"
                 : "bg-[radial-gradient(circle,rgba(255,255,255,0)_0%,rgba(255,255,255,0)_62%,rgba(255,255,255,0.18)_100%)]"
             }`}
           />
           <div
-            className={`pointer-events-none absolute inset-[2%] rounded-[1.8rem] ${
+            className={`pointer-events-none absolute inset-[2%] rounded-[1.95rem] lg:rounded-[2.25rem] ${
               isMobile
                 ? "opacity-0"
                 : "bg-[radial-gradient(circle_at_62%_24%,rgba(255,255,255,0)_0_40px,rgba(255,255,255,0.28)_41px_42px,rgba(255,255,255,0)_43px),radial-gradient(circle_at_62%_24%,rgba(255,255,255,0)_0_56px,rgba(255,255,255,0.22)_57px_58px,rgba(255,255,255,0)_59px)] opacity-60 mix-blend-screen"
