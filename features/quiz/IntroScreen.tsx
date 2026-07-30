@@ -640,14 +640,14 @@ export function IntroScreen() {
           <div
             className={`pointer-events-none absolute inset-0 rounded-[2.05rem] lg:rounded-[2.35rem] ${
               isMobile
-                ? "bg-[linear-gradient(180deg,rgba(251,246,240,0.16)_0%,rgba(251,246,240,0.09)_14%,rgba(251,246,240,0.02)_34%,rgba(251,246,240,0.05)_56%,rgba(251,246,240,0.18)_78%,rgba(251,246,240,0.42)_100%)]"
+                ? "bg-[linear-gradient(180deg,rgba(251,246,240,0.22)_0%,rgba(251,246,240,0.12)_14%,rgba(251,246,240,0.03)_34%,rgba(251,246,240,0.06)_56%,rgba(251,246,240,0.22)_78%,rgba(251,246,240,0.52)_100%)]"
                 : "bg-[linear-gradient(90deg,rgba(251,246,240,0.88)_0%,rgba(251,246,240,0.72)_30%,rgba(251,246,240,0.2)_52%,rgba(251,246,240,0.04)_74%)]"
             }`}
           />
           <div
             className={`pointer-events-none absolute inset-0 rounded-[2.05rem] lg:rounded-[2.35rem] ${
               isMobile
-                ? "bg-[radial-gradient(circle_at_50%_10%,rgba(255,247,239,0.08)_0%,rgba(255,247,239,0.04)_18%,rgba(255,247,239,0)_42%),radial-gradient(circle_at_50%_84%,rgba(255,247,239,0.06)_0%,rgba(255,247,239,0.03)_18%,rgba(255,247,239,0)_42%)] opacity-75"
+                ? "bg-[radial-gradient(circle_at_50%_10%,rgba(255,247,239,0.1)_0%,rgba(255,247,239,0.05)_18%,rgba(255,247,239,0)_42%),radial-gradient(circle_at_50%_84%,rgba(255,247,239,0.08)_0%,rgba(255,247,239,0.04)_18%,rgba(255,247,239,0)_42%)] opacity-85"
                 : "bg-[radial-gradient(circle_at_12%_24%,rgba(251,246,240,0.72)_0%,rgba(251,246,240,0.44)_32%,rgba(251,246,240,0)_60%)] opacity-90"
             }`}
           />

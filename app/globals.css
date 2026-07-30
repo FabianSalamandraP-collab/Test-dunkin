@@ -174,7 +174,7 @@
   --question-stage-bg-desktop-image:
     url("/assets/quiz-questions/backgrounds/desktop/question-stage-background.jpg");
   --result-stage-bg-mobile-image:
-    url("/assets/quiz-results/backgrounds/result-stage-background.webp");
+    url("/assets/quiz-intro/backgrounds/mobile/hero-stage-background.webp");
   --result-stage-bg-desktop-image:
     url("/assets/quiz-results/backgrounds/result-stage-background.webp");
   --result-surface: #fcfaf7;
@@ -370,14 +370,14 @@ body {
       radial-gradient(circle at 14% 16%, rgba(255, 177, 104, 0.12) 0%, rgba(255, 177, 104, 0) 24%),
       radial-gradient(circle at 86% 18%, rgba(233, 83, 154, 0.07) 0%, rgba(233, 83, 154, 0) 24%),
       radial-gradient(circle at 18% 86%, rgba(255, 202, 157, 0.1) 0%, rgba(255, 202, 157, 0) 26%),
-      linear-gradient(180deg, rgba(247, 241, 234, 0.42) 0%, rgba(244, 238, 232, 0.5) 100%),
+      linear-gradient(180deg, rgba(247, 241, 234, 0.62) 0%, rgba(244, 238, 232, 0.66) 100%),
       var(--result-stage-bg-mobile-image);
     background-size:
       auto,
       auto,
       auto,
       auto,
-      100% auto;
+      100% 1200px;
     background-position:
       center,
       center,
