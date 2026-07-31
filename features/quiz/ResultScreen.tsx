@@ -3,7 +3,6 @@
 import { type CSSProperties, type ReactNode, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, useReducedMotion } from "framer-motion";
-import html2canvas from "html2canvas";
 import JSConfetti from "js-confetti";
 import {
   ArrowRight,
@@ -288,7 +287,6 @@ export function ResultScreen() {
   const benefitHighlightTimeoutRef = useRef<number | null>(null);
   const mobileRecommendationTextRef = useRef<HTMLParagraphElement | null>(null);
   const mobilePersonalityTextRef = useRef<HTMLParagraphElement | null>(null);
-  const shareCaptureCardRef = useRef<HTMLDivElement | null>(null);
   const { result, resetQuiz, formSubmitted, sessionId } = useQuizStore();
   const shouldReduceMotion = useReducedMotion();
   const reduceMotion = shouldReduceMotion ?? false;
@@ -309,8 +307,6 @@ export function ResultScreen() {
     setShouldShowMobileRecommendationToggle,
   ] = useState(false);
   const [activeGeneralStampIndex, setActiveGeneralStampIndex] = useState(0);
-  const [isDownloadingShareImage, setIsDownloadingShareImage] = useState(false);
-  const [shareImageError, setShareImageError] = useState<string | null>(null);
   const [isMobilePersonalityExpanded, setIsMobilePersonalityExpanded] =
     useState(false);
   const [
@@ -413,7 +409,6 @@ export function ResultScreen() {
     setIsMobileRecommendationExpanded(false);
     setIsMobilePersonalityExpanded(false);
     setShouldShowMobilePersonalityToggle(false);
-    setShareImageError(null);
     setBenefitActionError(null);
 
     if (benefitHighlightTimeoutRef.current) {
@@ -636,38 +631,6 @@ export function ResultScreen() {
           window.setTimeout(() => setCopySuccess(false), 2200);
         })
         .catch(() => {});
-    }
-  };
-
-  const handleDownloadShareImage = async () => {
-    if (!shareCaptureCardRef.current || isDownloadingShareImage) {
-      return;
-    }
-
-    setShareImageError(null);
-    setIsDownloadingShareImage(true);
-
-    try {
-      await document.fonts?.ready;
-
-      const canvas = await html2canvas(shareCaptureCardRef.current, {
-        backgroundColor: null,
-        scale: 2,
-        useCORS: true,
-        logging: false,
-      });
-
-      const imageUrl = canvas.toDataURL("image/png");
-      const downloadLink = document.createElement("a");
-      downloadLink.href = imageUrl;
-      downloadLink.download = `dunkin-match-${result.id}.png`;
-      downloadLink.click();
-    } catch {
-      setShareImageError(
-        "No pudimos descargar la imagen ahora. Intenta nuevamente."
-      );
-    } finally {
-      setIsDownloadingShareImage(false);
     }
   };
 
@@ -1449,19 +1412,6 @@ export function ResultScreen() {
                   <Button
                     variant="quizSecondary"
                     size="quiz"
-                    onClick={handleDownloadShareImage}
-                    disabled={isDownloadingShareImage}
-                    className="w-full justify-center px-4 text-[0.92rem] sm:w-auto sm:min-w-[220px] lg:min-w-[236px]"
-                  >
-                    {isDownloadingShareImage
-                      ? "Descargando imagen..."
-                      : "Descargar imagen"}
-                    <ArrowRight className="ml-2 h-4 w-4" strokeWidth={2.2} />
-                  </Button>
-
-                  <Button
-                    variant="quizSecondary"
-                    size="quiz"
                     onClick={() => {
                       resetQuiz();
                       router.push("/quiz");
@@ -1472,11 +1422,6 @@ export function ResultScreen() {
                     <RefreshCw className="ml-2 h-4 w-4" strokeWidth={2.2} />
                   </Button>
                 </div>
-                {shareImageError ? (
-                  <p className="mx-auto max-w-[34ch] text-center font-sans text-[0.8rem] leading-5 text-[#A13B2A]">
-                    {shareImageError}
-                  </p>
-                ) : null}
               </div>
 
               <div className="min-w-0 order-1 hidden lg:order-2 lg:-ml-7 lg:block xl:-ml-8">
@@ -1658,165 +1603,6 @@ export function ResultScreen() {
             >
               <QuizForm onSuccess={handleFormSuccess} />
             </motion.div>
-          </div>
-        </div>
-        <div
-          aria-hidden="true"
-          className="pointer-events-none fixed left-[-10000px] top-0 z-[-1] opacity-0"
-        >
-          <div
-            ref={shareCaptureCardRef}
-            className="w-[1080px] overflow-hidden rounded-[46px] bg-[linear-gradient(180deg,#FFF9F4_0%,#FFF0E5_100%)] p-10 text-[#3A2418] shadow-[0_30px_70px_rgba(89,53,17,0.14)]"
-          >
-            <div
-              className="relative overflow-hidden rounded-[36px] px-10 py-10 shadow-[0_18px_40px_rgba(89,53,17,0.06)]"
-              style={{
-                backgroundImage: `linear-gradient(180deg, rgba(255,255,255,0.94) 0%, rgba(255,247,240,0.98) 100%), radial-gradient(circle at 18% 22%, ${
-                  result.accentColor || "#FFD9B8"
-                }52 0%, rgba(255,255,255,0) 48%), radial-gradient(circle at 84% 78%, ${
-                  result.color || "#FF671F"
-                }26 0%, rgba(255,255,255,0) 56%)`,
-              }}
-            >
-              <div className="relative flex items-start justify-between gap-10">
-                <div className="max-w-[610px] space-y-7">
-                  <QuizBadge
-                    className="gap-3 rounded-full px-5 py-3 shadow-[0_12px_24px_rgba(89,53,17,0.06)]"
-                    style={{
-                      borderColor: `${result.color || "#FF671F"}45`,
-                      backgroundColor: "rgba(255,255,255,0.94)",
-                      color: result.color || "#FF671F",
-                    }}
-                  >
-                    <Heart
-                      className="h-4 w-4"
-                      fill="currentColor"
-                      strokeWidth={0}
-                    />
-                    <span className="font-display text-[1rem] font-extrabold uppercase tracking-[0.18em]">
-                      Tu Match Dunkin'
-                    </span>
-                  </QuizBadge>
-
-                  <div className="space-y-4">
-                    <p className="font-sans text-[0.88rem] font-bold uppercase tracking-[0.22em] text-[#B0907C]">
-                      Tu personalidad
-                    </p>
-                    <h2 className="font-display text-[2.35rem] font-extrabold leading-[0.94] tracking-[-0.05em] text-[#2A1D17]">
-                      {personalityLabel}
-                    </h2>
-                    <h1 className="font-display text-[4.3rem] font-extrabold leading-[0.98] tracking-[-0.07em]">
-                      <span
-                        style={{
-                          color: resultTitleColor,
-                        }}
-                      >
-                        {result.recommendedDrink}
-                      </span>
-                    </h1>
-                    <p className="max-w-[34ch] font-sans text-[1.18rem] font-medium leading-8 text-[#5D5047]">
-                      {result.drinkDescription}
-                    </p>
-                  </div>
-                </div>
-
-                <div
-                  className="relative flex h-[360px] w-[340px] shrink-0 items-center justify-center overflow-hidden rounded-[34px] shadow-[0_22px_50px_rgba(89,53,17,0.12)]"
-                  style={{
-                    backgroundImage: `linear-gradient(180deg, rgba(255,255,255,0.9) 0%, rgba(255,246,238,0.98) 100%), radial-gradient(circle at 22% 18%, ${
-                      result.accentColor || "#FFD9B8"
-                    }72 0%, rgba(255,255,255,0) 54%), radial-gradient(circle at 78% 84%, ${
-                      result.color || "#FF671F"
-                    }28 0%, rgba(255,255,255,0) 58%)`,
-                  }}
-                >
-                  <div
-                    className="pointer-events-none absolute -left-14 top-10 h-56 w-56 rounded-full blur-[70px]"
-                    style={{
-                      backgroundColor: `${result.accentColor || "#FFD9B8"}A8`,
-                    }}
-                  />
-                  <div
-                    className="pointer-events-none absolute -bottom-16 -right-16 h-64 w-64 rounded-full blur-[80px]"
-                    style={{
-                      backgroundColor: `${result.color || "#FF671F"}54`,
-                    }}
-                  />
-                  <div className="pointer-events-none absolute inset-x-8 bottom-10 h-10 rounded-full bg-white/60 blur-2xl" />
-                  <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_30%_24%,rgba(255,255,255,0.78)_0%,rgba(255,255,255,0)_58%)]" />
-                  {result.image ? (
-                    <img
-                      src={result.image}
-                      alt={result.recommendedDrink}
-                      className="relative z-10 h-[94%] w-[94%] object-contain drop-shadow-[0_26px_50px_rgba(89,53,17,0.22)]"
-                      loading="eager"
-                    />
-                  ) : (
-                    <div className="relative z-10 flex h-24 w-24 items-center justify-center rounded-full bg-white/70 text-[#FF7A00] shadow-[0_14px_28px_rgba(89,53,17,0.08)]">
-                      <Coffee className="h-10 w-10" strokeWidth={1.7} />
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div className="mt-9 grid gap-6 rounded-[32px] border border-[#EED9CB] bg-white/90 p-7 shadow-[0_18px_34px_rgba(89,53,17,0.07)]">
-                <div className="flex items-center gap-3">
-                  <span
-                    className="inline-flex rounded-full border px-4 py-2 font-sans text-[0.78rem] font-bold uppercase tracking-[0.16em]"
-                    style={{
-                      borderColor: `${result.color || "#FF671F"}30`,
-                      backgroundColor: "rgba(255,255,255,0.96)",
-                      color: result.color || "#FF671F",
-                    }}
-                  >
-                    Plan para tu mood
-                  </span>
-                  {benefitData.discountLabel ? (
-                    <span className="rounded-full bg-[#FF671F] px-4 py-2 font-sans text-[0.76rem] font-bold uppercase tracking-[0.14em] text-[#FFF8F3]">
-                      {benefitData.discountLabel}
-                    </span>
-                  ) : null}
-                  {benefitData.priceLabel ? (
-                    <span className="rounded-full border border-[#DECBBB] bg-white px-4 py-2 font-sans text-[0.76rem] font-bold uppercase tracking-[0.12em] text-[#4A281B]">
-                      {benefitData.priceLabel}
-                    </span>
-                  ) : null}
-                </div>
-
-                <div className="space-y-3">
-                  <h3 className="max-w-[28ch] font-display text-[2rem] font-extrabold leading-[1.02] tracking-[-0.04em] text-[#201711]">
-                    {benefitData.title}
-                  </h3>
-                  <p className="max-w-[54ch] font-sans text-[1.05rem] font-medium leading-8 text-[#5D5047]">
-                    {benefitData.description}
-                  </p>
-                </div>
-
-                {resultTraits.length > 0 ? (
-                  <div className="flex flex-wrap gap-3">
-                    {resultTraits.map((trait) => {
-                      const TraitIcon = getResultTraitIcon(trait);
-
-                      return (
-                        <div
-                          key={trait}
-                          className="inline-flex items-center gap-2 rounded-full border border-[#ECD6C7] bg-[#FFF9F4] px-4 py-2.5 text-[#7A5238]"
-                        >
-                          <TraitIcon
-                            className="h-4 w-4"
-                            style={{ color: result.color || "#FF671F" }}
-                            strokeWidth={2}
-                          />
-                          <span className="font-sans text-[0.82rem] font-bold uppercase tracking-[0.14em]">
-                            {trait}
-                          </span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                ) : null}
-              </div>
-            </div>
           </div>
         </div>
       </div>
