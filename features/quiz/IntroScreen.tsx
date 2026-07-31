@@ -846,7 +846,7 @@ export function IntroScreen() {
                       <div className="bg-white/88 inline-flex items-center rounded-full border border-[#F2DFC9] px-3.5 py-1.5 font-sans text-[0.72rem] font-medium text-[#7A5134] shadow-[0_10px_22px_rgba(102,66,30,0.08)]">
                         <span>4 preguntas • 1 minuto</span>
                       </div>
-                      <p className="bg-white/86 max-w-[430px] rounded-[1.1rem] border border-[#EFDCCB] px-4 py-3 font-sans text-[0.95rem] font-medium leading-7 text-[#4E3325] shadow-[0_10px_26px_rgba(102,66,30,0.08)] backdrop-blur-[3px]">
+                      <p className="max-w-[430px] rounded-[1.18rem] border border-[#E8D1BE] bg-[linear-gradient(180deg,rgba(255,249,244,0.95)_0%,rgba(250,241,233,0.93)_100%)] px-4 py-3 font-sans text-[0.98rem] font-semibold leading-7 text-[#3C2418] shadow-[0_16px_32px_rgba(102,66,30,0.12)] backdrop-blur-[6px]">
                         Responde 4 preguntas y descubre la bebida Dunkin' que
                         va con tu mood, tu forma de ser y la energía con la que
                         llegas a tu parche.
@@ -879,8 +879,8 @@ export function IntroScreen() {
                         4 preguntas • 1 minuto
                       </span>
                     </div>
-                    <div className="relative w-full max-w-[21.5rem] overflow-hidden rounded-[1.2rem] border border-[#E5D3C4] bg-[linear-gradient(180deg,rgba(255,248,241,0.96)_0%,rgba(247,236,226,0.94)_100%)] px-4 py-3.5 shadow-[0_14px_26px_rgba(102,66,30,0.1)] lg:hidden">
-                      <p className="text-center font-sans text-[0.84rem] font-medium leading-6 text-[#5F483A]">
+                    <div className="relative w-full max-w-[21.5rem] overflow-hidden rounded-[1.25rem] border border-[#E7D3C4] bg-[linear-gradient(180deg,rgba(255,249,244,0.96)_0%,rgba(249,239,230,0.95)_100%)] px-4 py-3.5 shadow-[0_16px_28px_rgba(102,66,30,0.12)] lg:hidden">
+                      <p className="text-center font-sans text-[0.87rem] font-semibold leading-6 text-[#422A1F]">
                         Responde 4 preguntas y descubre la bebida Dunkin' que va con tu
                         mood, tu forma de ser y la energía con la que llegas a tu parche.
                       </p>

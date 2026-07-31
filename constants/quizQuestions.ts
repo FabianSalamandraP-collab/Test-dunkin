@@ -211,9 +211,9 @@ export const QUIZ_RESULTS: QuizResult[] = [
   },
   {
     id: "energetic",
-    personalityType: "Explorador Aventurero",
+    personalityType: "Explorador",
     badge: "Tu personalidad es",
-    title: "EXPLORADOR AVENTURERO",
+    title: "EXPLORADOR",
     description:
       "Siempre traes una idea nueva. Propones, improvisas y encuentras plan incluso cuando todo cambia sobre la marcha. Contigo el parche siempre despega.",
     recommendedDrink: "Refresher Mango Piña",
@@ -234,9 +234,9 @@ export const QUIZ_RESULTS: QuizResult[] = [
   },
   {
     id: "passionate",
-    personalityType: "Optimista",
+    personalityType: 'Optimista "Influencer"',
     badge: "Tu personalidad es",
-    title: "OPTIMISTA",
+    title: 'OPTIMISTA "INFLUENCER"',
     description:
       "Le ves el lado bueno a todo y contagias una energía que hace que el grupo se relaje, se anime y disfrute más cuando cae contigo.",
     recommendedDrink: "Frutibatido",

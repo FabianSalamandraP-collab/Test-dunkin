@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui";
@@ -41,6 +41,44 @@ function renderHighlightedQuestion(question: QuizQuestion) {
   );
 }
 
+function hashString(value: string) {
+  let hash = 0;
+
+  for (let index = 0; index < value.length; index += 1) {
+    hash = (hash * 31 + value.charCodeAt(index)) >>> 0;
+  }
+
+  return hash;
+}
+
+function getShuffledOptions(question: QuizQuestion, seedKey: string) {
+  const shuffledOptions = [...question.options];
+  let seed = hashString(`${question.id}:${seedKey}`);
+
+  for (let index = shuffledOptions.length - 1; index > 0; index -= 1) {
+    seed = (seed * 1664525 + 1013904223) >>> 0;
+    const swapIndex = seed % (index + 1);
+    [shuffledOptions[index], shuffledOptions[swapIndex]] = [
+      shuffledOptions[swapIndex],
+      shuffledOptions[index],
+    ];
+  }
+
+  const stayedEqual = shuffledOptions.every(
+    (option, index) => option.id === question.options[index]?.id
+  );
+
+  if (stayedEqual && shuffledOptions.length > 1) {
+    const rotation = (seed % (shuffledOptions.length - 1)) + 1;
+    return [
+      ...shuffledOptions.slice(rotation),
+      ...shuffledOptions.slice(0, rotation),
+    ];
+  }
+
+  return shuffledOptions;
+}
+
 export function QuestionScreen() {
   const {
     questions,
@@ -67,6 +105,14 @@ export function QuestionScreen() {
   const isLastQuestion = currentQuestionIndex === questions.length - 1;
   const canGoNext = Boolean(currentAnswer);
   const progressPercentage = (questionNumber / questions.length) * 100;
+  const shuffledOptions = useMemo(
+    () =>
+      getShuffledOptions(
+        question,
+        `${sessionId ?? "guest"}:${sessionStartedAt ?? "no-session"}`
+      ),
+    [question, sessionId, sessionStartedAt]
+  );
   const sessionIdRef = useRef(sessionId);
   const hasStartedRef = useRef(hasStarted);
   const isCompletedRef = useRef(isCompleted);
@@ -184,7 +230,7 @@ export function QuestionScreen() {
                   </div>
 
                   <div className="mt-8 grid gap-3 sm:gap-4 lg:mt-10 lg:grid-cols-2">
-                    {question.options.map((option, index) => {
+                    {shuffledOptions.map((option, index) => {
                       const isSelected =
                         currentAnswer?.selectedOptionId === option.id;
                       const theme =
