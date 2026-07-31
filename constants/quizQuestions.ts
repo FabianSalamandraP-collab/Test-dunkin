@@ -165,9 +165,9 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
 export const QUIZ_RESULTS: QuizResult[] = [
   {
     id: "creative",
-    personalityType: "Curioso Aventurero",
+    personalityType: "Curioso",
     badge: "Tu personalidad es",
-    title: "CURIOSO AVENTURERO",
+    title: "CURIOSO",
     description:
       "Tomas la iniciativa, resuelves rápido y casi siempre terminas armando el parche para que todo salga bien. Eres de los que le ponen energía y dirección al plan.",
     recommendedDrink: "Iced Latte",
