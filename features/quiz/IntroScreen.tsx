@@ -684,7 +684,7 @@ export function IntroScreen() {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.45, delay: 0.08 }}
-                className="lg:max-w-none relative mx-auto grid w-[14.5rem] grid-cols-[6.35rem_auto_6.95rem] items-center text-[2rem] font-black tracking-[-0.04em] text-[#FF7A00] sm:mx-0 sm:flex sm:w-auto sm:items-center sm:gap-4 lg:-ml-8 lg:w-[410px] lg:justify-center"
+                className="relative mx-auto grid w-[14.5rem] grid-cols-[6.35rem_auto_6.95rem] items-center text-[2rem] font-black tracking-[-0.04em] text-[#FF7A00] sm:mx-0 sm:flex sm:w-auto sm:items-center sm:gap-4 lg:w-full lg:max-w-[410px] lg:justify-self-center lg:justify-center"
               >
                 <div className="flex h-[5.45rem] items-center justify-center pr-2 sm:h-[4.5rem] sm:pr-0 lg:h-[4.5rem]">
                   {!showLogoFallback ? (
@@ -811,7 +811,7 @@ export function IntroScreen() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.45, delay: 0.12 }}
-                      className="hidden items-center gap-2.5 text-center lg:-mt-1 lg:flex lg:flex-col"
+                      className="hidden items-center gap-2.5 text-center lg:-mt-5 lg:flex lg:flex-col"
                     >
                       <div className="relative">
                         <motion.span
@@ -854,7 +854,7 @@ export function IntroScreen() {
                     </motion.div>
                   </div>
 
-                  <div className="flex flex-col items-center space-y-1.5 pt-0 lg:items-start">
+                  <div className="flex flex-col items-center space-y-1.5 -mt-2 pt-0 sm:-mt-3 lg:mt-0 lg:items-start">
                     <Button
                       size="lg"
                       onClick={handleStartQuiz}
