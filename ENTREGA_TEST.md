@@ -39,11 +39,11 @@ Para un deploy de prueba que no toque base de datos:
 - Mantener `NEXT_PUBLIC_QUIZ_RUNTIME_MODE=preview`
 - No cargar `SUPABASE_SERVICE_ROLE_KEY`
 - No cargar `BENEFITS_SYNC_SECRET`
-- Si solo quieren validar UX y flujo, pueden dejar vacias las variables publicas de Supabase
+- Si solo quieren validar UX y flujo, pueden dejar vacías las variables públicas de Supabase
 
 ## Base de datos
 
-Como la base de datos la manejaran ustedes, antes de publicar deben:
+Como la base de datos la manejarán ustedes, antes de publicar deben:
 
 1. Crear el proyecto de Supabase productivo.
 2. Ejecutar `20250101000000_create_quiz_participants_table.sql`.
@@ -52,19 +52,19 @@ Como la base de datos la manejaran ustedes, antes de publicar deben:
 5. Confirmar que existan `quiz_sessions`, `quiz_answers` y `quiz_events`.
 6. Confirmar que `quiz_participants` permita `INSERT` para `anon` si van a usar
    el flujo legacy desde cliente.
-7. Validar que la clave publica cargada en Vercel o en el hosting sea la correcta.
+7. Validar que la clave pública cargada en Vercel o en el hosting sea la correcta.
 8. Cargar `SUPABASE_SERVICE_ROLE_KEY` para sincronizar beneficios y guardar el
    tracking desde el servidor.
 
 ## Assets obligatorios antes de publicar
 
-Todavia faltan assets finales del quiz. Antes de entrega revisar:
+Todavía faltan assets finales del quiz. Antes de entrega revisar:
 
 1. `public/assets/quiz-questions/`
 2. `public/assets/quiz-results/`
 3. `public/assets/quiz-benefits/gift-icon.png`
 
-Si esos archivos no existen, el sitio no se rompe, pero mostrara fallbacks visuales en preguntas y resultados.
+Si esos archivos no existen, el sitio no se rompe, pero mostrará fallbacks visuales en preguntas y resultados.
 
 ## Flujo de entrega recomendado
 
@@ -79,7 +79,7 @@ npm run lint
 npm run build
 ```
 
-5. Ejecutar una sincronizacion inicial de beneficios:
+5. Ejecutar una sincronización inicial de beneficios:
 
 ```bash
 curl -X POST "https://tu-preview.com/api/benefits/sync" \
@@ -93,13 +93,13 @@ curl -X POST "https://tu-preview.com/api/benefits/sync" \
    - Resultado muestra bebida y beneficio dinamico con link oficial
    - Tracking crea sesión, respuestas, finalización y clic final
    - Formulario guarda en Supabase
-   - Consentimientos y politica de datos funcionan correctamente
+- Consentimientos y política de datos funcionan correctamente
    - Footer abre redes correctas
    - Compartir muestra preview con imagen
 
-7. Cuando el preview este aprobado, conectar dominio final.
+7. Cuando el preview esté aprobado, conectar dominio final.
 8. Confirmar que `NEXT_PUBLIC_SITE_URL` coincida exactamente con el dominio publicado.
-9. Enviar URL final para validacion funcional y visual.
+9. Enviar URL final para validación funcional y visual.
 
 ## Checklist final de handoff
 

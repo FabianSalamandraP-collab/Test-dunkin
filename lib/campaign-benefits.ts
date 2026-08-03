@@ -222,7 +222,7 @@ function buildPriceLabel(price: number | null, originalPrice: number | null) {
 function buildBenefitDescription(record: CampaignBenefitRecord) {
   const baseDescription =
     record.description?.trim() ||
-    "Aprovecha este beneficio disponible en el canal oficial de Dunkin.";
+    "Aprovecha este beneficio disponible en el canal oficial de Dunkin'.";
   const priceLabel = buildPriceLabel(record.price, record.original_price);
 
   if (!priceLabel) {

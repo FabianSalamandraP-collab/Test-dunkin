@@ -1,4 +1,4 @@
-# Arquitectura de Base de Datos para el Quiz de Dunkin Colombia
+# Arquitectura de Base de Datos para el Quiz de Dunkin' Colombia
 
 ## Objetivo
 

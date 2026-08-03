@@ -1,7 +1,7 @@
-# Dunkin Colombia Design System
+# Dunkin' Colombia Design System
 
-> Inspirado en Dunkin Chile, Apple, Spotify Wrapped y Duolingo  
-> Características clave: Mucho espacio en blanco, diseño minimalista, bordes redondeados, fotografías grandes, colores oficiales de Dunkin, sombras suaves y Mobile First.
+> Inspirado en Dunkin' Chile, Apple, Spotify Wrapped y Duolingo  
+> Características clave: Mucho espacio en blanco, diseño minimalista, bordes redondeados, fotografías grandes, colores oficiales de Dunkin', sombras suaves y Mobile First.
 
 ---
 
@@ -30,13 +30,13 @@
 
 ### 1.2 Bordes Redondeados (Duolingo)
 - Bordes suaves y acogedores
-- Refleja la personalidad amigable de Dunkin
+- Refleja la personalidad amigable de Dunkin'
 
 ### 1.3 Fotografías Grandes (Spotify Wrapped)
 - Imágenes impactantes y de alta calidad
 - Ocupan la mayor parte del espacio disponible
 
-### 1.4 Colores Oficiales de Dunkin
+### 1.4 Colores Oficiales de Dunkin'
 - Fidelidad a la identidad de marca
 - Uso moderado para no saturar
 
@@ -52,7 +52,7 @@
 
 ## 2. Paleta de Colores
 
-### 2.1 Naranja de Dunkin (Principal)
+### 2.1 Naranja de Dunkin' (Principal)
 | Tono | Código HEX | Uso |
 |------|------------|-----|
 | 50 | #FFF7F0 | Background suave |
@@ -79,7 +79,7 @@
 </button>
 ```
 
-### 2.2 Rojo de Dunkin (Secundario)
+### 2.2 Rojo de Dunkin' (Secundario)
 | Tono | Código HEX | Uso |
 |------|------------|-----|
 | 50 | #FFECEC | Background suave |
@@ -231,7 +231,7 @@ Sistema de espaciado de 4px (Mobile First, Apple-style)
 // Ejemplo de imagen grande (Spotify Wrapped-style)
 <img
   src="/hero-dunkin.jpg"
-  alt="Café Dunkin"
+  alt="Café Dunkin'"
   className="w-full h-80 object-cover rounded-2xl md:rounded-3xl"
 />
 ```
@@ -356,7 +356,7 @@ export default function Hero() {
             Dime qué tomas<br />y te diré quién eres
           </h1>
           <p className="text-xl md:text-2xl text-neutral-600 max-w-lg">
-            Descubre tu personalidad Dunkin con este divertido quiz. ¡Es gratis!
+            Descubre tu personalidad Dunkin' con este divertido quiz. ¡Es gratis!
           </p>
           <button className="bg-primary-500 hover:bg-primary-600 text-white px-12 py-5 rounded-2xl text-xl font-bold shadow-lg transition-colors">
             ¡Comenzar quiz!
@@ -367,7 +367,7 @@ export default function Hero() {
         <div className="aspect-4/5">
           <Image
             src="/images/hero-dunkin.jpg"
-            alt="Café Dunkin con donas"
+            alt="Café Dunkin' con donas"
             fill
             className="object-cover rounded-3xl shadow-card"
           />
@@ -405,7 +405,7 @@ export default function ResultCard({ title, description, image }: ResultCardProp
 
 ## 🎨 Recursos Visuales de Referencia
 
-- **Dunkin Chile**: [Sitio web](https://www.dunkin.cl)
+- **Dunkin' Chile**: [Sitio web](https://www.dunkin.cl)
 - **Apple Human Interface Guidelines**: [Documentación](https://developer.apple.com/design/human-interface-guidelines)
 - **Spotify Wrapped**: [Ejemplos](https://newsroom.spotify.com/us/wrapped)
 - **Duolingo Design**: [Dribbble](https://dribbble.com/search/duolingo)

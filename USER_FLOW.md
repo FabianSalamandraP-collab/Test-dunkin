@@ -19,11 +19,11 @@ Botón de **"¡Iniciar el Quiz!"** (CTA de alto contraste).
 3-10 segundos.
 
 ### Qué debe sentir el usuario
-"¡Me gusta Dunkin! Me interesa descubrir qué dice mi bebida favorita sobre mí."
+"¡Me gusta Dunkin'! Me interesa descubrir qué dice mi bebida favorita sobre mí."
 
 ### Buenas prácticas UX
 - **Mobile First**: Diseño adaptado a móvil primero.
-- **Foco en la hero**: Imagen impactante grande del producto Dunkin.
+- **Foco en la hero**: Imagen impactante grande del producto Dunkin'.
 - **Contraste alto**: Título destacado y CTA visible sin scroll.
 - **Social Proof**: Testimonios o cantidad de participantes (si aplica).
 - **Sencillez**: Una sola acción principal.
@@ -120,10 +120,10 @@ Ninguna, solo esperar.
 "¡No puedo esperar a ver mi resultado!"
 
 ### Buenas prácticas UX
-- **Feedback visual claro**: Loader que representa la identidad de Dunkin (café, donas).
+- **Feedback visual claro**: Loader que representa la identidad de Dunkin' (café, donas).
 - **Mensaje de espera**: Frase divertida como "Preparando tu café personalidad...".
 - **Transición suave**: Conecta fluidamente con la pantalla de resultado.
-- **No más de 3 segundos**: Si el cálculo es más rápido, mostar el loader mínimo.
+- **No más de 3 segundos**: Si el cálculo es más rápido, mostrar el loader mínimo.
 
 ### Microinteracciones
 - **Loader animado**: Café que se llena o donas que rotan suavemente.
@@ -153,7 +153,7 @@ Sorpresa y satisfacción.
 ### Buenas prácticas UX
 - **Resultado destacado**: Título grande y colorido.
 - **Descripción detallada**: 2-3 frases que expliquen la personalidad.
-- **Bebida asociada**: Imagen grande y atractiva de la bebida Dunkin.
+- **Bebida asociada**: Imagen grande y atractiva de la bebida Dunkin'.
 - **CTAs claros**: Botones bien diferenciados para compartir y continuar.
 - **Share-friendly**: Diseño optimizado para compartir en redes sociales.
 
@@ -161,7 +161,7 @@ Sorpresa y satisfacción.
 - **Aparición del resultado**: Efecto de "explosión" suave con partículas.
 - **Imagen hero**: Zoom-in gradual de la bebida.
 - **Botón de compartir**: Efecto de brillo al pasar el cursor.
-- **Animación de confeti**: Pequeños confeti de colores Dunkin al cargar la pantalla.
+- **Animación de confeti**: Pequeños confeti de colores Dunkin' al cargar la pantalla.
 - **Efecto hover en tarjeta**: La tarjeta del resultado se eleva al pasar el cursor.
 
 ---
@@ -214,7 +214,7 @@ Recompensa y agradecimiento.
 10-30 segundos.
 
 ### Qué debe sentir el usuario
-"¡Genial! Me encanta este beneficio. Voy a usar Dunkin pronto."
+"¡Genial! Me encanta este beneficio. Voy a usar Dunkin' pronto."
 
 ### Buenas prácticas UX
 - **Beneficio visual**: Imagen atractiva del producto o cupón.
@@ -246,7 +246,7 @@ Explorar productos y **"Ordenar Ahora"**.
 20-60 segundos.
 
 ### Qué debe sentir el usuario
-"¡Wow! Dunkin tiene productos geniales. Quiero probarlos todos."
+"¡Wow! Dunkin' tiene productos geniales. Quiero probarlos todos."
 
 ### Buenas prácticas UX
 - **Galería atractiva**: Cards grandes con imágenes de alta calidad.
@@ -266,7 +266,7 @@ Explorar productos y **"Ordenar Ahora"**.
 ## 🏁 Fin
 
 ### Objetivo
-Cerrar la experiencia de forma memorable y fomentar la regreso.
+Cerrar la experiencia de forma memorable y fomentar el regreso.
 
 ### Emoción
 Satisfacción y nostalgia.
@@ -278,16 +278,16 @@ Satisfacción y nostalgia.
 10-20 segundos.
 
 ### Qué debe sentir el usuario
-"¡Fue genial! Definitivamente volveré a Dunkin."
+"¡Fue genial! Definitivamente volveré a Dunkin'."
 
 ### Buenas prácticas UX
 - **Mensaje de agradecimiento cálido**: Frase personalizada.
-- **Redes sociales**: Botones para seguir a Dunkin Colombia.
+- **Redes sociales**: Botones para seguir a Dunkin' Colombia.
 - **CTA de regreso**: Opción clara para volver a empezar.
 - **Diseño simple**: No saturar con mucha información.
 
 ### Microinteracciones
-- **Logo animado**: Logo de Dunkin con efecto de "latido del corazón".
+- **Logo animado**: Logo de Dunkin' con efecto de "latido del corazón".
 - **Botones con hover**: Escala y cambio de color suave.
 - **Mensaje que aparece**: Frase final con animación de escritura.
 - **Fondo suave**: Fondo con efecto de gradiente que cambia lentamente.
@@ -317,9 +317,9 @@ flowchart TD
 ## Guías de Diseño Adicionales
 
 ### Paleta de Emociones
-- **Naranja Dunkin**: Diversión, energía, creatividad.
-- **Rojo Dunkin**: Pasión, amor por el café.
-- **Café/Marron**: Calidez, tradición.
+- **Naranja Dunkin'**: Diversión, energía, creatividad.
+- **Rojo Dunkin'**: Pasión, amor por el café.
+- **Café/Marrón**: Calidez, tradición.
 - **Blanco/Crema**: Sencillez, elegancia.
 
 ### Consistencia Visual
@@ -334,4 +334,4 @@ flowchart TD
 - Alternativas de texto para todas las imágenes.
 
 ---
-*Documentación creada para la campaña oficial de Dunkin Colombia - "Dime qué tomas y te diré quién eres"*
+*Documentación creada para la campaña oficial de Dunkin' Colombia - "Dime qué tomas y te diré quién eres"*

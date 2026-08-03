@@ -2,7 +2,7 @@
 
 ## ¿Quién puede contribuir?
 
-Solo el personal autorizado por Dunkin Colombia puede contribuir a este proyecto.
+Solo el personal autorizado por Dunkin' Colombia puede contribuir a este proyecto.
 
 ## Proceso de Contribución
 

@@ -21,5 +21,5 @@ public/assets/quiz-intro/
 
 - Usa PNG con fondo transparente para las bebidas.
 - Usa SVG para el logo si es posible.
-- Si aun no estan los archivos, la interfaz usa placeholders visuales.
-- Toma `manifest.example.json` como guia para nombres y rutas.
+- Si aún no están los archivos, la interfaz usa placeholders visuales.
+- Toma `manifest.example.json` como guía para nombres y rutas.

@@ -52,11 +52,11 @@ y este proyecto se adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 - Nuevas tarjetas de opción con mayor contraste, brillo y estados activos más premium.
 - Botones `Anterior`, `Continuar` y `Ver resultado` con una familia visual más sólida y consistente con marca.
 - Replanteado el tratamiento de imágenes móviles para que vivan mejor dentro de su caja, sin depender de "Ver grande".
-- Resaltadas frases clave de las 4 preguntas en naranja Dunkin para reforzar el ritmo visual del título.
+- Resaltadas frases clave de las 4 preguntas en naranja Dunkin' para reforzar el ritmo visual del título.
 
 - Mejorada la experiencia de `ResultScreen`:
 - Más personalización por personalidad usando color y acento dentro del resultado.
-- Tarjetas `Tu match Dunkin` y `La bebida que va contigo` con fondos más intensos y animación tipo humo/halo.
+- Tarjetas `Tu match Dunkin'` y `La bebida que va contigo` con fondos más intensos y animación tipo humo/halo.
 - Tarjeta de recomendación y bloque de compartir alineados visualmente al sistema de color del resultado.
 - Botones de recomendación, compartir, copiar enlace y acciones secundarias con un tratamiento más premium.
 
@@ -71,7 +71,7 @@ y este proyecto se adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ### Fixed
 
-- Corregido el logo `Dunkin` en móvil para que se perciba más grande sin verse estirado.
+- Corregido el logo `Dunkin'` en móvil para que se perciba más grande sin verse estirado.
 - Ajustados saltos visuales del carrusel provocados por textos largos en nombres de bebidas.
 - Corregidos desbalances de logos y visibilidad de iconos sociales en móvil.
 - Mejorado el encaje de imágenes en móvil para evitar recortes visibles en preguntas y resultado.

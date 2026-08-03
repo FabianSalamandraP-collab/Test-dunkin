@@ -94,7 +94,7 @@ Aplicar estas migraciones:
 - La migracion duplicada `0001_create_quiz_participants_table.sql` ya fue
   eliminada del repositorio para evitar conflictos de policies duplicadas.
 - `quiz_participants` debe permitir `INSERT` para `anon`, porque el formulario
-  guarda la informacion desde cliente.
+  guarda la información desde cliente.
 
 ## Checklist Exacto de Despliegue
 
@@ -109,7 +109,7 @@ Seguir este orden exacto:
 6. Ejecutar `npm install`.
 7. Ejecutar `npm run lint`.
 8. Ejecutar `npm run build`.
-9. Desplegar un preview.
+- 9. Desplegar un preview.
 10. Ejecutar la sync inicial de beneficios, si aplica.
 11. Ejecutar el smoke test del tracking o validar el funnel manualmente.
 12. Probar el flujo completo del quiz en preview con Supabase real.
@@ -122,12 +122,12 @@ Seguir este orden exacto:
 
 ### 1. Preparar Supabase
 
-1. Crear el proyecto Supabase de produccion.
+1. Crear el proyecto Supabase de producción.
 2. Ejecutar las migraciones del directorio `supabase/migrations`.
 3. Confirmar que existe la tabla `quiz_participants`.
 4. Confirmar que existe la tabla `campaign_benefits`.
 5. Confirmar que existen `quiz_sessions`, `quiz_answers` y `quiz_events`.
-6. Confirmar que `quiz_participants` permite insercion desde `anon` si se usara
+6. Confirmar que `quiz_participants` permite inserción desde `anon` si se usará
    el flujo legacy desde cliente.
 
 ### 2. Preparar el hosting
@@ -166,18 +166,18 @@ Este smoke test valida:
 - envío de formulario
 - clic en `Ver en Dunkin'`
 
-### 5. Ejecutar la sincronizacion inicial de beneficios
+### 5. Ejecutar la sincronización inicial de beneficios
 
 Este paso solo aplica si el entorno tiene Supabase configurado.
 
-Despues de desplegar el preview o el entorno productivo, ejecutar:
+Después de desplegar el preview o el entorno productivo, ejecutar:
 
 ```bash
 curl -X POST "https://tu-dominio-o-preview.com/api/benefits/sync" \
   -H "Authorization: Bearer TU_BENEFITS_SYNC_SECRET"
 ```
 
-### Recomendacion de seguridad
+### Recomendación de seguridad
 
 - Usar siempre el header `Authorization: Bearer ...`
 - No enviar el secreto por query string
@@ -194,11 +194,11 @@ curl -X POST "https://tu-dominio-o-preview.com/api/benefits/sync" \
 
 ### Base de datos
 
-- El formulario inserta en `quiz_participants` solo si Supabase esta configurado
+- El formulario inserta en `quiz_participants` solo si Supabase está configurado
 - El tracking guarda sesión, respuestas, finalización, abandono y clic final si
   `SUPABASE_SERVICE_ROLE_KEY` está configurada
-- La recomendacion lee beneficios desde `campaign_benefits` o degrada a `live/fallback`
-- La sincronizacion actualiza beneficios activos solo si Supabase esta configurado
+- La recomendación lee beneficios desde `campaign_benefits` o degrada a `live/fallback`
+- La sincronización actualiza beneficios activos solo si Supabase está configurado
 
 ### SEO
 

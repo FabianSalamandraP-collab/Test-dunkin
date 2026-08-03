@@ -2,7 +2,7 @@
 
 ## Descripción General
 
-Este proyecto es una aplicación web moderna desarrollada con Next.js 15 (App Router) para la campaña "Dime qué tomas y te diré quién eres" de Dunkin Colombia.
+Este proyecto es una aplicación web moderna desarrollada con Next.js 15 (App Router) para la campaña "Dime qué tomas y te diré quién eres" de Dunkin' Colombia.
 
 ## Stack Tecnológico
 

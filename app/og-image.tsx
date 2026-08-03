@@ -98,7 +98,7 @@ export default function OgImage() {
               textTransform: "uppercase",
             }}
           >
-            {"Campana Dunkin' Colombia"}
+            {"Campaña Dunkin' Colombia"}
           </span>
           <div
             style={{

@@ -1,4 +1,4 @@
-# 📚 Índice de Documentación - Dunkin Colombia
+# 📚 Índice de Documentación - Dunkin' Colombia
 
 **Campaña oficial: "Dime qué tomas y te diré quién eres"**
 

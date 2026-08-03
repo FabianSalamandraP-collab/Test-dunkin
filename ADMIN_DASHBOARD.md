@@ -2,7 +2,7 @@
 
 ## Objetivo
 
-Este módulo agrega un backoffice interno para la campaña de Dunkin Colombia en
+Este módulo agrega un backoffice interno para la campaña de Dunkin' Colombia en
 la ruta `/admin`, separado del flujo público `/quiz`.
 
 ## Rutas
@@ -75,7 +75,7 @@ Ambas exportaciones respetan los filtros activos del dashboard.
 - Conversión
 - Tiempo Promedio
 - Tasa de Abandono
-- Clics en `Ver en Dunkin`
+- Clics en `Ver en Dunkin'`
 - CTR del botón
 - Bebida con más clics
 

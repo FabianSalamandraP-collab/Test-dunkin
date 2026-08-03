@@ -3,19 +3,19 @@
 ## Objetivo
 
 Este documento sirve como lista de control final antes de entregar el proyecto
-al equipo que hara el despliegue. Se usa al final del trabajo, incluso si antes
-se hicieron mas cambios locales, ajustes de UI o deploys de prueba.
+al equipo que hará el despliegue. Se usa al final del trabajo, incluso si antes
+se hicieron más cambios locales, ajustes de UI o deploys de prueba.
 
 ## 1. Cierre de Producto
 
 - Confirmar que ya no quedan cambios visuales pendientes en intro, preguntas,
   resultado, formulario y consentimientos.
-- Confirmar que los textos finales estan aprobados.
+- Confirmar que los textos finales están aprobados.
 - Confirmar que logos, fondos, carruseles y assets finales son los correctos.
-- Confirmar que no hay placeholders, imagenes temporales ni versiones viejas de
+- Confirmar que no hay placeholders, imágenes temporales ni versiones viejas de
   assets en uso.
 
-## 2. Validacion Tecnica
+## 2. Validación Técnica
 
 Ejecutar:
 
@@ -29,7 +29,7 @@ Validar:
 
 - El proyecto compila sin errores.
 - No hay errores de lint bloqueantes.
-- La navegacion principal funciona correctamente.
+- La navegación principal funciona correctamente.
 - La landing redirige a `/quiz`.
 - El flujo completo del quiz termina sin romperse.
 
@@ -39,8 +39,8 @@ Validar:
   - `supabase/migrations/20250101000000_create_quiz_participants_table.sql`
   - `supabase/migrations/20260710090000_create_campaign_benefits_table.sql`
   - `supabase/migrations/20260724123000_prepare_quiz_tracking_schema.sql`
-- Confirmar que ambas migraciones estan versionadas en Git.
-- Confirmar que el proyecto Supabase de destino esta creado.
+- Confirmar que ambas migraciones están versionadas en Git.
+- Confirmar que el proyecto Supabase de destino está creado.
 - Confirmar que `quiz_participants` permite `INSERT` para `anon`.
 - Confirmar que `campaign_benefits` existe y puede poblarse desde el servidor.
 - Confirmar que `quiz_sessions`, `quiz_answers` y `quiz_events` existen.
@@ -77,13 +77,13 @@ Revisar en preview o entorno candidato:
 - Formulario guarda en Supabase.
 - Consentimiento obligatorio funciona correctamente.
 - Consentimiento opcional de promociones funciona por separado.
-- Enlace de politica de tratamiento de datos abre correctamente.
+- Enlace de política de tratamiento de datos abre correctamente.
 - Compartir y copiar enlace funcionan.
 - Footer y redes abren enlaces correctos.
 
 ## 6. Sync Inicial de Beneficios
 
-Ejecutar despues del deploy:
+Ejecutar después del deploy:
 
 ```bash
 curl -X POST "https://tu-preview-o-dominio.com/api/benefits/sync" \
@@ -109,10 +109,10 @@ Confirmar que no se entrega:
 - archivos temporales
 - backups o dumps
 
-Confirmar tambien:
+Confirmar también:
 
 - No hay secretos hardcodeados.
-- No hay rutas locales personales en documentacion o codigo.
+- No hay rutas locales personales en documentación o código.
 - No hay archivos de prueba que no deban vivir en el repo.
 
 ## 8. Git y Versionado
@@ -120,12 +120,12 @@ Confirmar tambien:
 Antes de entregar:
 
 - Hacer `git status`.
-- Confirmar que los archivos importantes si estan incluidos.
+- Confirmar que los archivos importantes sí están incluidos.
 - Confirmar que docs y migraciones nuevas no quedaron fuera del commit.
 - Confirmar que el commit final describe correctamente la entrega.
 - Hacer push del estado final que se va a entregar.
 
-## 9. Documentacion Minima Que Debe Viajar
+## 9. Documentación Mínima Que Debe Viajar
 
 - `README.md`
 - `DEPLOY.md`
@@ -134,7 +134,7 @@ Antes de entregar:
 - `CHANGELOG.md`
 - `supabase/migrations/`
 
-## 10. Ultimo OK de Entrega
+## 10. Último OK de Entrega
 
 El proyecto queda listo para handoff cuando se cumple todo esto:
 
@@ -144,7 +144,7 @@ El proyecto queda listo para handoff cuando se cumple todo esto:
 - Variables confirmadas
 - Sync inicial documentada
 - Tracking validado
-- Documentacion completa
+- Documentación completa
 - Repo limpio para entrega
 
 ## Nota Operativa

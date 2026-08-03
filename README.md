@@ -1,10 +1,10 @@
-# Campaña Dunkin Colombia - Dime qué tomas y te diré quién eres
+# Campaña Dunkin' Colombia - Dime qué tomas y te diré quién eres
 
-Aplicación profesional de Next.js para la campaña oficial de Dunkin Colombia.
+Aplicación profesional de Next.js para la campaña oficial de Dunkin' Colombia.
 
 ## 🛡️ Seguridad y Legal
 
-- **Licencia**: Propiedad exclusiva de Dunkin Colombia (ver [LICENSE](LICENSE))
+- **Licencia**: Propiedad exclusiva de Dunkin' Colombia (ver [LICENSE](LICENSE))
 - **Seguridad**: Leer [SECURITY.md](SECURITY.md) para conocer las políticas de seguridad
 - **Código de Conducta**: [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
 - **Cómo Contribuir**: [CONTRIBUTING.md](CONTRIBUTING.md) (solo personal autorizado)
@@ -36,7 +36,7 @@ Aplicación profesional de Next.js para la campaña oficial de Dunkin Colombia.
 - `supabase/`: Migraciones de base de datos
 - `public/`: Archivos estáticos
 
-## Instalacion
+## Instalación
 
 1. Copia el archivo de ejemplo de variables de entorno:
 
@@ -51,13 +51,13 @@ Aplicación profesional de Next.js para la campaña oficial de Dunkin Colombia.
    npm install
    ```
 
-## Ejecucion en Desarrollo
+## Ejecución en Desarrollo
 
 ```bash
 npm run dev
 ```
 
-## Build para Produccion
+## Build para Producción
 
 ```bash
 npm run build
@@ -73,10 +73,10 @@ npm start
 
 ## Despliegue
 
-La aplicacion esta preparada para desplegarse en cualquier hosting compatible
-con Next.js. El flujo recomendado y documentado para handoff tecnico esta en:
+La aplicación está preparada para desplegarse en cualquier hosting compatible
+con Next.js. El flujo recomendado y documentado para handoff técnico está en:
 
-- [DEPLOY.md](DEPLOY.md) para la guia completa de despliegue
+- [DEPLOY.md](DEPLOY.md) para la guía completa de despliegue
 - [ENTREGA_TEST.md](ENTREGA_TEST.md) para el checklist corto de entrega
 
 ### Variables de Entorno
@@ -95,19 +95,19 @@ necesarias. Nunca subas `.env.local` al repositorio.
 ## Importante
 
 - Nunca subas credenciales al repositorio
-- Usa siempre variables de entorno para informacion sensible
+- Usa siempre variables de entorno para información sensible
 - El proyecto depende de Supabase real para formulario y beneficios
-- La arquitectura SQL y de tracking del quiz esta documentada en
+- La arquitectura SQL y de tracking del quiz está documentada en
   `SUPABASE_QUIZ_DATABASE.md`
-- La API de tracking y su smoke test local estan documentados en
+- La API de tracking y su smoke test local están documentados en
   `QUIZ_TRACKING_API.md`
-- La migracion preparada para analytics y eventos del quiz es
+- La migración preparada para analytics y eventos del quiz es
   `20260724123000_prepare_quiz_tracking_schema.sql`
-- La migracion valida de `quiz_participants` es
+- La migración válida de `quiz_participants` es
   `20250101000000_create_quiz_participants_table.sql`
-- Cumplimiento con la Ley de Proteccion de Datos Personales de Colombia
+- Cumplimiento con la Ley de Protección de Datos Personales de Colombia
   (Ley 1581 de 2012)
 
 ## Licencia
 
-Propiedad exclusiva de Dunkin Colombia. Todos los derechos reservados.
+Propiedad exclusiva de Dunkin' Colombia. Todos los derechos reservados.
