@@ -149,7 +149,7 @@ const DUNKIN_SOCIAL_LINKS = [
   {
     id: "facebook",
     label: "Facebook",
-    href: "https://www.facebook.com/DunkinColombia/?locale=es_LA",
+    href: "https://www.facebook.com/DunkinColombia/",
     icon: Facebook,
     accentClass: "text-[#8A6040] lg:text-[#6F4D37]",
   },
