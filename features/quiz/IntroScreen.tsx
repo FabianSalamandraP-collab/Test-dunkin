@@ -751,14 +751,14 @@ export function IntroScreen() {
                   <div className="space-y-2 lg:hidden">
                     <div className="pt-1">
                       <div
-                        className={`bg-white/55 mx-auto w-full max-w-[248px] overflow-hidden rounded-[1.65rem] border border-[#F0DFD0] p-2.5 shadow-[0_18px_40px_rgba(89,53,17,0.12)] ${
+                        className={`mx-auto flex w-full max-w-[248px] items-center justify-center overflow-visible ${
                           showHeadlineFallback ? "hidden" : ""
-                        } flex aspect-square items-center justify-center`}
+                        }`}
                       >
                         <img
                           src="/assets/quiz-intro/headlines/dime-que-tomas.webp"
                           alt="Dime qué tomas y te diré quién eres"
-                          className="h-full w-full select-none object-contain"
+                          className="h-auto w-full select-none object-contain"
                           onError={(event) => {
                             event.currentTarget.style.display = "none";
                             setShowHeadlineFallback(true);
@@ -779,14 +779,14 @@ export function IntroScreen() {
 
                   <div className="hidden max-w-[410px] space-y-2.5 text-[#4F2B1B] lg:block">
                     <div
-                      className={`w-full max-w-[480px] overflow-hidden rounded-[1.85rem] border border-[rgba(240,223,208,0.72)] bg-[rgba(251,246,240,0.62)] p-2.5 shadow-[0_18px_40px_rgba(89,53,17,0.09)] lg:border-0 lg:bg-[rgba(251,246,240,0.68)] lg:shadow-[0_20px_48px_rgba(89,53,17,0.1)] ${
+                      className={`flex w-full max-w-[480px] items-center justify-center overflow-visible ${
                         showHeadlineFallback ? "hidden" : ""
-                      } flex aspect-square items-center justify-center`}
+                      }`}
                     >
                       <img
                         src="/assets/quiz-intro/headlines/dime-que-tomas.webp"
                         alt="Dime qué tomas y te diré quién eres"
-                        className="h-full w-full select-none object-contain"
+                        className="h-auto w-full select-none object-contain"
                         onError={(event) => {
                           event.currentTarget.style.display = "none";
                           setShowHeadlineFallback(true);
