@@ -854,7 +854,7 @@ export function IntroScreen() {
                     </motion.div>
                   </div>
 
-                  <div className="flex flex-col items-center space-y-1.5 -mt-3 pt-0 sm:-mt-4 lg:mt-0 lg:items-start">
+                  <div className="flex flex-col items-center space-y-1.5 -mt-7 pt-0 sm:-mt-4 lg:mt-0 lg:items-start">
                     <Button
                       size="lg"
                       onClick={handleStartQuiz}
