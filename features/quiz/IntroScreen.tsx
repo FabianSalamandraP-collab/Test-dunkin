@@ -679,12 +679,12 @@ export function IntroScreen() {
           <div className="pointer-events-none absolute right-0 top-[15%] hidden h-[72%] w-[120px] bg-[radial-gradient(circle_at_right,rgba(242,111,108,0.12)_0%,rgba(255,255,255,0)_72%)] lg:block" />
 
           <div className="relative">
-            <div className="relative z-10 flex flex-col items-center justify-center gap-3 px-[1.6rem] sm:flex-row sm:justify-between sm:gap-4 sm:px-0 lg:grid lg:grid-cols-[440px_minmax(0,1fr)] lg:items-center lg:gap-6">
+            <div className="relative z-10 flex flex-col items-center justify-center gap-3 px-[1.6rem] sm:flex-row sm:justify-between sm:gap-4 sm:px-0 lg:grid lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:items-center lg:gap-6">
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.45, delay: 0.08 }}
-                className="relative mx-auto grid w-[14.5rem] grid-cols-[6.35rem_auto_6.95rem] items-center text-[2rem] font-black tracking-[-0.04em] text-[#FF7A00] sm:mx-0 sm:flex sm:w-auto sm:items-center sm:gap-4 lg:w-full lg:max-w-[410px] lg:justify-self-center lg:justify-center"
+                className="relative mx-auto grid w-[14.5rem] grid-cols-[6.35rem_auto_6.95rem] items-center text-[2rem] font-black tracking-[-0.04em] text-[#FF7A00] sm:mx-0 sm:flex sm:w-auto sm:items-center sm:gap-4 lg:col-start-2 lg:w-full lg:max-w-[410px] lg:justify-self-center lg:justify-center"
               >
                 <div className="flex h-[5.45rem] items-center justify-center pr-2 sm:h-[4.5rem] sm:pr-0 lg:h-[4.5rem]">
                   {!showLogoFallback ? (
@@ -724,7 +724,7 @@ export function IntroScreen() {
                 onClick={() => setShowHowItWorks((current) => !current)}
                 aria-expanded={showHowItWorks}
                 aria-controls="how-it-works-panel"
-                className="lg:bg-white/68 items-center gap-2 font-display text-[0.84rem] font-extrabold uppercase tracking-[-0.03em] lg:-mt-8 lg:justify-self-end lg:border-0 lg:shadow-[0_10px_24px_rgba(89,53,17,0.08)]"
+                className="lg:bg-white/68 items-center gap-2 font-display text-[0.84rem] font-extrabold uppercase tracking-[-0.03em] lg:col-start-3 lg:-mt-8 lg:justify-self-end lg:border-0 lg:shadow-[0_10px_24px_rgba(89,53,17,0.08)]"
               >
                 <CircleHelp className="h-4 w-4 text-[#C9833A]" />
                 <span className="hidden sm:inline">
@@ -811,7 +811,7 @@ export function IntroScreen() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.45, delay: 0.12 }}
-                      className="hidden items-center gap-2.5 text-center lg:-mt-5 lg:flex lg:flex-col"
+                      className="hidden items-center gap-2.5 text-center lg:-mt-7 lg:flex lg:flex-col"
                     >
                       <div className="relative">
                         <motion.span
@@ -854,7 +854,7 @@ export function IntroScreen() {
                     </motion.div>
                   </div>
 
-                  <div className="flex flex-col items-center space-y-1.5 -mt-2 pt-0 sm:-mt-3 lg:mt-0 lg:items-start">
+                  <div className="flex flex-col items-center space-y-1.5 -mt-3 pt-0 sm:-mt-4 lg:mt-0 lg:items-start">
                     <Button
                       size="lg"
                       onClick={handleStartQuiz}
