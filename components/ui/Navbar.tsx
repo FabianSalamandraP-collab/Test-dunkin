@@ -34,7 +34,7 @@ const Navbar = ({ logo, onLogoClick }: NavbarProps) => {
                   <Coffee className="text-white h-6 w-6" />
                 </div>
                 <span className="text-xl font-bold text-neutral-900">
-                  Dunkin'
+                  {"Dunkin'"}
                 </span>
               </div>
             )}

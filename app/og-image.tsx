@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "Dime qu\u00E9 tomas y te dir\u00E9 qui\u00E9n eres | Dunkin' Colombia";
+export const alt =
+  "Dime qu\u00E9 tomas y te dir\u00E9 qui\u00E9n eres | Dunkin' Colombia";
 export const size = {
   width: 1200,
   height: 630,
