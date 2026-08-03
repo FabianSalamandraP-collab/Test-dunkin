@@ -82,7 +82,17 @@ const GENERIC_DRINK_KEYWORDS = [
 
 const RESULT_KEYWORDS: Record<string, string[]> = {
   creative: ["iced latte", "latte", "cappuccino", "chai", "cafe", "café"],
-  balanced: ["ice te", "ice té", "ice tea", "iced tea", "tea", "té", "te"],
+  balanced: [
+    "iced te",
+    "iced té",
+    "ice te",
+    "ice té",
+    "ice tea",
+    "iced tea",
+    "tea",
+    "té",
+    "te",
+  ],
   energetic: ["refresher", "mango", "piña", "pina", "dragonfruit", "limonada"],
   passionate: ["frutibatido", "batido", "frozen", "dulce", "shake"],
 };
@@ -97,7 +107,17 @@ const RESULT_FAMILY_KEYWORDS: Record<string, string[]> = {
     "chai",
     "iced",
   ],
-  balanced: ["ice te", "ice té", "ice tea", "iced tea", "tea", "té", "te"],
+  balanced: [
+    "iced te",
+    "iced té",
+    "ice te",
+    "ice té",
+    "ice tea",
+    "iced tea",
+    "tea",
+    "té",
+    "te",
+  ],
   energetic: [
     "refresher",
     "mango",

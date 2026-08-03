@@ -24,7 +24,7 @@ export const DUNKIN_OFFICIAL_LINKS: Record<
   },
   balanced: {
     resultId: "balanced",
-    drinkLabel: "Ice Té",
+    drinkLabel: "Iced Tea",
     url: null,
   },
   energetic: {

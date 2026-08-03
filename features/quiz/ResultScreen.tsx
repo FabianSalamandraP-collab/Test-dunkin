@@ -108,7 +108,7 @@ function getResultTraitIcon(trait: string) {
 
 const benefitRecommendationAlternatives: Record<string, string[]> = {
   creative: ["Cappuccino", "Chai", "Americanos"],
-  balanced: ["Ice Té", "Tés calientes", "Iced Tea"],
+  balanced: ["Iced Tea", "Tés calientes", "Iced Tea"],
   energetic: ["Refreshers", "Limonadas", "Sodas Dunkin'"],
   passionate: ["Frutibatidos", "Frozen", "Bebidas dulces"],
 };
@@ -1234,7 +1234,7 @@ export function ResultScreen() {
                             >
                               <span>
                                 {isClaimingBenefit
-                                  ? "Abriendo Dunkin..."
+                                  ? "Abriendo Dunkin'..."
                                   : formSubmitted
                                   ? benefitData.cta
                                   : "Ver plan recomendado"}
@@ -1377,7 +1377,7 @@ export function ResultScreen() {
                               className={`w-full justify-center border-[#BE2F62] bg-[#CF3F73] px-4 font-sans text-[0.92rem] text-[#FFF8F3] shadow-[0_14px_26px_rgba(207,63,115,0.22)] hover:border-[#CF3F73] hover:bg-[#B83263] disabled:cursor-wait disabled:opacity-70 sm:w-auto sm:min-w-[240px] ${benefitHighlightClass}`}
                             >
                               {isClaimingBenefit
-                                ? "Abriendo Dunkin..."
+                                ? "Abriendo Dunkin'..."
                                 : formSubmitted
                                   ? benefitData.cta
                                   : "Ver plan recomendado"}

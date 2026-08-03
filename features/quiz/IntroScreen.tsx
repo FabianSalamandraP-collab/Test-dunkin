@@ -46,10 +46,10 @@ interface IntroDrink {
 const INTRO_DRINKS: IntroDrink[] = [
   {
     id: "cold-brew",
-    name: "Ice Té",
+    name: "Iced Tea",
     accent: "#5A361F",
     textColor: "#4C2B18",
-    collectionLabel: "TEAS & FRÍO",
+    collectionLabel: "TEAS & FRÍOS",
     teaser: "Ligero, fresco y listo para acompañar cualquier parche.",
     cup: "cold-brew",
     imageSrc: "/assets/quiz-intro/drinks/intro-drink-carousel-cold-brew.webp",

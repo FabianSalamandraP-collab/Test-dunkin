@@ -193,10 +193,10 @@ export const QUIZ_RESULTS: QuizResult[] = [
     title: "CUIDADOR MENTOR",
     description:
       "Escuchas, acompañas y entiendes antes de reaccionar. Eres esa persona que baja el ruido, sostiene al parche y le da sentido al momento.",
-    recommendedDrink: "Ice Té",
+    recommendedDrink: "Iced Tea",
     drinkDescription:
       "Profundo, equilibrado y con carácter. Es una bebida para tu mood tranquilo, de buena conversación y de esos parches que se disfrutan sin afán.",
-    benefit: "Productos y promociones oficiales para Ice Té",
+    benefit: "Productos y promociones oficiales para Iced Tea",
     image: "/assets/quiz-results/lifestyle/result-lifestyle-ice-te.webp",
     mobileImageScale: 1,
     desktopImageScale: 1.06,
