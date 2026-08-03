@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "Dime qué tomas y te diré quién eres | Dunkin' Colombia";
+export const alt = "Dime qu\u00E9 tomas y te dir\u00E9 qui\u00E9n eres | Dunkin' Colombia";
 export const size = {
   width: 1200,
   height: 630,
@@ -98,7 +98,7 @@ export default function OgImage() {
               textTransform: "uppercase",
             }}
           >
-            {"Campaña Dunkin' Colombia"}
+            {"Campa\u00F1a Dunkin' Colombia"}
           </span>
           <div
             style={{
@@ -112,10 +112,10 @@ export default function OgImage() {
               textTransform: "uppercase",
             }}
           >
-            <span>Dime que</span>
+            <span>Dime qu\u00E9</span>
             <span>Tomas</span>
-            <span style={{ color: "#ff7a00" }}>Y te dire</span>
-            <span>Quien eres</span>
+            <span style={{ color: "#ff7a00" }}>Y te dir\u00E9</span>
+            <span>Qui\u00E9n eres</span>
           </div>
           <p
             style={{
