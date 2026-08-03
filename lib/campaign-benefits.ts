@@ -398,7 +398,7 @@ function extractRemixContext(html: string) {
   );
 
   if (!contextMatch?.[1]) {
-    throw new Error("No se pudo leer el catalogo de Dunkin desde el HTML");
+    throw new Error("No se pudo leer el catálogo de Dunkin' desde el HTML");
   }
 
   return JSON.parse(contextMatch[1]) as Record<string, unknown>;
@@ -471,7 +471,7 @@ export async function fetchLiveCampaignBenefits() {
   });
 
   if (!response.ok) {
-    throw new Error(`No se pudo consultar Dunkin: ${response.status}`);
+    throw new Error(`No se pudo consultar Dunkin': ${response.status}`);
   }
 
   const html = await response.text();
@@ -480,7 +480,7 @@ export async function fetchLiveCampaignBenefits() {
 
   if (!catalogNode?.products) {
     throw new Error(
-      "No se encontraron productos dentro del catalogo de Dunkin"
+      "No se encontraron productos dentro del catálogo de Dunkin'"
     );
   }
 

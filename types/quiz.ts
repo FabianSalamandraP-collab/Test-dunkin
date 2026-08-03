@@ -1,4 +1,4 @@
-// Tipos de datos para el quiz de Dunkin Colombia
+// Tipos de datos para el quiz de Dunkin' Colombia
 
 // Tipo para una opción de respuesta
 export interface QuizOption {

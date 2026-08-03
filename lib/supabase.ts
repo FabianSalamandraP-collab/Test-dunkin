@@ -1,4 +1,4 @@
-// Cliente de Supabase para la campaña de Dunkin Colombia
+// Cliente de Supabase para la campaña de Dunkin' Colombia
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { createClient as createBrowserClient } from "@/utils/supabase/client";
 

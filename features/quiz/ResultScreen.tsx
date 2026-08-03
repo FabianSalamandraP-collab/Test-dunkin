@@ -347,7 +347,7 @@ export function ResultScreen() {
     ? coffeeStampSrc
     : activeGeneralStamp.src;
   const activeStampAlt = coffeeStampResultIds.has(result.id)
-    ? "Sello cafe 100% colombiano"
+    ? "Sello café 100% colombiano"
     : activeGeneralStamp.alt;
   const benefitHighlightClass =
     formSubmitted && isBenefitHighlighted

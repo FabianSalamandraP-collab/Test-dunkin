@@ -1,4 +1,4 @@
-// Preguntas de ejemplo para el quiz de Dunkin Colombia
+// Preguntas de ejemplo para el quiz de Dunkin' Colombia
 // Estas podrían reemplazarse con datos de Supabase en el futuro
 import { QuizQuestion, QuizResult } from "@/types/quiz";
 
