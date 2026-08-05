@@ -6,13 +6,21 @@ dominio o subdominio final.
 
 ## 📌 Documentación rápida para entrega
 
-Antes de tocar nada, abre estos 3 archivos en orden:
+Si el equipo que recibe el proyecto solo va a **tocar front y UI**, empieza por aquí:
 
-1. [ENTREGA_TEST.md](ENTREGA_TEST.md) — checklist corto y operativo de handoff
-2. [GUIA_DEPLOY_DOMINIO.md](GUIA_DEPLOY_DOMINIO.md) — cómo publicar, modo
-   prueba, modo real y conexión de dominio/subdominio
-3. [GUIA_DASHBOARD_RESULTADOS.md](GUIA_DASHBOARD_RESULTADOS.md) — cómo habilitar
-   e ingresar al dashboard administrativo con los resultados del quiz
+1. [FRONT_HANDOFF.md](FRONT_HANDOFF.md) — guía para equipo de front: qué
+   tocar, qué NO tocar, comandos, assets y smoke test visual rápido
+
+Después, según el perfil:
+
+- Si publican el proyecto en hosting y dominio:
+  1. [ENTREGA_TEST.md](ENTREGA_TEST.md) — checklist corto y operativo de handoff
+  2. [GUIA_DEPLOY_DOMINIO.md](GUIA_DEPLOY_DOMINIO.md) — cómo publicar, modo
+     prueba, modo real y conexión de dominio/subdominio
+- Si activan analítica y resultados:
+  3. [GUIA_DASHBOARD_RESULTADOS.md](GUIA_DASHBOARD_RESULTADOS.md) — cómo
+     habilitar e ingresar al dashboard administrativo con los resultados del
+     quiz
 
 Documentación técnica complementaria:
 
