@@ -56,15 +56,30 @@ Como la base de datos la manejarán ustedes, antes de publicar deben:
 8. Cargar `SUPABASE_SERVICE_ROLE_KEY` para sincronizar beneficios y guardar el
    tracking desde el servidor.
 
-## Assets obligatorios antes de publicar
+## Assets incluidos y versión entregada
 
-Todavía faltan assets finales del quiz. Antes de entrega revisar:
+Todos los assets del test ya están dentro del repositorio en `public/assets/` y
+commitados en Git. No se requiere subir imágenes manualmente.
 
-1. `public/assets/quiz-questions/`
-2. `public/assets/quiz-results/`
-3. `public/assets/quiz-benefits/gift-icon.png`
+Inventario visual incluido:
 
-Si esos archivos no existen, el sitio no se rompe, pero mostrará fallbacks visuales en preguntas y resultados.
+- `public/assets/quiz-intro/backgrounds/` (fondos mobile y desktop)
+- `public/assets/quiz-intro/borders/` (piezas laterales si se desean volver a usar)
+- `public/assets/quiz-intro/drinks/` (imágenes del carrusel de bebidas)
+- `public/assets/quiz-intro/headlines/` (headline editorial de la intro)
+- `public/assets/quiz-intro/logo/` (Dunkin' y YES ALL DAY)
+- `public/assets/quiz-questions/backgrounds/` (fondos para preguntas)
+- `public/assets/quiz-results/backgrounds/` (fondo del resultado)
+- `public/assets/quiz-results/lifestyle/` (imágenes por bebida)
+- `public/assets/quiz-results/personalities/` (iconos de personalidad)
+- `public/assets/quiz-results/stamps/` (sellos del resultado)
+- `public/assets/quiz-benefits/gift-icon.svg`
+
+Si algún hosting requiere validación rápida, el inventario detallado está en:
+- `public/assets/QUIZ_ASSETS.md`
+
+> Importante: la referencia a `gift-icon.png` de versiones anteriores ya fue
+> reemplazada por `gift-icon.svg` en el código actual. No hace falta añadir PNG.
 
 ## Flujo de entrega recomendado
 

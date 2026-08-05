@@ -11,7 +11,13 @@ depender de contexto adicional ni de configuraciones ocultas.
 - Framework: `Next.js 15`
 - Runtime: `Node.js 20+`
 - Base de datos: `Supabase / PostgreSQL`
-- Hosting recomendado: `Vercel`
+- Hosting: cualquier plataforma compatible con Next.js (no depende de una concreta)
+- Opciones habituales (ninguna obligatoria):
+  - Vercel
+  - Netlify
+  - Cloudflare Pages
+  - AWS (Amplify, ECS, EC2...)
+  - Otros hostings Node.js 20+
 - Comandos de produccion:
 
 ```bash
