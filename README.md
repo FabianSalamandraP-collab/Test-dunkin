@@ -22,6 +22,11 @@ Después, según el perfil:
      habilitar e ingresar al dashboard administrativo con los resultados del
      quiz
 
+Si piden explícitamente "dónde está el HTML":
+
+- [HTML_LOCATIONS.md](HTML_LOCATIONS.md) — mapa de equivalencias entre rutas
+  URL y archivos TSX/layouts que generan el HTML final del navegador
+
 Documentación técnica complementaria:
 
 - [DEPLOY.md](DEPLOY.md) — guía completa de despliegue
