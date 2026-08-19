@@ -1,7 +1,6 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 
 export async function adminLogin(formData: FormData) {
@@ -44,25 +43,10 @@ export async function adminLogin(formData: FormData) {
       };
     }
 
-    const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser();
-
-    if (userError || !user?.email) {
-      return {
-        error:
-          userError?.message ||
-          "La sesión no pudo ser inicializada. Por favor, recarga la página e intenta de nuevo.",
-      };
-    }
-
-    redirect("/admin");
+    return {
+      success: true as const,
+    };
   } catch (error) {
-    if (typeof error === "object" && error !== null && "digest" in error) {
-      throw error;
-    }
-
     const message =
       error instanceof Error
         ? error.message

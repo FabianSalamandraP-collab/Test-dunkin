@@ -1,4 +1,5 @@
 import { createClient as createSupabaseAdmin } from "@supabase/supabase-js";
+import { AuthSessionMissingError, isAuthError } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { NextResponse } from "next/server";
@@ -63,6 +64,23 @@ export async function getAdminAccessState(): Promise<AdminAccessState> {
   } = await supabase.auth.getUser();
 
   if (authError) {
+    const isMissingSession =
+      authError instanceof AuthSessionMissingError ||
+      authError.message === "Auth session missing!" ||
+      (isAuthError(authError) && authError.name === "AuthSessionMissingError");
+
+    if (isMissingSession) {
+      return {
+        ready: true,
+        configured: true,
+        authenticated: false,
+        isAdmin: false,
+        user: null,
+        adminProfile: null,
+        reason: null,
+      };
+    }
+
     return {
       ready: false,
       configured: true,
