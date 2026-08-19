@@ -1,6 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 
 export async function adminLogin(formData: FormData) {
@@ -43,10 +44,12 @@ export async function adminLogin(formData: FormData) {
       };
     }
 
-    return {
-      success: true as const,
-    };
+    redirect("/admin");
   } catch (error) {
+    if (typeof error === "object" && error !== null && "digest" in error) {
+      throw error;
+    }
+
     const message =
       error instanceof Error
         ? error.message

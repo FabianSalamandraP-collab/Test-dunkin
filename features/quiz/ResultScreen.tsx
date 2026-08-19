@@ -9,13 +9,17 @@ import {
   Check,
   Coffee,
   Compass,
+  Facebook,
   Feather,
   Heart,
+  Instagram,
+  MessageCircle,
   RefreshCw,
   Share2,
   Smile,
   Snowflake,
   SunMedium,
+  X as XIcon,
   type LucideIcon,
   Users,
   Zap,
@@ -318,6 +322,8 @@ export function ResultScreen() {
   const [resultImageHidden, setResultImageHidden] = useState(false);
   const [desktopLifestyleHidden, setDesktopLifestyleHidden] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
+  const [showShareMenu, setShowShareMenu] = useState(false);
+  const shareMenuWrapperRef = useRef<HTMLDivElement | null>(null);
   const [benefitIconHidden, setBenefitIconHidden] = useState(false);
   const [dynamicBenefit, setDynamicBenefit] =
     useState<ResolvedCampaignBenefit | null>(null);
@@ -674,25 +680,172 @@ export function ResultScreen() {
     return () => window.cancelAnimationFrame(frame);
   }, [isBenefitLoading, shouldGuideToBenefitCta]);
 
-  const handleShare = () => {
+  useEffect(() => {
+    if (!showShareMenu) {
+      return;
+    }
+
+    const handlePointerDown = (event: MouseEvent | TouchEvent) => {
+      const wrapper = shareMenuWrapperRef.current;
+
+      if (!wrapper) {
+        return;
+      }
+
+      if (wrapper.contains(event.target as Node | null)) {
+        return;
+      }
+
+      setShowShareMenu(false);
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setShowShareMenu(false);
+      }
+    };
+
+    window.addEventListener("mousedown", handlePointerDown);
+    window.addEventListener("touchstart", handlePointerDown, { passive: true });
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("mousedown", handlePointerDown);
+      window.removeEventListener("touchstart", handlePointerDown);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [showShareMenu]);
+
+  const getSharePayload = () => {
     const shareText =
       "Ya descubrí qué bebida Dunkin' va con mi mood y mi parche. Haz el test y mira cuál te sale a ti.";
+    const shareUrl =
+      typeof window !== "undefined" ? window.location.href : "";
 
-    if (navigator.share) {
-      navigator.share({
+    return {
+      shareText,
+      shareUrl,
+      combined: `${shareText} ${shareUrl}`.trim(),
+    };
+  };
+
+  const copyShareToClipboard = () => {
+    const { combined } = getSharePayload();
+
+    const markCopied = () => {
+      setCopySuccess(true);
+      window.setTimeout(() => setCopySuccess(false), 2200);
+    };
+
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(combined).then(markCopied).catch(() => {});
+      return;
+    }
+
+    try {
+      const textarea = document.createElement("textarea");
+      textarea.value = combined;
+      textarea.style.position = "fixed";
+      textarea.style.opacity = "0";
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textarea);
+      markCopied();
+    } catch {
+      /* ignore clipboard fallback */
+    }
+  };
+
+  const openSystemShareSheet = async () => {
+    const { shareText, shareUrl } = getSharePayload();
+
+    if (typeof navigator.share !== "function") {
+      copyShareToClipboard();
+      return;
+    }
+
+    try {
+      await navigator.share({
         title: "Comparte tu match Dunkin'",
         text: shareText,
-        url: window.location.href,
+        url: shareUrl,
       });
-    } else {
-      navigator.clipboard
-        .writeText(`${shareText} ${window.location.href}`)
-        .then(() => {
-          setCopySuccess(true);
-          window.setTimeout(() => setCopySuccess(false), 2200);
-        })
-        .catch(() => {});
+    } catch {
+      /* user cancelled or unsupported */
     }
+  };
+
+  const handleShare = async () => {
+    if (typeof navigator.share === "function") {
+      void openSystemShareSheet();
+      return;
+    }
+
+    setShowShareMenu((current) => !current);
+  };
+
+  const openWhatsAppPrivate = () => {
+    const { combined } = getSharePayload();
+    const target = `https://api.whatsapp.com/send?text=${encodeURIComponent(
+      combined
+    )}`;
+    window.open(target, "_blank", "noopener,noreferrer");
+    setShowShareMenu(false);
+  };
+
+  const openFacebookPost = () => {
+    const { shareUrl, shareText } = getSharePayload();
+    const target = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+      shareUrl
+    )}&quote=${encodeURIComponent(shareText)}`;
+    window.open(target, "_blank", "noopener,noreferrer");
+    setShowShareMenu(false);
+  };
+
+  const openXPost = () => {
+    const { shareUrl, shareText } = getSharePayload();
+    const target = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+      shareText
+    )}&url=${encodeURIComponent(shareUrl)}`;
+    window.open(target, "_blank", "noopener,noreferrer");
+    setShowShareMenu(false);
+  };
+
+  const openFacebookStories = () => {
+    const { shareUrl } = getSharePayload();
+    const fbAppTarget = `fb://stories/?background_top_color=%23EF6A00&background_bottom_color=%23FF0068&link=${encodeURIComponent(
+      shareUrl
+    )}`;
+
+    window.open(fbAppTarget, "_blank", "noopener,noreferrer");
+
+    window.setTimeout(() => {
+      const fallback = `https://www.facebook.com/stories/create/?link=${encodeURIComponent(
+        shareUrl
+      )}`;
+      window.open(fallback, "_blank", "noopener,noreferrer");
+    }, 380);
+
+    setShowShareMenu(false);
+  };
+
+  const openInstagramStories = () => {
+    const { shareUrl } = getSharePayload();
+    const igAppTarget = `instagram://stories?source_application=com.dunkin&background_top_color=%23EF6A00&background_bottom_color=%23FF0068&link=${encodeURIComponent(
+      shareUrl
+    )}`;
+
+    window.open(igAppTarget, "_blank", "noopener,noreferrer");
+
+    window.setTimeout(() => {
+      const fallback = `https://www.instagram.com/stories/create/?link=${encodeURIComponent(
+        shareUrl
+      )}`;
+      window.open(fallback, "_blank", "noopener,noreferrer");
+    }, 380);
+
+    setShowShareMenu(false);
   };
 
   const handleClaimBenefit = async () => {
@@ -1492,19 +1645,212 @@ export function ResultScreen() {
                 </div>
 
                 <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap lg:mx-auto lg:w-full lg:max-w-[720px] lg:justify-center lg:px-8 lg:pb-5 xl:max-w-[760px] xl:px-10 xl:pb-6">
-                  <Button
-                    variant="quizCta"
-                    size="quiz"
-                    onClick={handleShare}
-                    className="w-full justify-center px-4 text-[0.92rem] sm:w-auto sm:min-w-[220px] lg:min-w-[236px]"
-                  >
-                    {copySuccess ? "Enlace copiado" : "Compartir tu match"}
-                    {copySuccess ? (
-                      <Check className="ml-2 h-4 w-4" strokeWidth={2.5} />
-                    ) : (
-                      <Share2 className="ml-2 h-4 w-4" strokeWidth={2.2} />
-                    )}
-                  </Button>
+                  <div className="relative w-full sm:w-auto" ref={shareMenuWrapperRef}>
+                    <Button
+                      variant="quizCta"
+                      size="quiz"
+                      onClick={handleShare}
+                      className="w-full justify-center px-4 text-[0.92rem] sm:w-auto sm:min-w-[220px] lg:min-w-[236px]"
+                    >
+                      {copySuccess ? "Enlace copiado" : "Compartir tu match"}
+                      {copySuccess ? (
+                        <Check className="ml-2 h-4 w-4" strokeWidth={2.5} />
+                      ) : (
+                        <Share2 className="ml-2 h-4 w-4" strokeWidth={2.2} />
+                      )}
+                    </Button>
+
+                    {showShareMenu ? (
+                      <motion.div
+                        role="dialog"
+                        aria-label="Opciones para compartir tu match Dunkin'"
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 8 }}
+                        transition={{ duration: 0.18 }}
+                        className="border-[#F2DCC9] z-[70] absolute left-1/2 right-auto top-[calc(100%+0.6rem)] w-[min(92vw,420px)] -translate-x-1/2 rounded-[1.4rem] border bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(252,244,236,0.98)_100%)] p-4 shadow-[0_26px_70px_rgba(93,57,24,0.22)] backdrop-blur-xl sm:w-[420px]"
+                      >
+                        <div className="flex items-center justify-between gap-3 px-1 pb-3">
+                          <div className="flex items-center gap-2">
+                            <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#EF6A00]/10 text-[#EF6A00]">
+                              <Share2 className="h-4 w-4" strokeWidth={2} />
+                            </span>
+                            <div>
+                              <p className="font-display text-[0.95rem] uppercase tracking-[-0.02em] text-[#3E342F]">
+                                Comparte tu match
+                              </p>
+                              <p className="font-sans text-[0.78rem] text-[#715F54]">
+                                Elige cómo lo quieres publicar o enviar.
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="space-y-4">
+                          <div>
+                            <p className="mb-2 px-1 font-sans text-[0.72rem] uppercase tracking-[0.14em] text-[#8B6E5F]">
+                              Mensaje privado
+                            </p>
+                            <div className="grid grid-cols-2 gap-2">
+                              <button
+                                type="button"
+                                onClick={openWhatsAppPrivate}
+                                className="group flex items-center gap-3 rounded-[1rem] border border-[#E8D6C7] bg-white/90 px-3 py-3 text-left shadow-[0_8px_18px_rgba(107,79,62,0.08)] transition hover:-translate-y-0.5 hover:border-[#EF6A00]/30 hover:bg-white"
+                              >
+                                <span className="inline-flex h-9 w-9 items-center justify-center rounded-[0.8rem] bg-[#25D366]/10 text-[#11894E]">
+                                  <MessageCircle
+                                    className="h-4.5 w-4.5"
+                                    strokeWidth={2}
+                                  />
+                                </span>
+                                <div className="min-w-0">
+                                  <p className="truncate font-sans text-[0.88rem] font-semibold text-[#3E342F]">
+                                    WhatsApp
+                                  </p>
+                                  <p className="truncate font-sans text-[0.72rem] text-[#856B5D]">
+                                    Chat o grupo privado
+                                  </p>
+                                </div>
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={openSystemShareSheet}
+                                className="group flex items-center gap-3 rounded-[1rem] border border-[#E8D6C7] bg-white/90 px-3 py-3 text-left shadow-[0_8px_18px_rgba(107,79,62,0.08)] transition hover:-translate-y-0.5 hover:border-[#EF6A00]/30 hover:bg-white"
+                              >
+                                <span className="inline-flex h-9 w-9 items-center justify-center rounded-[0.8rem] bg-[#FFD27A]/40 text-[#8A4B00]">
+                                  <Share2
+                                    className="h-4.5 w-4.5"
+                                    strokeWidth={2}
+                                  />
+                                </span>
+                                <div className="min-w-0">
+                                  <p className="truncate font-sans text-[0.88rem] font-semibold text-[#3E342F]">
+                                    Más opciones
+                                  </p>
+                                  <p className="truncate font-sans text-[0.72rem] text-[#856B5D]">
+                                    SMS, apps, AirDrop, etc.
+                                  </p>
+                                </div>
+                              </button>
+                            </div>
+                          </div>
+
+                          <div>
+                            <p className="mb-2 px-1 font-sans text-[0.72rem] uppercase tracking-[0.14em] text-[#8B6E5F]">
+                              Publicación en red
+                            </p>
+                            <div className="grid grid-cols-2 gap-2">
+                              <button
+                                type="button"
+                                onClick={openFacebookPost}
+                                className="group flex items-center gap-3 rounded-[1rem] border border-[#E8D6C7] bg-white/90 px-3 py-3 text-left shadow-[0_8px_18px_rgba(107,79,62,0.08)] transition hover:-translate-y-0.5 hover:border-[#EF6A00]/30 hover:bg-white"
+                              >
+                                <span className="inline-flex h-9 w-9 items-center justify-center rounded-[0.8rem] bg-[#1877F2]/10 text-[#1877F2]">
+                                  <Facebook
+                                    className="h-4.5 w-4.5"
+                                    strokeWidth={2}
+                                  />
+                                </span>
+                                <div className="min-w-0">
+                                  <p className="truncate font-sans text-[0.88rem] font-semibold text-[#3E342F]">
+                                    Facebook
+                                  </p>
+                                  <p className="truncate font-sans text-[0.72rem] text-[#856B5D]">
+                                    Publicar en tu muro
+                                  </p>
+                                </div>
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={openXPost}
+                                className="group flex items-center gap-3 rounded-[1rem] border border-[#E8D6C7] bg-white/90 px-3 py-3 text-left shadow-[0_8px_18px_rgba(107,79,62,0.08)] transition hover:-translate-y-0.5 hover:border-[#EF6A00]/30 hover:bg-white"
+                              >
+                                <span className="inline-flex h-9 w-9 items-center justify-center rounded-[0.8rem] bg-[#000000]/8 text-[#000]">
+                                  <XIcon
+                                    className="h-4.5 w-4.5"
+                                    strokeWidth={2}
+                                  />
+                                </span>
+                                <div className="min-w-0">
+                                  <p className="truncate font-sans text-[0.88rem] font-semibold text-[#3E342F]">
+                                    X
+                                  </p>
+                                  <p className="truncate font-sans text-[0.72rem] text-[#856B5D]">
+                                    Twittear tu match
+                                  </p>
+                                </div>
+                              </button>
+                            </div>
+                          </div>
+
+                          <div>
+                            <p className="mb-2 px-1 font-sans text-[0.72rem] uppercase tracking-[0.14em] text-[#8B6E5F]">
+                              Historias
+                            </p>
+                            <div className="grid grid-cols-2 gap-2">
+                              <button
+                                type="button"
+                                onClick={openInstagramStories}
+                                className="group flex items-center gap-3 rounded-[1rem] border border-[#E8D6C7] bg-white/90 px-3 py-3 text-left shadow-[0_8px_18px_rgba(107,79,62,0.08)] transition hover:-translate-y-0.5 hover:border-[#EF6A00]/30 hover:bg-white"
+                              >
+                                <span className="inline-flex h-9 w-9 items-center justify-center rounded-[0.8rem] bg-[radial-gradient(circle_at_30%_30%,#FEDA77_0%,#F58529_25%,#DD2A7B_50%,#8134AF_75%,#515BD4_100%)] text-white">
+                                  <Instagram
+                                    className="h-4.5 w-4.5"
+                                    strokeWidth={2}
+                                  />
+                                </span>
+                                <div className="min-w-0">
+                                  <p className="truncate font-sans text-[0.88rem] font-semibold text-[#3E342F]">
+                                    Instagram
+                                  </p>
+                                  <p className="truncate font-sans text-[0.72rem] text-[#856B5D]">
+                                    Historia (app + web)
+                                  </p>
+                                </div>
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={openFacebookStories}
+                                className="group flex items-center gap-3 rounded-[1rem] border border-[#E8D6C7] bg-white/90 px-3 py-3 text-left shadow-[0_8px_18px_rgba(107,79,62,0.08)] transition hover:-translate-y-0.5 hover:border-[#EF6A00]/30 hover:bg-white"
+                              >
+                                <span className="inline-flex h-9 w-9 items-center justify-center rounded-[0.8rem] bg-[#0084FF]/10 text-[#0084FF]">
+                                  <Facebook
+                                    className="h-4.5 w-4.5"
+                                    strokeWidth={2}
+                                  />
+                                </span>
+                                <div className="min-w-0">
+                                  <p className="truncate font-sans text-[0.88rem] font-semibold text-[#3E342F]">
+                                    Facebook
+                                  </p>
+                                  <p className="truncate font-sans text-[0.72rem] text-[#856B5D]">
+                                    Tu historia de Facebook
+                                  </p>
+                                </div>
+                              </button>
+                            </div>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              copyShareToClipboard();
+                              setShowShareMenu(false);
+                            }}
+                            className="flex w-full items-center justify-between rounded-[1.1rem] border border-[#EBD9CC] bg-[#FFF9F4] px-4 py-3 font-sans text-[0.9rem] text-[#5F4B40] transition hover:border-[#EF6A00]/50 hover:bg-white"
+                          >
+                            <span>Copiar texto completo + enlace</span>
+                            <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white text-[#EF6A00] shadow-[0_4px_10px_rgba(239,106,0,0.18)]">
+                              <Check className="h-3.5 w-3.5" strokeWidth={2.4} />
+                            </span>
+                          </button>
+                        </div>
+                      </motion.div>
+                    ) : null}
+                  </div>
 
                   <Button
                     variant="quizSecondary"
