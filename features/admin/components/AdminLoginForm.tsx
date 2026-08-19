@@ -56,19 +56,19 @@ export function AdminLoginForm({
 
     try {
       const formData = new FormData();
-      formData.append("email", values.email);
-      formData.append("password", values.password);
+      formData.set("email", values.email);
+      formData.set("password", values.password);
 
       const result = await adminLogin(formData);
 
-      if ("success" in result && result.success) {
-        router.push("/admin");
-        router.refresh();
+      if (result?.error) {
+        setSubmitError(result.error);
+        setIsSubmitting(false);
         return;
       }
 
-      setSubmitError(result.error);
-      setIsSubmitting(false);
+      router.push("/admin");
+      router.refresh();
     } catch (error) {
       const message =
         error instanceof Error
