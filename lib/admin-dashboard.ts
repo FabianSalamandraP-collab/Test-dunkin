@@ -78,7 +78,7 @@ async function fetchSessions(filters: DashboardFilters) {
   let query = admin
     .from("quiz_sessions")
     .select(
-      "id,started_at,completed_at,abandoned_at,status,participant_id,personality_key,personality_label,recommended_drink_key,recommended_drink_label,total_duration_seconds,device_type,browser_name,utm_source,utm_medium,utm_campaign,referrer,abandoned_question_key,abandoned_question_order,participant:quiz_participants(id,name,email,phone,registered_at)"
+      "id,started_at,completed_at,abandoned_at,status,participant_id,personality_key,personality_label,recommended_drink_key,recommended_drink_label,total_duration_seconds,device_type,browser_name,utm_source,utm_medium,utm_campaign,referrer,abandoned_question_key,abandoned_question_order,participant:quiz_participants(id,full_name,email,phone,registered_at)"
     )
     .order("started_at", { ascending: false });
 

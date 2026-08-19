@@ -15,7 +15,6 @@ import {
   Share2,
   Smile,
   Snowflake,
-  Sparkles,
   SunMedium,
   type LucideIcon,
   Users,
@@ -292,7 +291,7 @@ const resultFeatureRailMap: Record<
     {
       title: "Explosión frutal",
       caption: "Mucho color y sabor",
-      icon: Sparkles,
+      icon: SunMedium,
     },
     { title: "Plan que despega", caption: "Vibra que contagia", icon: Zap },
   ],
@@ -1306,18 +1305,10 @@ export function ResultScreen() {
                                 <span className="flex items-center gap-3">
                                   {isClaimingBenefit ? (
                                     <span className="inline-flex items-center gap-2">
-                                      <Sparkles
-                                        className="h-4.5 w-4.5 animate-pulse text-[#FFE2B5]"
-                                        strokeWidth={2.2}
-                                      />
                                       Abriendo Dunkin'...
                                     </span>
                                   ) : (
                                     <span className="inline-flex items-center gap-2">
-                                      <Sparkles
-                                        className="h-4.5 w-4.5 text-[#FFE2B5]"
-                                        strokeWidth={2.2}
-                                      />
                                       {benefitData.cta}
                                     </span>
                                   )}
@@ -1471,10 +1462,6 @@ export function ResultScreen() {
                               >
                                 {isClaimingBenefit ? (
                                   <span className="inline-flex items-center gap-2">
-                                    <Sparkles
-                                      className="h-4.5 w-4.5 animate-pulse text-[#FFE2B5]"
-                                      strokeWidth={2.2}
-                                    />
                                     Abriendo Dunkin'...
                                     <ArrowRight
                                       className="h-4.5 w-4.5"
@@ -1483,10 +1470,6 @@ export function ResultScreen() {
                                   </span>
                                 ) : (
                                   <span className="inline-flex items-center gap-2">
-                                    <Sparkles
-                                      className="h-4.5 w-4.5 text-[#FFE2B5]"
-                                      strokeWidth={2.2}
-                                    />
                                     {benefitData.cta}
                                     <ArrowRight
                                       className="h-4.5 w-4.5"

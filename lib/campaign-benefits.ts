@@ -901,30 +901,6 @@ export function resolveBenefitForResult(
     return null;
   }
 
-  const weekdayIndex = new Date().getDay();
-  const weekdayLabel = [
-    "domingo",
-    "lunes",
-    "martes",
-    "miércoles",
-    "jueves",
-    "viernes",
-    "sábado",
-  ][weekdayIndex];
-  const cta =
-    hasActiveDiscount(record) ||
-    DAILY_DISCOUNT_HINT_KEYWORDS.some((keyword) =>
-      buildSearchHaystack(
-        record.title,
-        record.description || "",
-        record.category_names
-      )
-        .toLowerCase()
-        .includes(keyword.toLowerCase())
-    )
-      ? `Aprovechar hoy (${weekdayLabel})`
-      : "Ir a Dunkin' ahora";
-
   const title =
     record.discount_label && !record.title.includes(record.discount_label)
       ? `${record.title} ${record.discount_label}`
@@ -933,7 +909,7 @@ export function resolveBenefitForResult(
   return {
     title,
     description: buildBenefitDescription(record),
-    cta,
+    cta: "Ir a Dunkin' ahora",
     url: record.source_url,
     imageUrl: record.image_url,
     discountLabel: record.discount_label,
