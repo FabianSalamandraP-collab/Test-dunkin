@@ -44,6 +44,19 @@ export async function adminLogin(formData: FormData) {
       };
     }
 
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError || !user?.email) {
+      return {
+        error:
+          userError?.message ||
+          "La sesión no pudo ser inicializada. Por favor, recarga la página e intenta de nuevo.",
+      };
+    }
+
     redirect("/admin");
   } catch (error) {
     if (typeof error === "object" && error !== null && "digest" in error) {
