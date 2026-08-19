@@ -28,9 +28,29 @@ export function AdminDashboardView({
   mode = "overview",
 }: AdminDashboardViewProps) {
   const isAnalytics = mode === "analytics";
+  const loadError =
+    data && typeof data === "object" && "loadError" in data
+      ? (data as { loadError?: string }).loadError
+      : null;
 
   return (
     <div className="space-y-6">
+      {loadError ? (
+        <div className="border-[#F7D9D1] bg-[linear-gradient(180deg,#FFF2EC_0%,#FFE7DD_100%)] rounded-[1.5rem] border p-5 shadow-[0_16px_42px_rgba(161,59,42,0.1)]">
+          <p className="font-display text-[1.3rem] uppercase tracking-[-0.04em] text-[#7B2A1E]">
+            Panel disponible con datos limitados
+          </p>
+          <p className="mt-2 max-w-[90ch] font-sans text-[0.96rem] leading-7 text-[#7F4033]">
+            {loadError}
+          </p>
+          <p className="mt-2 max-w-[90ch] font-sans text-[0.86rem] leading-6 text-[#7A5748]">
+            Revisa que existan las tablas del dashboard (quiz_sessions,
+            quiz_events, quiz_participants), que esté presente
+            SUPABASE_SERVICE_ROLE_KEY y que RLS no esté bloqueando la lectura
+            administrativa.
+          </p>
+        </div>
+      ) : null}
       <AdminFiltersBar
         filters={data.appliedFilters}
         drinks={data.filterOptions.drinks}

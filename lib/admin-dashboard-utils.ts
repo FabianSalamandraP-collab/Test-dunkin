@@ -1,17 +1,79 @@
 import { QUIZ_RESULTS } from "@/constants/quizQuestions";
 import type {
   DashboardChartDatum,
+  DashboardChartsPayload,
+  DashboardDataPayload,
   DashboardEventRecord,
   DashboardFilters,
   DashboardFilterOptions,
   DashboardParticipantRow,
   DashboardSessionRecord,
   DashboardSummaryMetrics,
+  DashboardTablePayload,
   DashboardTimeSeriesDatum,
 } from "@/lib/admin-dashboard-types";
 
 export function normalizeText(value: string | null | undefined) {
   return value?.trim() || null;
+}
+
+export function buildEmptyDashboardData(
+  filters: DashboardFilters
+): DashboardDataPayload {
+  const emptyChart: DashboardChartDatum[] = [];
+  const emptyTimeSeries: DashboardTimeSeriesDatum[] = [];
+  const summary: DashboardSummaryMetrics = {
+    totalParticipants: 0,
+    completedTests: 0,
+    submittedForms: 0,
+    conversionRate: 0,
+    averageDurationSeconds: null,
+    abandonmentRate: 0,
+    viewInDunkinClicks: 0,
+    viewInDunkinCtr: 0,
+    topClickedDrink: {
+      drinkKey: null,
+      drinkLabel: null,
+      clicks: 0,
+    },
+  };
+  const charts: DashboardChartsPayload = {
+    byDrink: emptyChart,
+    byPersonality: emptyChart,
+    byDevice: emptyChart,
+    byBrowser: emptyChart,
+    byTrafficSource: emptyChart,
+    byClickedDrink: emptyChart,
+    clicksByDevice: emptyChart,
+    clicksByCampaign: emptyChart,
+    clicksByTrafficSource: emptyChart,
+    byAbandonQuestion: emptyChart,
+    participationByDay: emptyTimeSeries,
+    participationByHour: emptyTimeSeries,
+  };
+  const filterOptions: DashboardFilterOptions = {
+    drinks: [],
+    personalities: [],
+    devices: [],
+    trafficSources: [],
+  };
+  const table: DashboardTablePayload = {
+    rows: [],
+    pagination: {
+      page: filters.page,
+      pageSize: filters.pageSize,
+      totalItems: 0,
+      totalPages: 0,
+    },
+  };
+
+  return {
+    summary,
+    charts,
+    table,
+    filterOptions,
+    appliedFilters: filters,
+  };
 }
 
 export function getTrafficSourceLabel(session: DashboardSessionRecord) {

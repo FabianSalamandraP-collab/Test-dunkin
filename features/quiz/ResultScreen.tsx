@@ -1329,20 +1329,6 @@ export function ResultScreen() {
                                   />
                                 </span>
                               </Button>
-                              {benefitData.discountLabel || benefitData.priceLabel ? (
-                                <div className="pointer-events-none absolute -top-2 right-3 z-20 flex items-center gap-2">
-                                  {benefitData.discountLabel ? (
-                                    <span className="rounded-full bg-[#FF671F] px-2.5 py-1 font-sans text-[0.64rem] font-extrabold uppercase tracking-[0.16em] text-white shadow-[0_8px_18px_rgba(255,103,31,0.38)]">
-                                      {benefitData.discountLabel}
-                                    </span>
-                                  ) : null}
-                                  {benefitData.priceLabel ? (
-                                    <span className="rounded-full border border-[#DECBBB] bg-white px-2.5 py-1 font-sans text-[0.64rem] font-bold uppercase tracking-[0.12em] text-[#4A281B] shadow-[0_8px_18px_rgba(89,53,17,0.1)]">
-                                      Oferta
-                                    </span>
-                                  ) : null}
-                                </div>
-                              ) : null}
                             </div>
                             {benefitActionError ? (
                               <p className="mt-3 font-sans text-[0.78rem] leading-5 text-[#A13B2A]">
@@ -1509,20 +1495,6 @@ export function ResultScreen() {
                                   </span>
                                 )}
                               </Button>
-                              {benefitData.discountLabel || benefitData.priceLabel ? (
-                                <div className="pointer-events-none absolute -top-2 left-4 z-20 flex items-center gap-2">
-                                  {benefitData.discountLabel ? (
-                                    <span className="rounded-full bg-[#FF671F] px-2.5 py-1 font-sans text-[0.64rem] font-extrabold uppercase tracking-[0.16em] text-white shadow-[0_8px_18px_rgba(255,103,31,0.38)]">
-                                      {benefitData.discountLabel}
-                                    </span>
-                                  ) : null}
-                                  {benefitData.priceLabel ? (
-                                    <span className="rounded-full border border-[#DECBBB] bg-white px-2.5 py-1 font-sans text-[0.64rem] font-bold uppercase tracking-[0.12em] text-[#4A281B] shadow-[0_8px_18px_rgba(89,53,17,0.1)]">
-                                      Oferta
-                                    </span>
-                                  ) : null}
-                                </div>
-                              ) : null}
                             </div>
                             {benefitActionError ? (
                               <p className="mt-3 max-w-[32ch] font-sans text-[0.78rem] leading-5 text-[#A13B2A]">
