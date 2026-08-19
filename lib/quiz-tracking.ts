@@ -209,7 +209,7 @@ export async function insertQuizEvent(
     metadata?: Record<string, unknown>;
   }
 ) {
-  const { error } = await admin.from("quiz_events").insert({
+  const payload: Record<string, unknown> = {
     event_type: event.event_type,
     session_id: event.session_id,
     participant_id: event.participant_id ?? null,
@@ -222,7 +222,11 @@ export async function insertQuizEvent(
     device_type: event.device_type ?? null,
     browser_name: event.browser_name ?? null,
     metadata: event.metadata ?? {},
-  });
+  };
+
+  const { error } = await admin
+    .from("quiz_events")
+    .insert(payload as never, { defaultToNull: true });
 
   if (error) {
     throw error;

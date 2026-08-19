@@ -1,8 +1,5 @@
 import { AdminDashboardView } from "@/features/admin/components/AdminDashboardView";
-import {
-  getDashboardData,
-  parseDashboardFilters,
-} from "@/lib/admin-dashboard";
+import { getDashboardData, parseDashboardFilters } from "@/lib/admin-dashboard";
 import type { DashboardDataPayload } from "@/lib/admin-dashboard-types";
 import { buildEmptyDashboardData } from "@/lib/admin-dashboard-utils";
 

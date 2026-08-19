@@ -76,10 +76,30 @@ export async function POST(request: Request) {
       .from("quiz_answers")
       .upsert(answerPayload as never, {
         onConflict: "session_id,question_key",
+        ignoreDuplicates: false,
       });
 
     if (upsertError) {
-      throw upsertError;
+      const { error: insertFallbackError } = await admin
+        .from("quiz_answers")
+        .insert(answerPayload as never);
+
+      if (insertFallbackError) {
+        const { error: updateFallbackError } = await admin
+          .from("quiz_answers")
+          .update({
+            selected_option_key: selectedOptionKey,
+            selected_option_label: selectedOptionLabel,
+            selected_value: answerPayload.selected_value,
+            question_order: questionOrder,
+          } as never)
+          .eq("session_id", sessionId)
+          .eq("question_key", questionKey);
+
+        if (updateFallbackError) {
+          throw upsertError;
+        }
+      }
     }
 
     const { count, error: countError } = await admin

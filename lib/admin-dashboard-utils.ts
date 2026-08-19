@@ -253,9 +253,9 @@ export function buildParticipantRows(
       return {
         sessionId: session.id,
         participantId: session.participant_id,
-        fullName: participant?.full_name || null,
-        email: participant?.email || null,
-        phone: participant?.phone || null,
+        fullName: (participant as { name?: string | null })?.name ?? null,
+        email: participant?.email ?? null,
+        phone: participant?.phone ?? null,
         result: session.personality_label || null,
         drink: session.recommended_drink_label || null,
         date:

@@ -1593,7 +1593,7 @@ export function ResultScreen() {
                         <div className="hidden h-full w-full items-center justify-center bg-[linear-gradient(180deg,rgba(255,248,241,0.96)_0%,rgba(248,227,210,0.98)_100%)] px-10 text-center lg:flex">
                           <div className="max-w-[360px] space-y-4">
                             <div className="bg-white/72 mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-[#F0C9A9] text-[#FF7A00] shadow-[0_14px_28px_rgba(89,53,17,0.08)]">
-                              <Sparkles className="h-7 w-7" strokeWidth={1.8} />
+                              <Smile className="h-7 w-7" strokeWidth={1.8} />
                             </div>
                             <div className="space-y-2">
                               <p className="font-sans text-[0.74rem] font-medium uppercase tracking-[0.22em] text-[#C3895A]">
