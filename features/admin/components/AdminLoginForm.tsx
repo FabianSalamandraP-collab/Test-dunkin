@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button, Input } from "@/components/ui";
-import { createClient } from "@/utils/supabase/client";
+import { adminLogin } from "@/app/admin/login/actions";
 
 interface AdminLoginFormValues {
   email: string;
@@ -52,31 +52,32 @@ export function AdminLoginForm({
 
   const onSubmit = handleSubmit(async (values) => {
     setSubmitError(null);
-
-    const supabase = createClient();
-
-    if (!supabase) {
-      setSubmitError(
-        "No hay configuración pública de Supabase disponible en este entorno."
-      );
-      return;
-    }
-
     setIsSubmitting(true);
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email: values.email,
-      password: values.password,
-    });
+    try {
+      const formData = new FormData();
+      formData.append("email", values.email);
+      formData.append("password", values.password);
 
-    if (error) {
-      setSubmitError(error.message);
+      const result = await adminLogin(formData);
+
+      if ("success" in result && result.success) {
+        router.push("/admin");
+        router.refresh();
+        return;
+      }
+
+      setSubmitError(result.error);
       setIsSubmitting(false);
-      return;
-    }
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "No fue posible iniciar sesión en este momento.";
 
-    router.push("/admin");
-    router.refresh();
+      setSubmitError(message);
+      setIsSubmitting(false);
+    }
   });
 
   return (
