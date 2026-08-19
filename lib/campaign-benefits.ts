@@ -732,37 +732,6 @@ function isRelatedDrinkMatch(record: CampaignBenefitRecord, resultId: string) {
   return record.target_results.includes(resultId);
 }
 
-function pickRecordWithinTier(
-  records: CampaignBenefitRecord[],
-  resultId: string,
-  limit = 4
-) {
-  if (records.length === 0) {
-    return null;
-  }
-
-  const ranked = [...records].sort((left, right) => {
-    const discountDelta =
-      Number(hasActiveDiscount(right)) - Number(hasActiveDiscount(left));
-
-    if (discountDelta !== 0) {
-      return discountDelta;
-    }
-
-    const scoreDelta =
-      getResultMatchScore(right, resultId) -
-      getResultMatchScore(left, resultId);
-
-    if (scoreDelta !== 0) {
-      return scoreDelta;
-    }
-
-    return left.title.localeCompare(right.title);
-  });
-
-  return pickRandomRecord(ranked.slice(0, limit));
-}
-
 function getPriorityPool(
   records: CampaignBenefitRecord[],
   resultId: string
@@ -859,8 +828,7 @@ function getDailyDiscountBonus(
     record.category_names
   );
   const normalized = normalizeText(haystack);
-  const weekdayKeyword =
-    WEEKDAY_INDEX_TO_KEYWORD[new Date().getDay()] ?? "";
+  const weekdayKeyword = WEEKDAY_INDEX_TO_KEYWORD[new Date().getDay()] ?? "";
   let bonus = 0;
 
   DAILY_DISCOUNT_HINT_KEYWORDS.forEach((keyword) => {
