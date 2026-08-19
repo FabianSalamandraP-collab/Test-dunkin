@@ -106,10 +106,38 @@ function getResultTraitIcon(trait: string) {
 }
 
 const benefitRecommendationAlternatives: Record<string, string[]> = {
-  creative: ["Cappuccino", "Chai", "Americanos"],
-  balanced: ["Iced Tea", "Tés calientes", "Iced Tea"],
-  energetic: ["Refreshers", "Limonadas", "Sodas Dunkin'"],
-  passionate: ["Frutibatidos", "Frozen", "Bebidas dulces"],
+  creative: [
+    "Cappuccino",
+    "Chai Latte",
+    "Combo perfecto con Iced Latte",
+    "Americanos",
+    "Flat White",
+    "Dúo de café con donut",
+  ],
+  balanced: [
+    "Iced Tea sabores frutales",
+    "Tés Dunkin'",
+    "Té de frutos rojos",
+    "Té negro con fruta",
+    "Combo Flat Frutibatido + bebida fría",
+    "Limonadas herbales",
+  ],
+  energetic: [
+    "Refreshers Mango Piña",
+    "Combo Refresher del día",
+    "Refresher Dragon Fruit",
+    "Limonadas con fruta",
+    "Iced Tea tropical",
+    "Promo duelo de sabores",
+  ],
+  passionate: [
+    "Frutibatidos",
+    "Frozen Chocolate",
+    "Combo Flat Frutibatido",
+    "Batidos con topping",
+    "Chai Frutibatido",
+    "Promo 2x1 día dulce Dunkin'",
+  ],
 };
 
 function getScrollableParent(element: HTMLElement | null) {
@@ -573,6 +601,43 @@ export function ResultScreen() {
   }, []);
 
   useEffect(() => {
+    if (typeof document === "undefined" || typeof window === "undefined") {
+      return;
+    }
+
+    const resetBenefitPendingFlags = () => {
+      setIsClaimingBenefit(false);
+      setBenefitActionError(null);
+      setIsBenefitHighlighted(false);
+      setShouldGuideToBenefitCta(false);
+      if (benefitHighlightTimeoutRef.current) {
+        window.clearTimeout(benefitHighlightTimeoutRef.current);
+        benefitHighlightTimeoutRef.current = null;
+      }
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        resetBenefitPendingFlags();
+      }
+    };
+
+    const handleWindowFocus = () => {
+      resetBenefitPendingFlags();
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("focus", handleWindowFocus);
+    window.addEventListener("pageshow", handleWindowFocus);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("focus", handleWindowFocus);
+      window.removeEventListener("pageshow", handleWindowFocus);
+    };
+  }, []);
+
+  useEffect(() => {
     if (isBenefitLoading || !shouldGuideToBenefitCta) {
       return;
     }
@@ -641,7 +706,7 @@ export function ResultScreen() {
     setBenefitActionError(null);
 
     if (isClaimingBenefit) {
-      return;
+      setIsClaimingBenefit(false);
     }
 
     if (!sessionId) {
@@ -676,6 +741,7 @@ export function ResultScreen() {
 
     if (!trackingResponse?.tracked) {
       if (isPermissiveMode) {
+        setIsClaimingBenefit(false);
         window.location.assign(officialBenefitUrl);
         return;
       }
@@ -687,7 +753,21 @@ export function ResultScreen() {
       return;
     }
 
-    window.location.assign(trackingResponse.targetUrl || officialBenefitUrl);
+    const finalUrl = trackingResponse.targetUrl || officialBenefitUrl;
+    const resetAfterNavigate = () => {
+      setIsClaimingBenefit(false);
+      setBenefitActionError(null);
+      setIsBenefitHighlighted(false);
+    };
+
+    const timer = window.setTimeout(resetAfterNavigate, 1200);
+
+    try {
+      window.location.assign(finalUrl);
+    } catch {
+      window.clearTimeout(timer);
+      resetAfterNavigate();
+    }
   };
 
   return (
@@ -1206,26 +1286,64 @@ export function ResultScreen() {
                           ) : null}
 
                           <div className="mt-auto pt-5">
-                            <Button
-                              ref={mobileBenefitButtonRef}
-                              variant="quizCta"
-                              size="quiz"
-                              onClick={handleClaimBenefit}
-                              disabled={isBenefitLoading || isClaimingBenefit}
-                              className={`w-full justify-between border-[#BE2F62] bg-[#CF3F73] px-6 font-sans text-[0.98rem] text-[#FFF8F3] shadow-[0_14px_26px_rgba(207,63,115,0.24)] hover:border-[#CF3F73] hover:bg-[#B83263] disabled:cursor-wait disabled:opacity-70 ${benefitHighlightClass}`}
-                            >
-                              <span>
-                                {isClaimingBenefit
-                                  ? "Abriendo Dunkin'..."
-                                  : benefitData.cta}
-                              </span>
-                              <span className="ml-3 flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#CF3F73] shadow-[0_10px_22px_rgba(89,53,17,0.1)]">
-                                <ArrowRight
-                                  className="h-4.5 w-4.5"
-                                  strokeWidth={2.6}
-                                />
-                              </span>
-                            </Button>
+                            <div className="relative">
+                              <div
+                                aria-hidden
+                                className="pointer-events-none absolute -inset-2 rounded-[1.35rem] bg-[#CF3F73]/25 blur-xl"
+                              />
+                              <div
+                                aria-hidden
+                                className="pointer-events-none absolute inset-0 rounded-[1.15rem] bg-[linear-gradient(115deg,rgba(255,255,255,0.42)_0%,rgba(255,255,255,0)_28%,rgba(255,255,255,0)_72%,rgba(255,255,255,0.22)_100%)]"
+                              />
+                              <Button
+                                ref={mobileBenefitButtonRef}
+                                variant="quizCta"
+                                size="quiz"
+                                onClick={handleClaimBenefit}
+                                disabled={isBenefitLoading || isClaimingBenefit}
+                                className={`relative z-10 w-full justify-between border-[#8B1C45] bg-[linear-gradient(115deg,#CF3F73_0%,#E14C80_45%,#FF5E93_70%,#CF3F73_100%)] bg-[length:200%_100%] bg-[position:0%_50%] px-6 py-[1.05rem] font-sans text-[1rem] font-bold uppercase tracking-[0.04em] text-white shadow-[0_18px_42px_rgba(207,63,115,0.38)] ring-2 ring-[#FFD27A]/70 ring-offset-4 ring-offset-[#FFF7F0] transition-[background-position,box-shadow,filter] duration-500 hover:border-[#A72559] hover:bg-[position:100%_50%] hover:shadow-[0_22px_52px_rgba(225,76,128,0.55)] hover:brightness-[1.06] active:translate-y-[1px] disabled:cursor-wait disabled:opacity-70 disabled:hover:bg-[position:0%_50%] ${benefitHighlightClass}`}
+                              >
+                                <span className="flex items-center gap-3">
+                                  {isClaimingBenefit ? (
+                                    <span className="inline-flex items-center gap-2">
+                                      <Sparkles
+                                        className="h-4.5 w-4.5 animate-pulse text-[#FFE2B5]"
+                                        strokeWidth={2.2}
+                                      />
+                                      Abriendo Dunkin'...
+                                    </span>
+                                  ) : (
+                                    <span className="inline-flex items-center gap-2">
+                                      <Sparkles
+                                        className="h-4.5 w-4.5 text-[#FFE2B5]"
+                                        strokeWidth={2.2}
+                                      />
+                                      {benefitData.cta}
+                                    </span>
+                                  )}
+                                </span>
+                                <span className="ml-3 flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#CF3F73] shadow-[0_10px_22px_rgba(89,53,17,0.18)]">
+                                  <ArrowRight
+                                    className="h-4.5 w-4.5"
+                                    strokeWidth={2.6}
+                                  />
+                                </span>
+                              </Button>
+                              {benefitData.discountLabel || benefitData.priceLabel ? (
+                                <div className="pointer-events-none absolute -top-2 right-3 z-20 flex items-center gap-2">
+                                  {benefitData.discountLabel ? (
+                                    <span className="rounded-full bg-[#FF671F] px-2.5 py-1 font-sans text-[0.64rem] font-extrabold uppercase tracking-[0.16em] text-white shadow-[0_8px_18px_rgba(255,103,31,0.38)]">
+                                      {benefitData.discountLabel}
+                                    </span>
+                                  ) : null}
+                                  {benefitData.priceLabel ? (
+                                    <span className="rounded-full border border-[#DECBBB] bg-white px-2.5 py-1 font-sans text-[0.64rem] font-bold uppercase tracking-[0.12em] text-[#4A281B] shadow-[0_8px_18px_rgba(89,53,17,0.1)]">
+                                      Oferta
+                                    </span>
+                                  ) : null}
+                                </div>
+                              ) : null}
+                            </div>
                             {benefitActionError ? (
                               <p className="mt-3 font-sans text-[0.78rem] leading-5 text-[#A13B2A]">
                                 {benefitActionError}
@@ -1348,18 +1466,64 @@ export function ResultScreen() {
                           </div>
 
                           <div className="mt-auto">
-                            <Button
-                              ref={desktopBenefitButtonRef}
-                              variant="quizCta"
-                              size="quiz"
-                              onClick={handleClaimBenefit}
-                              disabled={isBenefitLoading || isClaimingBenefit}
-                              className={`w-full justify-center border-[#BE2F62] bg-[#CF3F73] px-4 font-sans text-[0.92rem] text-[#FFF8F3] shadow-[0_14px_26px_rgba(207,63,115,0.22)] hover:border-[#CF3F73] hover:bg-[#B83263] disabled:cursor-wait disabled:opacity-70 sm:w-auto sm:min-w-[240px] ${benefitHighlightClass}`}
-                            >
-                              {isClaimingBenefit
-                                ? "Abriendo Dunkin'..."
-                                : benefitData.cta}
-                            </Button>
+                            <div className="relative inline-block w-full sm:w-auto sm:min-w-[272px]">
+                              <div
+                                aria-hidden
+                                className="pointer-events-none absolute -inset-2 rounded-[1.35rem] bg-[#CF3F73]/28 blur-xl"
+                              />
+                              <div
+                                aria-hidden
+                                className="pointer-events-none absolute inset-0 rounded-[1.15rem] bg-[linear-gradient(115deg,rgba(255,255,255,0.42)_0%,rgba(255,255,255,0)_28%,rgba(255,255,255,0)_72%,rgba(255,255,255,0.22)_100%)]"
+                              />
+                              <Button
+                                ref={desktopBenefitButtonRef}
+                                variant="quizCta"
+                                size="quiz"
+                                onClick={handleClaimBenefit}
+                                disabled={isBenefitLoading || isClaimingBenefit}
+                                className={`relative z-10 w-full justify-center gap-3 border-[#8B1C45] bg-[linear-gradient(115deg,#CF3F73_0%,#E14C80_45%,#FF5E93_70%,#CF3F73_100%)] bg-[length:200%_100%] bg-[position:0%_50%] px-5 py-[1rem] font-sans text-[0.96rem] font-bold uppercase tracking-[0.04em] text-white shadow-[0_18px_46px_rgba(207,63,115,0.4)] ring-2 ring-[#FFD27A]/70 ring-offset-4 ring-offset-[#FFF7F0] transition-[background-position,box-shadow,filter] duration-500 hover:border-[#A72559] hover:bg-[position:100%_50%] hover:shadow-[0_22px_58px_rgba(225,76,128,0.58)] hover:brightness-[1.06] active:translate-y-[1px] disabled:cursor-wait disabled:opacity-70 disabled:hover:bg-[position:0%_50%] sm:w-auto sm:min-w-[272px] ${benefitHighlightClass}`}
+                              >
+                                {isClaimingBenefit ? (
+                                  <span className="inline-flex items-center gap-2">
+                                    <Sparkles
+                                      className="h-4.5 w-4.5 animate-pulse text-[#FFE2B5]"
+                                      strokeWidth={2.2}
+                                    />
+                                    Abriendo Dunkin'...
+                                    <ArrowRight
+                                      className="h-4.5 w-4.5"
+                                      strokeWidth={2.6}
+                                    />
+                                  </span>
+                                ) : (
+                                  <span className="inline-flex items-center gap-2">
+                                    <Sparkles
+                                      className="h-4.5 w-4.5 text-[#FFE2B5]"
+                                      strokeWidth={2.2}
+                                    />
+                                    {benefitData.cta}
+                                    <ArrowRight
+                                      className="h-4.5 w-4.5"
+                                      strokeWidth={2.6}
+                                    />
+                                  </span>
+                                )}
+                              </Button>
+                              {benefitData.discountLabel || benefitData.priceLabel ? (
+                                <div className="pointer-events-none absolute -top-2 left-4 z-20 flex items-center gap-2">
+                                  {benefitData.discountLabel ? (
+                                    <span className="rounded-full bg-[#FF671F] px-2.5 py-1 font-sans text-[0.64rem] font-extrabold uppercase tracking-[0.16em] text-white shadow-[0_8px_18px_rgba(255,103,31,0.38)]">
+                                      {benefitData.discountLabel}
+                                    </span>
+                                  ) : null}
+                                  {benefitData.priceLabel ? (
+                                    <span className="rounded-full border border-[#DECBBB] bg-white px-2.5 py-1 font-sans text-[0.64rem] font-bold uppercase tracking-[0.12em] text-[#4A281B] shadow-[0_8px_18px_rgba(89,53,17,0.1)]">
+                                      Oferta
+                                    </span>
+                                  ) : null}
+                                </div>
+                              ) : null}
+                            </div>
                             {benefitActionError ? (
                               <p className="mt-3 max-w-[32ch] font-sans text-[0.78rem] leading-5 text-[#A13B2A]">
                                 {benefitActionError}

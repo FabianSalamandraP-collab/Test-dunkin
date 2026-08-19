@@ -78,10 +78,41 @@ const GENERIC_DRINK_KEYWORDS = [
   "caliente",
   "fria",
   "fría",
+  "combo",
+  "combos",
+  "perfecto",
+  "promo",
+  "promocion",
+  "promoción",
+  "descuento",
+  "duo",
+  "duelo",
+  "plan",
+  "del dia",
+  "del día",
 ];
 
 const RESULT_KEYWORDS: Record<string, string[]> = {
-  creative: ["iced latte", "latte", "cappuccino", "chai", "cafe", "café"],
+  creative: [
+    "iced latte",
+    "latte",
+    "cappuccino",
+    "chai",
+    "cafe",
+    "café",
+    "combo perfecto",
+    "duo cafe",
+    "duo café",
+    "flat white",
+    "americano",
+    "espresso",
+    "promo cafe",
+    "promo café",
+    "combo latte",
+    "dúo café",
+    "donut cafe",
+    "donut café",
+  ],
   balanced: [
     "iced te",
     "iced té",
@@ -92,9 +123,65 @@ const RESULT_KEYWORDS: Record<string, string[]> = {
     "tea",
     "té",
     "te",
+    "limonada",
+    "iced tea mango",
+    "iced tea frutos",
+    "te frutos",
+    "té frutos",
+    "te negro",
+    "té negro",
+    "te verde",
+    "té verde",
+    "combo tea",
+    "combo té",
+    "combo frutibatido",
+    "frutibatido bebida",
+    "flat frutibatido",
+    "promo te",
+    "promo té",
   ],
-  energetic: ["refresher", "mango", "piña", "pina", "dragonfruit", "limonada"],
-  passionate: ["frutibatido", "batido", "frozen", "dulce", "shake"],
+  energetic: [
+    "refresher",
+    "mango",
+    "piña",
+    "pina",
+    "dragonfruit",
+    "limonada",
+    "combo refresher",
+    "refresher mango",
+    "refresher piña",
+    "refresher dragon fruit",
+    "dragon fruit",
+    "promo refresher",
+    "limonada mango",
+    "limonada fruta",
+    "iced tea tropical",
+    "duo refresher",
+    "dúo refresher",
+  ],
+  passionate: [
+    "frutibatido",
+    "batido",
+    "frozen",
+    "dulce",
+    "shake",
+    "chocolate",
+    "combo frutibatido",
+    "combo flat frutibatido",
+    "flat frutibatido",
+    "frutibatido fresa",
+    "frozen chocolate",
+    "chai batido",
+    "chai frutibatido",
+    "promo frutibatido",
+    "topping batido",
+    "topping bebida",
+    "duo dulce",
+    "dúo dulce",
+    "2x1",
+    "2x1 dulce",
+    "combo shake",
+  ],
 };
 
 const RESULT_FAMILY_KEYWORDS: Record<string, string[]> = {
@@ -106,6 +193,11 @@ const RESULT_FAMILY_KEYWORDS: Record<string, string[]> = {
     "espresso",
     "chai",
     "iced",
+    "combo perfecto",
+    "flat white",
+    "americano",
+    "donut cafe",
+    "donut café",
   ],
   balanced: [
     "iced te",
@@ -117,6 +209,16 @@ const RESULT_FAMILY_KEYWORDS: Record<string, string[]> = {
     "tea",
     "té",
     "te",
+    "limonada",
+    "te negro",
+    "té negro",
+    "te verde",
+    "té verde",
+    "te frutos",
+    "té frutos",
+    "flat frutibatido",
+    "combo te",
+    "combo té",
   ],
   energetic: [
     "refresher",
@@ -128,6 +230,10 @@ const RESULT_FAMILY_KEYWORDS: Record<string, string[]> = {
     "iced tea",
     "tea",
     "té",
+    "dragon fruit",
+    "combo refresher",
+    "limonada fruta",
+    "tropical",
   ],
   passionate: [
     "frutibatido",
@@ -136,6 +242,12 @@ const RESULT_FAMILY_KEYWORDS: Record<string, string[]> = {
     "shake",
     "smoothie",
     "frappe",
+    "chocolate",
+    "combo frutibatido",
+    "combo flat frutibatido",
+    "flat frutibatido",
+    "topping",
+    "frozen chocolate",
   ],
 };
 
@@ -702,6 +814,111 @@ function pickPriorityRecord(
   return pickRecordWithinTier(priorityPool, resultId);
 }
 
+const DAILY_DISCOUNT_HINT_KEYWORDS = [
+  "lunes",
+  "martes",
+  "miercoles",
+  "miércoles",
+  "jueves",
+  "viernes",
+  "sabado",
+  "sábado",
+  "domingo",
+  "fin de semana",
+  "happy hour",
+  "del dia",
+  "del día",
+  "promo",
+  "promocion",
+  "promoción",
+  "descuento",
+  "2x1",
+  "2 x 1",
+  "duelo",
+  "duo",
+  "dúo",
+];
+
+const WEEKDAY_INDEX_TO_KEYWORD: Record<number, string> = {
+  0: "domingo",
+  1: "lunes",
+  2: "martes",
+  3: "miercoles",
+  4: "jueves",
+  5: "viernes",
+  6: "sabado",
+};
+
+function getDailyDiscountBonus(
+  record: CampaignBenefitRecord,
+  baseScore: number
+) {
+  const haystack = buildSearchHaystack(
+    record.title,
+    record.description || "",
+    record.category_names
+  );
+  const normalized = normalizeText(haystack);
+  const weekdayKeyword =
+    WEEKDAY_INDEX_TO_KEYWORD[new Date().getDay()] ?? "";
+  let bonus = 0;
+
+  DAILY_DISCOUNT_HINT_KEYWORDS.forEach((keyword) => {
+    if (normalized.includes(normalizeText(keyword))) {
+      bonus += keyword === "2x1" || keyword === "2 x 1" ? 28 : 10;
+    }
+  });
+
+  if (weekdayKeyword && normalized.includes(weekdayKeyword)) {
+    bonus += 36;
+  }
+
+  if (bonus > 0 && hasActiveDiscount(record)) {
+    bonus += Math.max(0, 50 - baseScore);
+  }
+
+  return bonus;
+}
+
+function getResultMatchScoreWithPromoBias(
+  record: CampaignBenefitRecord,
+  resultId: string
+) {
+  const baseScore = getResultMatchScore(record, resultId);
+  return baseScore + getDailyDiscountBonus(record, baseScore);
+}
+
+function pickRecordWithinTier(
+  records: CampaignBenefitRecord[],
+  resultId: string,
+  limit = 6
+) {
+  if (records.length === 0) {
+    return null;
+  }
+
+  const ranked = [...records].sort((left, right) => {
+    const discountDelta =
+      Number(hasActiveDiscount(right)) - Number(hasActiveDiscount(left));
+
+    if (discountDelta !== 0) {
+      return discountDelta;
+    }
+
+    const scoreDelta =
+      getResultMatchScoreWithPromoBias(right, resultId) -
+      getResultMatchScoreWithPromoBias(left, resultId);
+
+    if (scoreDelta !== 0) {
+      return scoreDelta;
+    }
+
+    return left.title.localeCompare(right.title);
+  });
+
+  return pickRandomRecord(ranked.slice(0, limit));
+}
+
 export function resolveBenefitForResult(
   records: CampaignBenefitRecord[],
   resultId: string
@@ -716,12 +933,39 @@ export function resolveBenefitForResult(
     return null;
   }
 
-  return {
-    title: record.discount_label
+  const weekdayIndex = new Date().getDay();
+  const weekdayLabel = [
+    "domingo",
+    "lunes",
+    "martes",
+    "miércoles",
+    "jueves",
+    "viernes",
+    "sábado",
+  ][weekdayIndex];
+  const cta =
+    hasActiveDiscount(record) ||
+    DAILY_DISCOUNT_HINT_KEYWORDS.some((keyword) =>
+      buildSearchHaystack(
+        record.title,
+        record.description || "",
+        record.category_names
+      )
+        .toLowerCase()
+        .includes(keyword.toLowerCase())
+    )
+      ? `Aprovechar hoy (${weekdayLabel})`
+      : "Ir a Dunkin' ahora";
+
+  const title =
+    record.discount_label && !record.title.includes(record.discount_label)
       ? `${record.title} ${record.discount_label}`
-      : record.title,
+      : record.title;
+
+  return {
+    title,
     description: buildBenefitDescription(record),
-    cta: "Ver en Dunkin'",
+    cta,
     url: record.source_url,
     imageUrl: record.image_url,
     discountLabel: record.discount_label,
