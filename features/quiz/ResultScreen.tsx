@@ -33,7 +33,6 @@ import {
 } from "@/lib/quiz-tracking-client";
 import { isQuizPermissiveMode } from "@/lib/quiz-runtime-mode";
 import { useQuizStore } from "@/store/quizStore";
-import { QuizForm } from "./QuizForm";
 import { QuizBadge } from "./components/QuizBadge";
 import { QuizChip } from "./components/QuizChip";
 import { quizTypography, resultTraitMap } from "./quizVisualSystem";
@@ -280,14 +279,13 @@ export function ResultScreen() {
   const isPermissiveMode = isQuizPermissiveMode();
   const router = useRouter();
   const resultScrollContainerRef = useRef<HTMLDivElement | null>(null);
-  const formSectionRef = useRef<HTMLDivElement | null>(null);
   const confettiRef = useRef<JSConfetti | null>(null);
   const mobileBenefitButtonRef = useRef<HTMLButtonElement | null>(null);
   const desktopBenefitButtonRef = useRef<HTMLButtonElement | null>(null);
   const benefitHighlightTimeoutRef = useRef<number | null>(null);
   const mobileRecommendationTextRef = useRef<HTMLParagraphElement | null>(null);
   const mobilePersonalityTextRef = useRef<HTMLParagraphElement | null>(null);
-  const { result, resetQuiz, formSubmitted, sessionId } = useQuizStore();
+  const { result, resetQuiz, sessionId } = useQuizStore();
   const shouldReduceMotion = useReducedMotion();
   const reduceMotion = shouldReduceMotion ?? false;
   const [resultImageHidden, setResultImageHidden] = useState(false);
@@ -349,12 +347,11 @@ export function ResultScreen() {
   const activeStampAlt = coffeeStampResultIds.has(result.id)
     ? "Sello café 100% colombiano"
     : activeGeneralStamp.alt;
-  const benefitHighlightClass =
-    formSubmitted && isBenefitHighlighted
-      ? `ring-4 ring-[#FFD27A]/55 ring-offset-4 ring-offset-[#FFF7F0] shadow-[0_0_0_1px_rgba(239,106,0,0.08),0_0_0_10px_rgba(255,199,99,0.18),0_18px_36px_rgba(239,106,0,0.24)] ${
-          shouldReduceMotion ? "" : "animate-pulse"
-        }`
-      : "";
+  const benefitHighlightClass = isBenefitHighlighted
+    ? `ring-4 ring-[#FFD27A]/55 ring-offset-4 ring-offset-[#FFF7F0] shadow-[0_0_0_1px_rgba(239,106,0,0.08),0_0_0_10px_rgba(255,199,99,0.18),0_18px_36px_rgba(239,106,0,0.24)] ${
+        shouldReduceMotion ? "" : "animate-pulse"
+      }`
+    : "";
   const personalityLabel = result.personalityType || result.title;
 
   useEffect(() => {
@@ -576,7 +573,7 @@ export function ResultScreen() {
   }, []);
 
   useEffect(() => {
-    if (!formSubmitted || isBenefitLoading || !shouldGuideToBenefitCta) {
+    if (isBenefitLoading || !shouldGuideToBenefitCta) {
       return;
     }
 
@@ -611,7 +608,7 @@ export function ResultScreen() {
     setShouldGuideToBenefitCta(false);
 
     return () => window.cancelAnimationFrame(frame);
-  }, [formSubmitted, isBenefitLoading, shouldGuideToBenefitCta]);
+  }, [isBenefitLoading, shouldGuideToBenefitCta]);
 
   const handleShare = () => {
     const shareText =
@@ -642,17 +639,6 @@ export function ResultScreen() {
 
     setIsBenefitHighlighted(false);
     setBenefitActionError(null);
-
-    if (!formSubmitted) {
-      if (formSectionRef.current) {
-        scrollElementIntoView(formSectionRef.current, {
-          desktopOffset: 72,
-          mobileOffset: 32,
-          preferredContainer: resultScrollContainerRef.current,
-        });
-      }
-      return;
-    }
 
     if (isClaimingBenefit) {
       return;
@@ -702,10 +688,6 @@ export function ResultScreen() {
     }
 
     window.location.assign(trackingResponse.targetUrl || officialBenefitUrl);
-  };
-
-  const handleFormSuccess = () => {
-    setShouldGuideToBenefitCta(true);
   };
 
   return (
@@ -1235,9 +1217,7 @@ export function ResultScreen() {
                               <span>
                                 {isClaimingBenefit
                                   ? "Abriendo Dunkin'..."
-                                  : formSubmitted
-                                  ? benefitData.cta
-                                  : "Ver plan recomendado"}
+                                  : benefitData.cta}
                               </span>
                               <span className="ml-3 flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#CF3F73] shadow-[0_10px_22px_rgba(89,53,17,0.1)]">
                                 <ArrowRight
@@ -1378,9 +1358,7 @@ export function ResultScreen() {
                             >
                               {isClaimingBenefit
                                 ? "Abriendo Dunkin'..."
-                                : formSubmitted
-                                  ? benefitData.cta
-                                  : "Ver plan recomendado"}
+                                : benefitData.cta}
                             </Button>
                             {benefitActionError ? (
                               <p className="mt-3 max-w-[32ch] font-sans text-[0.78rem] leading-5 text-[#A13B2A]">
@@ -1594,16 +1572,6 @@ export function ResultScreen() {
               </div>
             </div>
           </motion.div>
-
-          <div ref={formSectionRef} className="scroll-mt-6 lg:scroll-mt-10">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.36, delay: 0.08 }}
-            >
-              <QuizForm onSuccess={handleFormSuccess} />
-            </motion.div>
-          </div>
         </div>
       </div>
     </div>

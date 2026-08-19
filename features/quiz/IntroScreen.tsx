@@ -1121,7 +1121,7 @@ export function IntroScreen() {
             </div>
           </div>
 
-          <div className="relative z-10 mt-7 border-t border-[#EEDFD2] pt-6">
+          <div className="relative z-10 mt-7 border-t border-[#EEDFD2] pt-6 pb-4 lg:pb-12">
             <div className="mt-5 flex flex-col items-center gap-3 text-center text-[#7A6558] lg:flex-row lg:items-center lg:justify-between lg:text-left">
               <div className="flex flex-wrap items-center justify-center gap-4 text-xs sm:text-sm lg:justify-start">
                 {INTRO_FOOTER_ITEMS.map((item) => (
@@ -1140,7 +1140,7 @@ export function IntroScreen() {
           onClick={handleBackToTop}
           tone="soft"
           size="md"
-          className={`fixed bottom-4 right-4 z-[90] transition-all duration-200 sm:bottom-6 sm:right-6 sm:h-12 sm:w-12 ${
+          className={`fixed bottom-4 right-4 z-[90] transition-all duration-200 sm:bottom-6 sm:right-6 sm:h-12 sm:w-12 lg:bottom-10 lg:right-10 lg:h-14 lg:w-14 ${
             showBackToTop
               ? "translate-y-0 opacity-100"
               : "pointer-events-none translate-y-4 opacity-0"

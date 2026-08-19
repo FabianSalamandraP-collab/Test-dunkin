@@ -94,7 +94,7 @@ export const useQuizStore = create<QuizStore>()(
       hasStarted: false,
       isCompleted: false,
       result: null,
-      formSubmitted: false,
+      formSubmitted: true,
 
       // Acciones
       setQuestions: (questions: QuizQuestion[]) => {
@@ -111,7 +111,7 @@ export const useQuizStore = create<QuizStore>()(
           hasStarted: true,
           isCompleted: false,
           result: null,
-          formSubmitted: false,
+          formSubmitted: true,
         });
       },
 
@@ -167,7 +167,7 @@ export const useQuizStore = create<QuizStore>()(
           hasStarted: false,
           isCompleted: false,
           result: null,
-          formSubmitted: false,
+          formSubmitted: true,
         });
       },
 
@@ -240,7 +240,7 @@ export const useQuizStore = create<QuizStore>()(
           hasStarted: hasStoredProgress,
           isCompleted: false,
           result: null,
-          formSubmitted: false,
+          formSubmitted: true,
         };
       },
     }
