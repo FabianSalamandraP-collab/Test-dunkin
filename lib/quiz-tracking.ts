@@ -314,7 +314,10 @@ export async function insertQuizEvent(
       }
     }
     try {
-      track(vercelEvent, vercelProps as Record<string, string | number | boolean>);
+      track(
+        vercelEvent,
+        vercelProps as Record<string, string | number | boolean>
+      );
     } catch (error) {
       console.warn("Vercel Analytics server track falló:", error);
     }

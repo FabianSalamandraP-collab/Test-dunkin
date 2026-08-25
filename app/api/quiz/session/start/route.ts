@@ -23,8 +23,10 @@ export async function POST(request: Request) {
   }
 
   if (isQuizPreviewMode()) {
-    const payload =
-      (await request.json().catch(() => ({}))) as Record<string, unknown>;
+    const payload = (await request.json().catch(() => ({}))) as Record<
+      string,
+      unknown
+    >;
     const sessionId = `preview-${crypto.randomUUID()}`;
     trackVercelServerEvent("quiz_session_started", {
       sessionId,

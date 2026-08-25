@@ -30,8 +30,7 @@ export function trackQuizEvent(
   properties: Record<string, unknown>
 ) {
   try {
-    const safeProperties: Record<string, string | number | boolean | null> =
-      {};
+    const safeProperties: Record<string, string | number | boolean | null> = {};
     for (const [key, value] of Object.entries(properties)) {
       if (
         typeof value === "string" ||
