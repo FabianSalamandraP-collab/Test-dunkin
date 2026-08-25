@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { ToastProvider } from "@/components/ui";
 import { getSiteUrl } from "@/lib/site";
@@ -113,7 +114,10 @@ export default function RootLayout({
         className={`${dunkinSansText.variable} ${dunkinDisplay.variable}`}
         suppressHydrationWarning
       >
-        <ToastProvider>{children}</ToastProvider>
+        <ToastProvider>
+          {children}
+          <Analytics />
+        </ToastProvider>
       </body>
     </html>
   );
