@@ -15,8 +15,12 @@ import { Button, useToast } from "@/components/ui";
 import {
   getQuizTrackingClientContext,
   postQuizTracking,
+  trackQuizEvent,
 } from "@/lib/quiz-tracking-client";
-import { isQuizPermissiveMode, isQuizPreviewMode } from "@/lib/quiz-runtime-mode";
+import {
+  isQuizPermissiveMode,
+  isQuizPreviewMode,
+} from "@/lib/quiz-runtime-mode";
 import { useQuizStore } from "@/store/quizStore";
 import { QuizIconButton } from "./components/QuizIconButton";
 import { QuizIconLink } from "./components/QuizIconLink";
@@ -563,6 +567,18 @@ export function IntroScreen() {
 
     try {
       const trackingContext = getQuizTrackingClientContext();
+      trackQuizEvent("quiz_session_started", {
+        deviceType: trackingContext.deviceType,
+        browserName: trackingContext.browserName,
+        osName: trackingContext.osName,
+        language: trackingContext.language ?? "unknown",
+        referrer: trackingContext.referrer ?? "direct",
+        utmSource: trackingContext.utmSource ?? "none",
+        utmMedium: trackingContext.utmMedium ?? "none",
+        utmCampaign: trackingContext.utmCampaign ?? "none",
+        screenWidth: trackingContext.screenWidth ?? 0,
+        screenHeight: trackingContext.screenHeight ?? 0,
+      });
       const response = await postQuizTracking<{
         sessionId?: string;
         startedAt?: string;
@@ -578,10 +594,9 @@ export function IntroScreen() {
         if (isPermissiveMode) {
           addToast({
             type: "info",
-            message:
-              isPreviewMode
-                ? "Deploy de prueba activo. El test continuará sin guardar datos reales."
-                : "Tracking no disponible en local. El test continuará en modo visual.",
+            message: isPreviewMode
+              ? "Deploy de prueba activo. El test continuará sin guardar datos reales."
+              : "Tracking no disponible en local. El test continuará en modo visual.",
           });
 
           startQuiz({
@@ -613,13 +628,13 @@ export function IntroScreen() {
   };
 
   return (
-    <div className="h-full overflow-y-auto overflow-x-hidden overscroll-y-contain bg-[linear-gradient(180deg,#f8f1ea_0%,#f6ede6_100%)] px-2 py-2 [-webkit-overflow-scrolling:touch] sm:px-4 sm:py-4 lg:min-h-screen lg:h-auto lg:overflow-visible">
+    <div className="h-full overflow-y-auto overflow-x-hidden overscroll-y-contain bg-[linear-gradient(180deg,#f8f1ea_0%,#f6ede6_100%)] px-2 py-2 [-webkit-overflow-scrolling:touch] sm:px-4 sm:py-4 lg:h-auto lg:min-h-screen lg:overflow-visible">
       <div className="relative mx-auto overflow-hidden rounded-[2rem] bg-[linear-gradient(180deg,#fbf6f0_0%,#f6efe6_100%)] shadow-[0_30px_80px_rgba(89,53,17,0.12)] lg:max-w-[1460px] lg:rounded-[2.55rem]">
         <div className="pointer-events-none absolute left-[26px] top-0 hidden h-[64px] w-[86px] rounded-br-[2rem] bg-[#E90471] shadow-[inset_-6px_-6px_14px_rgba(255,255,255,0.12)] sm:left-[34px] sm:h-[72px] sm:w-[96px] md:left-[42px] md:h-[80px] md:w-[104px] lg:hidden" />
         <div className="pointer-events-none absolute right-[26px] top-0 hidden h-[64px] w-[86px] rounded-bl-[2rem] bg-[#FA192A] shadow-[inset_6px_-6px_14px_rgba(255,255,255,0.12)] sm:right-[34px] sm:h-[72px] sm:w-[96px] md:right-[42px] md:h-[80px] md:w-[104px] lg:hidden" />
         <div className="pointer-events-none absolute bottom-0 left-[26px] hidden h-[64px] w-[86px] rounded-tr-[2rem] bg-[#FA192A] shadow-[inset_-6px_6px_14px_rgba(255,255,255,0.12)] sm:left-[34px] sm:h-[72px] sm:w-[96px] md:left-[42px] md:h-[80px] md:w-[104px] lg:hidden" />
         <div className="pointer-events-none absolute bottom-0 right-[26px] hidden h-[64px] w-[86px] rounded-tl-[2rem] bg-[#FA192A] shadow-[inset_6px_6px_14px_rgba(255,255,255,0.12)] sm:right-[34px] sm:h-[72px] sm:w-[96px] md:right-[42px] md:h-[80px] md:w-[104px] lg:hidden" />
-        <div className="relative z-10 mx-0 rounded-[2.05rem] border border-transparent bg-[linear-gradient(180deg,rgba(255,248,241,0.96)_0%,rgba(247,236,226,0.95)_100%)] px-4 py-5 shadow-[0_18px_42px_rgba(89,53,17,0.08)] sm:mx-[34px] sm:px-6 sm:py-6 md:mx-[42px] md:px-7 md:py-6 lg:mx-0 lg:my-0 lg:rounded-[2.35rem] lg:border lg:border-[#f0ded0] lg:bg-[linear-gradient(180deg,#fbf6f0_0%,#f7efe5_100%)] lg:px-8 lg:py-7 lg:shadow-[0_18px_42px_rgba(89,53,17,0.08)] xl:mx-0">
+        <div className="border-transparent relative z-10 mx-0 rounded-[2.05rem] border bg-[linear-gradient(180deg,rgba(255,248,241,0.96)_0%,rgba(247,236,226,0.95)_100%)] px-4 py-5 shadow-[0_18px_42px_rgba(89,53,17,0.08)] sm:mx-[34px] sm:px-6 sm:py-6 md:mx-[42px] md:px-7 md:py-6 lg:mx-0 lg:my-0 lg:rounded-[2.35rem] lg:border lg:border-[#f0ded0] lg:bg-[linear-gradient(180deg,#fbf6f0_0%,#f7efe5_100%)] lg:px-8 lg:py-7 lg:shadow-[0_18px_42px_rgba(89,53,17,0.08)] xl:mx-0">
           <div
             className={`pointer-events-none absolute inset-0 rounded-[2.05rem] bg-no-repeat lg:rounded-[2.35rem] ${
               isMobile ? "opacity-[0.6]" : "opacity-90"
@@ -684,7 +699,7 @@ export function IntroScreen() {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.45, delay: 0.08 }}
-                className="relative mx-auto grid w-[14.5rem] grid-cols-[6.35rem_auto_6.95rem] items-center text-[2rem] font-black tracking-[-0.04em] text-[#FF7A00] sm:mx-0 sm:flex sm:w-auto sm:items-center sm:gap-4 lg:col-start-2 lg:w-full lg:max-w-[410px] lg:justify-self-center lg:justify-center"
+                className="relative mx-auto grid w-[14.5rem] grid-cols-[6.35rem_auto_6.95rem] items-center text-[2rem] font-black tracking-[-0.04em] text-[#FF7A00] sm:mx-0 sm:flex sm:w-auto sm:items-center sm:gap-4 lg:col-start-2 lg:w-full lg:max-w-[410px] lg:justify-center lg:justify-self-center"
               >
                 <div className="flex h-[5.45rem] items-center justify-center pr-2 sm:h-[4.5rem] sm:pr-0 lg:h-[4.5rem]">
                   {!showLogoFallback ? (
@@ -834,9 +849,7 @@ export function IntroScreen() {
                           className="ring-white/35 group relative mx-auto w-full max-w-[20.5rem] overflow-hidden border border-[#BE2F62] bg-[#CF3F73] px-9 py-4 text-[#FFF8F3] shadow-[0_12px_26px_rgba(207,63,115,0.22)] ring-1 [border-radius:999px] hover:border-[#CF3F73] hover:bg-[#FFF8F1] hover:text-[#CF3F73] hover:shadow-[0_12px_24px_rgba(207,63,115,0.16)] active:border-[#CF3F73] active:bg-[#FFF8F1] active:text-[#CF3F73] active:shadow-[0_12px_24px_rgba(207,63,115,0.16)] disabled:opacity-70"
                         >
                           <span className="relative z-10 flex items-center justify-center gap-2.5 font-display font-extrabold uppercase tracking-[-0.04em]">
-                            <span className="text-[1.16rem]">
-                              Haz el test
-                            </span>
+                            <span className="text-[1.16rem]">Haz el test</span>
                             <span className="bg-white/18 group-hover:bg-[#CF3F73]/12 group-active:bg-[#CF3F73]/12 flex h-9 w-9 items-center justify-center rounded-full shadow-[inset_0_1px_0_rgba(255,255,255,0.18)] transition-transform duration-300 group-hover:translate-x-0.5 group-active:translate-x-0.5">
                               <ArrowRight className="h-4.5 w-4.5 transition-transform duration-300 group-hover:translate-x-0.5" />
                             </span>
@@ -847,14 +860,14 @@ export function IntroScreen() {
                         <span>4 preguntas • 1 minuto</span>
                       </div>
                       <p className="max-w-[430px] rounded-[1.18rem] border border-[#E8D1BE] bg-[linear-gradient(180deg,rgba(255,249,244,0.95)_0%,rgba(250,241,233,0.93)_100%)] px-4 py-3 font-sans text-[0.98rem] font-semibold leading-7 text-[#3C2418] shadow-[0_16px_32px_rgba(102,66,30,0.12)] backdrop-blur-[6px]">
-                        Responde 4 preguntas y descubre la bebida Dunkin' que
-                        va con tu mood, tu forma de ser y la energía con la que
+                        Responde 4 preguntas y descubre la bebida Dunkin' que va
+                        con tu mood, tu forma de ser y la energía con la que
                         llegas a tu parche.
                       </p>
                     </motion.div>
                   </div>
 
-                  <div className="flex flex-col items-center space-y-1.5 -mt-7 pt-0 sm:-mt-4 lg:mt-0 lg:items-start">
+                  <div className="-mt-7 flex flex-col items-center space-y-1.5 pt-0 sm:-mt-4 lg:mt-0 lg:items-start">
                     <Button
                       size="lg"
                       onClick={handleStartQuiz}
@@ -881,8 +894,9 @@ export function IntroScreen() {
                     </div>
                     <div className="relative w-full max-w-[21.5rem] overflow-hidden rounded-[1.25rem] border border-[#E7D3C4] bg-[linear-gradient(180deg,rgba(255,249,244,0.96)_0%,rgba(249,239,230,0.95)_100%)] px-4 py-3.5 shadow-[0_16px_28px_rgba(102,66,30,0.12)] lg:hidden">
                       <p className="text-center font-sans text-[0.87rem] font-semibold leading-6 text-[#422A1F]">
-                        Responde 4 preguntas y descubre la bebida Dunkin' que va con tu
-                        mood, tu forma de ser y la energía con la que llegas a tu parche.
+                        Responde 4 preguntas y descubre la bebida Dunkin' que va
+                        con tu mood, tu forma de ser y la energía con la que
+                        llegas a tu parche.
                       </p>
                     </div>
                   </div>
@@ -893,7 +907,7 @@ export function IntroScreen() {
                 initial={{ opacity: 0, x: 24 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.55, delay: 0.05 }}
-                className="relative order-2 mx-auto hidden w-full max-w-[368px] lg:order-2 lg:mx-0 lg:block lg:max-w-none lg:-mt-[13.2rem] lg:ml-[6.25rem] xl:-mt-[14.55rem] xl:ml-[7.25rem] 2xl:ml-[7.75rem]"
+                className="lg:max-w-none relative order-2 mx-auto hidden w-full max-w-[368px] lg:order-2 lg:mx-0 lg:-mt-[13.2rem] lg:ml-[6.25rem] lg:block xl:-mt-[14.55rem] xl:ml-[7.25rem] 2xl:ml-[7.75rem]"
               >
                 <div className="relative mx-auto flex min-h-[330px] w-full max-w-[1180px] flex-col items-center justify-start overflow-visible rounded-[1.75rem] px-[1.25rem] pb-2 pt-2 sm:min-h-[620px] sm:rounded-[2rem] sm:px-4 sm:pb-2 sm:pt-2 lg:min-h-[740px]">
                   <div className="pointer-events-none absolute left-[18%] top-[14%] h-3.5 w-3.5 rounded-full bg-[#F2A400] sm:top-[22%]" />
@@ -1080,7 +1094,7 @@ export function IntroScreen() {
                               setIsDesktopTeaserExpanded((current) => !current)
                             }
                             aria-expanded={isDesktopTeaserExpanded}
-                            className="absolute right-4 top-4 inline-flex shrink-0 rounded-full bg-[#FF7A00] px-3 py-1 font-sans text-[0.62rem] font-bold uppercase tracking-[0.14em] text-white shadow-[0_8px_18px_rgba(255,122,0,0.24)] transition-opacity hover:opacity-90"
+                            className="text-white absolute right-4 top-4 inline-flex shrink-0 rounded-full bg-[#FF7A00] px-3 py-1 font-sans text-[0.62rem] font-bold uppercase tracking-[0.14em] shadow-[0_8px_18px_rgba(255,122,0,0.24)] transition-opacity hover:opacity-90"
                           >
                             {isDesktopTeaserExpanded ? "Ver menos" : "Ver más"}
                           </button>
@@ -1121,7 +1135,7 @@ export function IntroScreen() {
             </div>
           </div>
 
-          <div className="relative z-10 mt-7 border-t border-[#EEDFD2] pt-6 pb-4 lg:pb-12">
+          <div className="relative z-10 mt-7 border-t border-[#EEDFD2] pb-4 pt-6 lg:pb-12">
             <div className="mt-5 flex flex-col items-center gap-3 text-center text-[#7A6558] lg:flex-row lg:items-center lg:justify-between lg:text-left">
               <div className="flex flex-wrap items-center justify-center gap-4 text-xs sm:text-sm lg:justify-start">
                 {INTRO_FOOTER_ITEMS.map((item) => (

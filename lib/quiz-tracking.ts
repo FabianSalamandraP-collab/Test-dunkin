@@ -27,24 +27,43 @@ export function trackVercelServerEvent(
   rawProperties: Record<string, unknown>
 ) {
   try {
-    const safe: Record<string, string | number | boolean | null> = {};
-    for (const [k, v] of Object.entries(rawProperties)) {
+    const MAX_CHARS = 255;
+    const safeEventName =
+      typeof vercelEvent === "string" && vercelEvent.length > 0
+        ? vercelEvent.slice(0, MAX_CHARS)
+        : "quiz_server_event";
+    const safe: Record<string, string | number | boolean> = {};
+    for (const [rawKey, v] of Object.entries(rawProperties)) {
       if (
-        typeof v === "string" ||
-        typeof v === "number" ||
-        typeof v === "boolean" ||
-        v === null
+        v === null ||
+        v === undefined ||
+        typeof v === "object" ||
+        typeof v === "bigint" ||
+        typeof v === "symbol" ||
+        typeof v === "function"
       ) {
-        safe[k] = v;
-      } else if (v !== undefined) {
-        try {
-          safe[k] = JSON.stringify(v);
-        } catch {
-          safe[k] = String(v);
-        }
+        continue;
+      }
+      const key = rawKey.replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, MAX_CHARS);
+      if (!key) {
+        continue;
+      }
+      if (typeof v === "string") {
+        safe[key] = v.slice(0, MAX_CHARS);
+      } else if (
+        typeof v === "number" &&
+        Number.isFinite(v) &&
+        !Number.isNaN(v)
+      ) {
+        safe[key] = v;
+      } else if (typeof v === "boolean") {
+        safe[key] = v;
       }
     }
-    track(vercelEvent, safe as Record<string, string | number | boolean>);
+    track(
+      safeEventName as VercelQuizServerEvent,
+      safe as Record<string, string | number | boolean>
+    );
   } catch (error) {
     if (process.env.NODE_ENV !== "production") {
       console.warn("Vercel Analytics server track falló:", error);
@@ -280,7 +299,7 @@ export async function insertQuizEvent(
 
   const vercelEvent = SERVER_EVENT_MAP[event.event_type];
   if (vercelEvent) {
-    const vercelProps: Record<string, string | number | boolean | null> = {
+    const rawProps: Record<string, unknown> = {
       session_id: event.session_id,
       participant_id: event.participant_id ?? null,
       result_personality_key: event.result_personality_key ?? null,
@@ -294,33 +313,13 @@ export async function insertQuizEvent(
     };
     if (event.metadata && typeof event.metadata === "object") {
       for (const [k, v] of Object.entries(event.metadata)) {
-        if (vercelProps[k] !== undefined) {
+        if (rawProps[k] !== undefined) {
           continue;
         }
-        if (
-          typeof v === "string" ||
-          typeof v === "number" ||
-          typeof v === "boolean" ||
-          v === null
-        ) {
-          vercelProps[k] = v;
-        } else if (v !== undefined) {
-          try {
-            vercelProps[k] = JSON.stringify(v);
-          } catch {
-            vercelProps[k] = String(v);
-          }
-        }
+        rawProps[k] = v;
       }
     }
-    try {
-      track(
-        vercelEvent,
-        vercelProps as Record<string, string | number | boolean>
-      );
-    } catch (error) {
-      console.warn("Vercel Analytics server track falló:", error);
-    }
+    trackVercelServerEvent(vercelEvent, rawProps);
   }
 
   const { error } = await admin

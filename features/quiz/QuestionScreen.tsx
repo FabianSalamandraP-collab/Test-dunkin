@@ -8,6 +8,7 @@ import {
   getQuizTrackingClientContext,
   postQuizTracking,
   toDrinkKey,
+  trackQuizEvent,
 } from "@/lib/quiz-tracking-client";
 import { useQuizStore } from "@/store/quizStore";
 import { QuizQuestion } from "@/types/quiz";
@@ -138,6 +139,13 @@ export function QuestionScreen() {
       }
 
       const trackingContext = getQuizTrackingClientContext();
+      trackQuizEvent("quiz_session_abandoned", {
+        sessionId: sessionIdRef.current,
+        questionKey: questionIdRef.current,
+        questionOrder: questionOrderRef.current,
+        deviceType: trackingContext.deviceType,
+        browserName: trackingContext.browserName,
+      });
 
       void postQuizTracking(
         "/api/quiz/session/abandon",
@@ -169,7 +177,19 @@ export function QuestionScreen() {
               (Date.now() - new Date(sessionStartedAt).getTime()) / 1000
             )
           )
-        : null;
+        : 0;
+
+      trackQuizEvent("quiz_session_completed", {
+        sessionId: sessionId ?? "guest",
+        personalityKey: finalResult.id,
+        personalityLabel: finalResult.personalityType,
+        recommendedDrinkKey: toDrinkKey(finalResult.recommendedDrink),
+        recommendedDrinkLabel: finalResult.recommendedDrink,
+        score: questions.length,
+        totalDurationSeconds: durationSeconds,
+        deviceType: trackingContext.deviceType,
+        browserName: trackingContext.browserName,
+      });
 
       if (sessionId) {
         void postQuizTracking(
@@ -195,7 +215,7 @@ export function QuestionScreen() {
   };
 
   return (
-    <div className="question-stage-page h-full overflow-y-auto overflow-x-hidden overscroll-y-contain bg-[#F7F2EC] px-4 py-4 [-webkit-overflow-scrolling:touch] sm:px-6 sm:py-6 lg:min-h-screen lg:h-auto lg:overflow-visible lg:px-8">
+    <div className="question-stage-page h-full overflow-y-auto overflow-x-hidden overscroll-y-contain bg-[#F7F2EC] px-4 py-4 [-webkit-overflow-scrolling:touch] sm:px-6 sm:py-6 lg:h-auto lg:min-h-screen lg:overflow-visible lg:px-8">
       <div className="question-stage-shell border-white/65 relative mx-auto flex min-h-[calc(100svh-2rem)] max-w-[1320px] overflow-hidden rounded-[2.2rem] border bg-[linear-gradient(180deg,#FCF9F5_0%,#F6F0E8_100%)] shadow-[0_32px_80px_rgba(89,53,17,0.12)]">
         <div className="pointer-events-none absolute -left-24 top-12 h-56 w-56 rounded-full bg-[#FF671F]/10 blur-[90px]" />
         <div className="pointer-events-none absolute right-[-4rem] top-[24%] h-72 w-72 rounded-full bg-[#E9539A]/10 blur-[110px]" />
@@ -247,10 +267,20 @@ export function QuestionScreen() {
                           onClick={() => {
                             selectAnswer(question.id, option.id);
 
-                            if (sessionId) {
-                              const trackingContext =
-                                getQuizTrackingClientContext();
+                            const trackingContext =
+                              getQuizTrackingClientContext();
 
+                            trackQuizEvent("quiz_question_answered", {
+                              sessionId: sessionId ?? "guest",
+                              questionKey: question.id,
+                              questionOrder: questionNumber,
+                              selectedOptionKey: option.id,
+                              selectedOptionLabel: option.label,
+                              deviceType: trackingContext.deviceType,
+                              browserName: trackingContext.browserName,
+                            });
+
+                            if (sessionId) {
                               void postQuizTracking(
                                 "/api/quiz/session/answer",
                                 {

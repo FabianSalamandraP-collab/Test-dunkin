@@ -30,27 +30,43 @@ export function trackQuizEvent(
   properties: Record<string, unknown>
 ) {
   try {
-    const safeProperties: Record<string, string | number | boolean | null> = {};
-    for (const [key, value] of Object.entries(properties)) {
+    const MAX_CHARS = 255;
+    const safeEventName =
+      typeof name === "string" && name.length > 0
+        ? name.slice(0, MAX_CHARS)
+        : "quiz_event";
+
+    const safeProperties: Record<string, string | number | boolean> = {};
+    for (const [rawKey, value] of Object.entries(properties)) {
       if (
-        typeof value === "string" ||
-        typeof value === "number" ||
-        typeof value === "boolean" ||
-        value === null
+        value === null ||
+        value === undefined ||
+        typeof value === "object" ||
+        typeof value === "bigint" ||
+        typeof value === "symbol" ||
+        typeof value === "function"
+      ) {
+        continue;
+      }
+
+      const key = rawKey.replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, MAX_CHARS);
+      if (!key) {
+        continue;
+      }
+
+      if (typeof value === "string") {
+        safeProperties[key] = value.slice(0, MAX_CHARS);
+      } else if (
+        typeof value === "number" &&
+        Number.isFinite(value) &&
+        !Number.isNaN(value)
       ) {
         safeProperties[key] = value;
-        continue;
-      }
-      if (value === undefined) {
-        continue;
-      }
-      try {
-        safeProperties[key] = JSON.stringify(value);
-      } catch {
-        safeProperties[key] = String(value);
+      } else if (typeof value === "boolean") {
+        safeProperties[key] = value;
       }
     }
-    track(name, safeProperties as Record<string, string | number | boolean>);
+    track(safeEventName as QuizVercelEventName, safeProperties);
   } catch (error) {
     if (process.env.NODE_ENV !== "production") {
       console.warn("Vercel Analytics track falló:", error);
