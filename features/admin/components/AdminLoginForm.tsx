@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { LockKeyhole, Mail, ShieldCheck } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button, Input } from "@/components/ui";
@@ -22,7 +22,6 @@ export function AdminLoginForm({
   isConfigured,
   setupMessage,
 }: AdminLoginFormProps) {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -44,7 +43,7 @@ export function AdminLoginForm({
     }
 
     if (queryError === "unauthorized") {
-      return "Tu cuenta no está autorizada para entrar al dashboard administrativo.";
+      return "Tu cuenta no está autorizada para entrar al dashboard administrativo. Verifica que el correo esté registrado en la tabla admin_users con is_active=true.";
     }
 
     return "Accede con una cuenta válida de Supabase y autorizada en admin_users.";
@@ -66,9 +65,6 @@ export function AdminLoginForm({
         setIsSubmitting(false);
         return;
       }
-
-      router.push("/admin");
-      router.refresh();
     } catch (error) {
       const message =
         error instanceof Error

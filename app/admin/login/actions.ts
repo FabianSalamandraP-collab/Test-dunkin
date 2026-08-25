@@ -1,6 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 
 export async function adminLogin(formData: FormData) {
@@ -28,7 +29,7 @@ export async function adminLogin(formData: FormData) {
     if (!supabase) {
       return {
         error:
-          "No hay configuración pública de Supabase disponible en este entorno.",
+          "No hay configuración pública de Supabase disponible en este entorno. Verifica NEXT_PUBLIC_SUPABASE_URL y NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY en Vercel.",
       };
     }
 
@@ -42,10 +43,6 @@ export async function adminLogin(formData: FormData) {
         error: error.message,
       };
     }
-
-    return {
-      success: true as const,
-    };
   } catch (error) {
     const message =
       error instanceof Error
@@ -56,4 +53,6 @@ export async function adminLogin(formData: FormData) {
       error: message,
     };
   }
+
+  redirect("/admin");
 }
