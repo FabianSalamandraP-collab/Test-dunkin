@@ -5,6 +5,7 @@ import {
   normalizeOptionalText,
   requireIntegerField,
   requireTextField,
+  trackVercelServerEvent,
 } from "@/lib/quiz-tracking";
 import { isQuizPreviewMode } from "@/lib/quiz-runtime-mode";
 import { protectPublicRoute } from "@/lib/request-security";
@@ -27,6 +28,20 @@ export async function POST(request: Request) {
     const sessionId = requireTextField(payload, "sessionId");
     const questionKey = requireTextField(payload, "questionKey");
     const questionOrder = requireIntegerField(payload, "questionOrder");
+    const selectedOptionKey = requireTextField(payload, "selectedOptionKey");
+    const selectedOptionLabel =
+      (payload.selectedOptionLabel as string | undefined) || null;
+
+    trackVercelServerEvent("quiz_question_answered", {
+      sessionId,
+      questionKey,
+      questionOrder,
+      selectedOptionKey,
+      selectedOptionLabel,
+      preview: true,
+      deviceType: normalizeOptionalText(payload.deviceType),
+      browserName: normalizeOptionalText(payload.browserName),
+    });
 
     return NextResponse.json({
       ready: true,

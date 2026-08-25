@@ -6,6 +6,7 @@ import {
   insertQuizEvent,
   normalizeOptionalText,
   requireTextField,
+  trackVercelServerEvent,
 } from "@/lib/quiz-tracking";
 import { isQuizPreviewMode } from "@/lib/quiz-runtime-mode";
 import { protectPublicRoute } from "@/lib/request-security";
@@ -29,6 +30,12 @@ export async function POST(request: Request) {
     const targetUrl = sanitizeDunkinOfficialUrl(
       normalizeOptionalText(payload.targetUrl)
     );
+
+    trackVercelServerEvent("quiz_view_in_dunkin_clicked", {
+      sessionId,
+      targetUrl,
+      preview: true,
+    });
 
     return NextResponse.json({
       ready: true,

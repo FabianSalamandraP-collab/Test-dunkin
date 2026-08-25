@@ -4,6 +4,7 @@ import {
   insertQuizEvent,
   requireTextField,
   requireIntegerField,
+  trackVercelServerEvent,
 } from "@/lib/quiz-tracking";
 import { isQuizPreviewMode } from "@/lib/quiz-runtime-mode";
 import { protectPublicRoute } from "@/lib/request-security";
@@ -24,6 +25,15 @@ export async function POST(request: Request) {
   if (isQuizPreviewMode()) {
     const payload = (await request.json()) as Record<string, unknown>;
     const sessionId = requireTextField(payload, "sessionId");
+    const questionKey = requireTextField(payload, "questionKey");
+    const questionOrder = requireIntegerField(payload, "questionOrder");
+
+    trackVercelServerEvent("quiz_session_abandoned", {
+      sessionId,
+      questionKey,
+      questionOrder,
+      preview: true,
+    });
 
     return NextResponse.json({
       ready: true,

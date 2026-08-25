@@ -4,6 +4,7 @@ import {
   insertQuizEvent,
   normalizeOptionalInteger,
   normalizeOptionalText,
+  trackVercelServerEvent,
 } from "@/lib/quiz-tracking";
 import { isQuizPreviewMode } from "@/lib/quiz-runtime-mode";
 import { protectPublicRoute } from "@/lib/request-security";
@@ -22,10 +23,26 @@ export async function POST(request: Request) {
   }
 
   if (isQuizPreviewMode()) {
+    const payload =
+      (await request.json().catch(() => ({}))) as Record<string, unknown>;
+    const sessionId = `preview-${crypto.randomUUID()}`;
+    trackVercelServerEvent("quiz_session_started", {
+      sessionId,
+      preview: true,
+      deviceType: normalizeOptionalText(payload.deviceType),
+      browserName: normalizeOptionalText(payload.browserName),
+      osName: normalizeOptionalText(payload.osName),
+      language: normalizeOptionalText(payload.language),
+      referrer: normalizeOptionalText(payload.referrer),
+      utmSource: normalizeOptionalText(payload.utmSource),
+      utmMedium: normalizeOptionalText(payload.utmMedium),
+      utmCampaign: normalizeOptionalText(payload.utmCampaign),
+    });
+
     return NextResponse.json({
       ready: true,
       preview: true,
-      sessionId: `preview-${crypto.randomUUID()}`,
+      sessionId,
       status: "preview",
       startedAt: new Date().toISOString(),
     });

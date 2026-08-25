@@ -1,5 +1,7 @@
 "use client";
 
+import { track } from "@vercel/analytics";
+
 export interface QuizTrackingClientContext {
   deviceType: "mobile" | "tablet" | "desktop";
   browserName: string;
@@ -11,6 +13,50 @@ export interface QuizTrackingClientContext {
   utmSource: string | null;
   utmMedium: string | null;
   utmCampaign: string | null;
+}
+
+export type QuizVercelEventName =
+  | "quiz_session_started"
+  | "quiz_question_answered"
+  | "quiz_session_completed"
+  | "quiz_session_abandoned"
+  | "quiz_view_in_dunkin_clicked"
+  | "quiz_form_submitted"
+  | "quiz_share_triggered"
+  | "quiz_benefit_claim_clicked";
+
+export function trackQuizEvent(
+  name: QuizVercelEventName,
+  properties: Record<string, unknown>
+) {
+  try {
+    const safeProperties: Record<string, string | number | boolean | null> =
+      {};
+    for (const [key, value] of Object.entries(properties)) {
+      if (
+        typeof value === "string" ||
+        typeof value === "number" ||
+        typeof value === "boolean" ||
+        value === null
+      ) {
+        safeProperties[key] = value;
+        continue;
+      }
+      if (value === undefined) {
+        continue;
+      }
+      try {
+        safeProperties[key] = JSON.stringify(value);
+      } catch {
+        safeProperties[key] = String(value);
+      }
+    }
+    track(name, safeProperties as Record<string, string | number | boolean>);
+  } catch (error) {
+    if (process.env.NODE_ENV !== "production") {
+      console.warn("Vercel Analytics track falló:", error);
+    }
+  }
 }
 
 function getUtmValue(searchParams: URLSearchParams, key: string) {

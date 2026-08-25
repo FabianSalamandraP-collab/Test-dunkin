@@ -33,6 +33,7 @@ import {
 import {
   getQuizTrackingClientContext,
   postQuizTracking,
+  trackQuizEvent,
 } from "@/lib/quiz-tracking-client";
 import { isQuizPermissiveMode } from "@/lib/quiz-runtime-mode";
 import { useQuizStore } from "@/store/quizStore";
@@ -730,12 +731,20 @@ export function ResultScreen() {
   };
 
   const copyShareToClipboard = () => {
-    const { combined } = getSharePayload();
+    const { combined, shareUrl } = getSharePayload();
 
     const markCopied = () => {
       setCopySuccess(true);
       window.setTimeout(() => setCopySuccess(false), 2200);
     };
+
+    trackQuizEvent("quiz_share_triggered", {
+      sessionId: sessionId ?? "guest",
+      channel: "copy_link",
+      personalityKey: result?.id ?? null,
+      recommendedDrink: result?.recommendedDrink ?? null,personalityId: result?.id ?? null,
+      shareUrl,
+    });
 
     if (navigator.clipboard?.writeText) {
       navigator.clipboard.writeText(combined).then(markCopied).catch(() => {});
@@ -765,6 +774,14 @@ export function ResultScreen() {
       return;
     }
 
+    trackQuizEvent("quiz_share_triggered", {
+      sessionId: sessionId ?? "guest",
+      channel: "navigator_share",
+      personalityKey: result?.id ?? null,
+      recommendedDrink: result?.recommendedDrink ?? null,personalityId: result?.id ?? null,
+      shareUrl,
+    });
+
     try {
       await navigator.share({
         title: "Comparte tu match Dunkin'",
@@ -786,10 +803,17 @@ export function ResultScreen() {
   };
 
   const openWhatsAppPrivate = () => {
-    const { combined } = getSharePayload();
+    const { combined, shareUrl } = getSharePayload();
     const target = `https://api.whatsapp.com/send?text=${encodeURIComponent(
       combined
     )}`;
+    trackQuizEvent("quiz_share_triggered", {
+      sessionId: sessionId ?? "guest",
+      channel: "whatsapp_private",
+      personalityKey: result?.id ?? null,
+      recommendedDrink: result?.recommendedDrink ?? null,personalityId: result?.id ?? null,
+      shareUrl,
+    });
     window.open(target, "_blank", "noopener,noreferrer");
     setShowShareMenu(false);
   };
@@ -799,6 +823,13 @@ export function ResultScreen() {
     const target = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
       shareUrl
     )}&quote=${encodeURIComponent(shareText)}`;
+    trackQuizEvent("quiz_share_triggered", {
+      sessionId: sessionId ?? "guest",
+      channel: "facebook_feed",
+      personalityKey: result?.id ?? null,
+      recommendedDrink: result?.recommendedDrink ?? null,personalityId: result?.id ?? null,
+      shareUrl,
+    });
     window.open(target, "_blank", "noopener,noreferrer");
     setShowShareMenu(false);
   };
@@ -808,6 +839,13 @@ export function ResultScreen() {
     const target = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
       shareText
     )}&url=${encodeURIComponent(shareUrl)}`;
+    trackQuizEvent("quiz_share_triggered", {
+      sessionId: sessionId ?? "guest",
+      channel: "x_post",
+      personalityKey: result?.id ?? null,
+      recommendedDrink: result?.recommendedDrink ?? null,personalityId: result?.id ?? null,
+      shareUrl,
+    });
     window.open(target, "_blank", "noopener,noreferrer");
     setShowShareMenu(false);
   };
@@ -817,6 +855,14 @@ export function ResultScreen() {
     const fbAppTarget = `fb://stories/?background_top_color=%23EF6A00&background_bottom_color=%23FF0068&link=${encodeURIComponent(
       shareUrl
     )}`;
+
+    trackQuizEvent("quiz_share_triggered", {
+      sessionId: sessionId ?? "guest",
+      channel: "facebook_stories",
+      personalityKey: result?.id ?? null,
+      recommendedDrink: result?.recommendedDrink ?? null,personalityId: result?.id ?? null,
+      shareUrl,
+    });
 
     window.open(fbAppTarget, "_blank", "noopener,noreferrer");
 
@@ -835,6 +881,14 @@ export function ResultScreen() {
     const igAppTarget = `instagram://stories?source_application=com.dunkin&background_top_color=%23EF6A00&background_bottom_color=%23FF0068&link=${encodeURIComponent(
       shareUrl
     )}`;
+
+    trackQuizEvent("quiz_share_triggered", {
+      sessionId: sessionId ?? "guest",
+      channel: "instagram_stories",
+      personalityKey: result?.id ?? null,
+      recommendedDrink: result?.recommendedDrink ?? null,personalityId: result?.id ?? null,
+      shareUrl,
+    });
 
     window.open(igAppTarget, "_blank", "noopener,noreferrer");
 
@@ -874,6 +928,15 @@ export function ResultScreen() {
     }
 
     setIsClaimingBenefit(true);
+
+    trackQuizEvent("quiz_benefit_claim_clicked", {
+      sessionId: sessionId ?? "guest",
+      personalityKey: result?.id ?? null,
+      recommendedDrink: result?.recommendedDrink ?? null,personalityId: result?.id ?? null,
+      targetUrl: officialBenefitUrl,
+      benefitSource: benefitData.source ?? "unknown",
+      benefitTitle: benefitData.title ?? null,
+    });
 
     const trackingContext = getQuizTrackingClientContext();
     const trackingResponse = await postQuizTracking<{

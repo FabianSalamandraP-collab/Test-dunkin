@@ -8,6 +8,7 @@ import {
   requireBooleanField,
   requireHumanNameField,
   requireTextField,
+  trackVercelServerEvent,
 } from "@/lib/quiz-tracking";
 import { isQuizPreviewMode } from "@/lib/quiz-runtime-mode";
 import { protectPublicRoute } from "@/lib/request-security";
@@ -33,6 +34,17 @@ export async function POST(request: Request) {
       typeof payload.companyWebsite === "string"
         ? payload.companyWebsite.trim()
         : "";
+
+    trackVercelServerEvent("quiz_form_submitted", {
+      sessionId,
+      emailDomain: email.includes("@") ? email.split("@")[1] : "unknown",
+      acceptPromotions:
+        typeof payload.acceptPromotions === "boolean"
+          ? payload.acceptPromotions
+          : false,
+      preview: true,
+      honeypot: Boolean(companyWebsite),
+    });
 
     if (companyWebsite) {
       return NextResponse.json({

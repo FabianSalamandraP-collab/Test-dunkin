@@ -1,4 +1,56 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { track } from "@vercel/analytics/server";
+
+type VercelQuizServerEvent =
+  | "quiz_session_started"
+  | "quiz_question_answered"
+  | "quiz_session_completed"
+  | "quiz_session_abandoned"
+  | "quiz_view_in_dunkin_clicked"
+  | "quiz_form_submitted"
+  | "quiz_share_triggered"
+  | "quiz_benefit_claim_clicked";
+
+const SERVER_EVENT_MAP: Record<string, VercelQuizServerEvent> = {
+  test_started: "quiz_session_started",
+  question_answered: "quiz_question_answered",
+  test_completed: "quiz_session_completed",
+  test_abandoned: "quiz_session_abandoned",
+  view_in_dunkin_clicked: "quiz_view_in_dunkin_clicked",
+  form_submitted: "quiz_form_submitted",
+  share: "quiz_share_triggered",
+  benefit_claim: "quiz_benefit_claim_clicked",
+};
+
+export function trackVercelServerEvent(
+  vercelEvent: VercelQuizServerEvent,
+  rawProperties: Record<string, unknown>
+) {
+  try {
+    const safe: Record<string, string | number | boolean | null> = {};
+    for (const [k, v] of Object.entries(rawProperties)) {
+      if (
+        typeof v === "string" ||
+        typeof v === "number" ||
+        typeof v === "boolean" ||
+        v === null
+      ) {
+        safe[k] = v;
+      } else if (v !== undefined) {
+        try {
+          safe[k] = JSON.stringify(v);
+        } catch {
+          safe[k] = String(v);
+        }
+      }
+    }
+    track(vercelEvent, safe as Record<string, string | number | boolean>);
+  } catch (error) {
+    if (process.env.NODE_ENV !== "production") {
+      console.warn("Vercel Analytics server track falló:", error);
+    }
+  }
+}
 
 type Nullable<T> = T | null;
 
@@ -195,7 +247,9 @@ export async function insertQuizEvent(
       | "test_completed"
       | "form_submitted"
       | "view_in_dunkin_clicked"
-      | "test_abandoned";
+      | "test_abandoned"
+      | "share"
+      | "benefit_claim";
     session_id: string;
     participant_id?: string | null;
     result_personality_key?: string | null;
@@ -223,6 +277,48 @@ export async function insertQuizEvent(
     browser_name: event.browser_name ?? null,
     metadata: event.metadata ?? {},
   };
+
+  const vercelEvent = SERVER_EVENT_MAP[event.event_type];
+  if (vercelEvent) {
+    const vercelProps: Record<string, string | number | boolean | null> = {
+      session_id: event.session_id,
+      participant_id: event.participant_id ?? null,
+      result_personality_key: event.result_personality_key ?? null,
+      recommended_drink_key: event.recommended_drink_key ?? null,
+      recommended_drink_label: event.recommended_drink_label ?? null,
+      question_key: event.question_key ?? null,
+      question_order: event.question_order ?? null,
+      selected_option_key: event.selected_option_key ?? null,
+      device_type: event.device_type ?? null,
+      browser_name: event.browser_name ?? null,
+    };
+    if (event.metadata && typeof event.metadata === "object") {
+      for (const [k, v] of Object.entries(event.metadata)) {
+        if (vercelProps[k] !== undefined) {
+          continue;
+        }
+        if (
+          typeof v === "string" ||
+          typeof v === "number" ||
+          typeof v === "boolean" ||
+          v === null
+        ) {
+          vercelProps[k] = v;
+        } else if (v !== undefined) {
+          try {
+            vercelProps[k] = JSON.stringify(v);
+          } catch {
+            vercelProps[k] = String(v);
+          }
+        }
+      }
+    }
+    try {
+      track(vercelEvent, vercelProps as Record<string, string | number | boolean>);
+    } catch (error) {
+      console.warn("Vercel Analytics server track falló:", error);
+    }
+  }
 
   const { error } = await admin
     .from("quiz_events")

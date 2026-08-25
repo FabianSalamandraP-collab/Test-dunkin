@@ -4,6 +4,7 @@ import {
   insertQuizEvent,
   requireTextField,
   normalizeOptionalInteger,
+  trackVercelServerEvent,
 } from "@/lib/quiz-tracking";
 import { isQuizPreviewMode } from "@/lib/quiz-runtime-mode";
 import { protectPublicRoute } from "@/lib/request-security";
@@ -24,6 +25,29 @@ export async function POST(request: Request) {
   if (isQuizPreviewMode()) {
     const payload = (await request.json()) as Record<string, unknown>;
     const sessionId = requireTextField(payload, "sessionId");
+    const personalityKey = requireTextField(payload, "personalityKey");
+    const personalityLabel = requireTextField(payload, "personalityLabel");
+    const recommendedDrinkKey = requireTextField(
+      payload,
+      "recommendedDrinkKey"
+    );
+    const recommendedDrinkLabel = requireTextField(
+      payload,
+      "recommendedDrinkLabel"
+    );
+
+    trackVercelServerEvent("quiz_session_completed", {
+      sessionId,
+      personalityKey,
+      personalityLabel,
+      recommendedDrinkKey,
+      recommendedDrinkLabel,
+      score: normalizeOptionalInteger(payload.score),
+      totalDurationSeconds: normalizeOptionalInteger(
+        payload.totalDurationSeconds
+      ),
+      preview: true,
+    });
 
     return NextResponse.json({
       ready: true,
